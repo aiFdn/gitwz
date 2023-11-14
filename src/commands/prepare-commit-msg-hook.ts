@@ -26,7 +26,7 @@ export const prepareCommitMessageHook = async (
 
       if (changedFiles) await gitAdd({ files: changedFiles });
       else {
-        outro('No changes detected, write some code and run `oco` again');
+        outro('No changes detected, write some code and run  `gwz` again');
         process.exit(1);
       }
     }
@@ -39,7 +39,7 @@ export const prepareCommitMessageHook = async (
 
     const config = getConfig();
 
-    if (!config?.OCO_OPENAI_API_KEY) {
+    if (!config?.GWZ_OPENAI_API_KEY) {
       throw new Error(
         'No OPEN_AI_API exists. Set your OPEN_AI_API=<key> in ~/.gitwz'
       );

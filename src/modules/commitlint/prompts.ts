@@ -17,7 +17,7 @@ import { i18n, I18nLocals } from '../../i18n';
 import { IDENTITY, INIT_DIFF_PROMPT } from '../../prompts';
 
 const config = getConfig();
-const translation = i18n[(config?.OCO_LANGUAGE as I18nLocals) || 'en'];
+const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
 
 type DeepPartial<T> = {
   [P in keyof T]?: {
@@ -264,8 +264,8 @@ const INIT_MAIN_PROMPT = (
   role: ChatCompletionRequestMessageRoleEnum.System,
   // prettier-ignore
   content: `${IDENTITY} Your mission is to create clean and comprehensive commit messages in the given @commitlint convention and explain WHAT were the changes and WHY the changes were done. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message.
-${config?.OCO_EMOJI ? 'Use GitMoji convention to preface the commit.' : 'Do not preface the commit with anything.'}
-${config?.OCO_DESCRIPTION ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.' : "Don't add any descriptions to the commit, only commit message."}
+${config?.GWZ_EMOJI ? 'Use GitMoji convention to preface the commit.' : 'Do not preface the commit with anything.'}
+${config?.GWZ_DESCRIPTION ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.' : "Don't add any descriptions to the commit, only commit message."}
 Use the present tense. Use ${language} to answer.
     
 You will strictly follow the following conventions to generate the content of the commit message:

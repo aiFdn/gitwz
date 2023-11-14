@@ -20,7 +20,7 @@ All the commits in this repo are authored by GitWiz — look at [the commits](ht
 
 ## Setup GitWiz as a CLI tool
 
-You can use GitWiz by simply running it via the CLI like this `oco`. 2 seconds and your staged changes are committed with a meaningful message.
+You can use GitWiz by simply running it via the CLI like this `gwz`. 2 seconds and your staged changes are committed with a meaningful message.
 
 1. Install GitWiz globally to use in any repository:
 
@@ -35,7 +35,7 @@ You can use GitWiz by simply running it via the CLI like this `oco`. 2 seconds a
 3. Set the key to GitWiz config:
 
    ```sh
-   oco config set OCO_OPENAI_API_KEY=<your_api_key>
+   gwz config set GWZ_OPENAI_API_KEY=<your_api_key>
    ```
 
    Your API key is stored locally in the `~/.gitwz` config file.
@@ -49,11 +49,11 @@ git add <files...>
 gitwz
 ```
 
-You can also use the `oco` shortcut:
+You can also use the `gwz` shortcut:
 
 ```sh
 git add <files...>
-oco
+gwz
 ```
 
 ## Configuration
@@ -63,37 +63,37 @@ oco
 Create a `.env` file and add GitWiz config variables there like this:
 
 ```env
-OCO_OPENAI_API_KEY=<your OpenAI API token>
-OCO_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
-OCO_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI api>
-OCO_DESCRIPTION=<postface a message with ~3 sentences description of the changes>
-OCO_EMOJI=<boolean, add GitMoji>
-OCO_MODEL=<either 'gpt-4', 'gpt-3.5-turbo-16k' (default), 'gpt-3.5-turbo-0613' or 'gpt-3.5-turbo'>
-OCO_LANGUAGE=<locale, scroll to the bottom to see options>
-OCO_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
-OCO_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
+GWZ_OPENAI_API_KEY=<your OpenAI API token>
+GWZ_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
+GWZ_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI api>
+GWZ_DESCRIPTION=<postface a message with ~3 sentences description of the changes>
+GWZ_EMOJI=<boolean, add GitMoji>
+GWZ_MODEL=<either 'gpt-4', 'gpt-3.5-turbo-16k' (default), 'gpt-3.5-turbo-0613' or 'gpt-3.5-turbo'>
+GWZ_LANGUAGE=<locale, scroll to the bottom to see options>
+GWZ_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
+GWZ_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
 ```
 
 ### Global config for all repos
 
-Local config still has more priority than Global config, but you may set `OCO_MODEL` and `OCO_LOCALE` globally and set local configs for `OCO_EMOJI` and `OCO_DESCRIPTION` per repo which is more convenient.
+Local config still has more priority than Global config, but you may set `GWZ_MODEL` and `GWZ_LOCALE` globally and set local configs for `GWZ_EMOJI` and `GWZ_DESCRIPTION` per repo which is more convenient.
 
 Simply set any of the variables above like this:
 
 ```sh
-oco config set OCO_MODEL=gpt-4
+gwz config set GWZ_MODEL=gpt-4
 ```
 
 Configure [GitMoji](https://gitmoji.dev/) to preface a message.
 
 ```sh
-oco config set OCO_EMOJI=true
+gwz config set GWZ_EMOJI=true
 ```
 
 To remove preface emojis:
 
 ```sh
-oco config set OCO_EMOJI=false
+gwz config set GWZ_EMOJI=false
 ```
 
 ### Switch to GPT-4 or other models
@@ -103,19 +103,19 @@ By default, GitWiz uses `gpt-3.5-turbo-16k` model.
 You may switch to GPT-4 which performs better, but costs ~x15 times more 🤠
 
 ```sh
-oco config set OCO_MODEL=gpt-4
+gwz config set GWZ_MODEL=gpt-4
 ```
 
 or for as a cheaper option:
 
 ```sh
-oco config set OCO_MODEL=gpt-3.5-turbo
+gwz config set GWZ_MODEL=gpt-3.5-turbo
 ```
 
 or for GPT-4 Turbo (Preview) which is more capable, has knowledge of world events up to April 2023, a 128k context window and 2-3x cheaper vs GPT-4:
 
 ```sh
-oco config set OCO_MODEL=gpt-4-1106-preview
+gwz config set GWZ_MODEL=gpt-4-1106-preview
 ```
 
 Make sure that you spell it `gpt-4` (lowercase) and that you have API access to the 4th model. Even if you have ChatGPT+, that doesn't necessarily mean that you have API access to GPT-4.
@@ -126,14 +126,14 @@ To globally specify the language used to generate commit messages:
 
 ```sh
 # de, German ,Deutsch
-oco config set OCO_LANGUAGE=de
-oco config set OCO_LANGUAGE=German
-oco config set OCO_LANGUAGE=Deutsch
+gwz config set GWZ_LANGUAGE=de
+gwz config set GWZ_LANGUAGE=German
+gwz config set GWZ_LANGUAGE=Deutsch
 
 # fr, French, française
-oco config set OCO_LANGUAGE=fr
-oco config set OCO_LANGUAGE=French
-oco config set OCO_LANGUAGE=française
+gwz config set GWZ_LANGUAGE=fr
+gwz config set GWZ_LANGUAGE=French
+gwz config set GWZ_LANGUAGE=française
 ```
 
 The default language setting is **English**
@@ -146,7 +146,7 @@ GitWiz allows you to choose the prompt module used to generate commit messages. 
 You can set this option by running the following command:
 
 ```sh
-oco config set OCO_PROMPT_MODULE=<module>
+gwz config set GWZ_PROMPT_MODULE=<module>
 ```
 
 Replace `<module>` with either `conventional-commit` or `@commitlint`.
@@ -156,27 +156,27 @@ Replace `<module>` with either `conventional-commit` or `@commitlint`.
 To switch to using th` '@commitlint` prompt module, run:
 
 ```sh
-oco config set OCO_PROMPT_MODULE=@commitlint
+gwz config set GWZ_PROMPT_MODULE=@commitlint
 ```
 
 To switch back to the default conventional-commit message generator, run:
 
 ```sh
-oco config set OCO_PROMPT_MODULE=conventional-commit
+gwz config set GWZ_PROMPT_MODULE=conventional-commit
 ```
 
 #### Integrating with `@commitlint`
 
-The integration between `@commitlint` and GitWiz is done automatically the first time GitWiz is run with `OCO_PROMPT_MODULE` set to `@commitlint`. However, if you need to force set or reset the configuration for `@commitlint`, you can run the following command:
+The integration between `@commitlint` and GitWiz is done automatically the first time GitWiz is run with `GWZ_PROMPT_MODULE` set to `@commitlint`. However, if you need to force set or reset the configuration for `@commitlint`, you can run the following command:
 
 ```sh
-oco commitlint force
+gwz commitlint force
 ```
 
 To view the generated configuration for `@commitlint`, you can use this command:
 
 ```sh
-oco commitlint get
+gwz commitlint get
 ```
 
 This allows you to ensure that the configuration is set up as desired.
@@ -189,10 +189,10 @@ This offers you greater control over the generated commit messages, allowing for
 
 ## Git flags
 
-The `gitwz` or `oco` commands can be used in place of the `git commit -m "${generatedMessage}"` command. This means that any regular flags that are used with the `git commit` command will also be applied when using `gitwz` or `oco`.
+The `gitwz` or `gwz` commands can be used in place of the `git commit -m "${generatedMessage}"` command. This means that any regular flags that are used with the `git commit` command will also be applied when using `gitwz` or `gwz`.
 
 ```sh
-oco --no-verify
+gwz --no-verify
 ```
 
 is translated to :
@@ -204,16 +204,16 @@ git commit -m "${generatedMessage}" --no-verify
 To include a message in the generated message, you can utilize the template function, for instance:
 
 ```sh
-oco '#205: $msg’
+gwz '#205: $msg’
 ```
 
-> gitwz examines placeholders in the parameters, allowing you to append additional information before and after the placeholders, such as the relevant Issue or Pull Request. Similarly, you have the option to customize the OCO_MESSAGE_TEMPLATE_PLACEHOLDER configuration item, for example, simplifying it to $m!"
+> gitwz examines placeholders in the parameters, allowing you to append additional information before and after the placeholders, such as the relevant Issue or Pull Request. Similarly, you have the option to customize the GWZ_MESSAGE_TEMPLATE_PLACEHOLDER configuration item, for example, simplifying it to $m!"
 
 ### Message Template Placeholder Config
 
 #### Overview
 
-The `OCO_MESSAGE_TEMPLATE_PLACEHOLDER` feature in the `gitwz` tool allows users to embed a custom message within the generated commit message using a template function. This configuration is designed to enhance the flexibility and customizability of commit messages, making it easier for users to include relevant information directly within their commits.
+The `GWZ_MESSAGE_TEMPLATE_PLACEHOLDER` feature in the `gitwz` tool allows users to embed a custom message within the generated commit message using a template function. This configuration is designed to enhance the flexibility and customizability of commit messages, making it easier for users to include relevant information directly within their commits.
 
 #### Implementation Details
 
@@ -221,7 +221,7 @@ In our codebase, the implementation of this feature can be found in the followin
 
 ```javascript
 commitMessage = messageTemplate.replace(
-  config?.OCO_MESSAGE_TEMPLATE_PLACEHOLDER,
+  config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER,
   commitMessage
 );
 ```
@@ -230,7 +230,7 @@ This line is responsible for replacing the placeholder in the `messageTemplate` 
 
 #### Usage
 
-For instance, using the command `oco '$msg #205’`, users can leverage this feature. The provided code represents the backend mechanics of such commands, ensuring that the placeholder is replaced with the appropriate commit message.
+For instance, using the command `gwz '$msg #205’`, users can leverage this feature. The provided code represents the backend mechanics of such commands, ensuring that the placeholder is replaced with the appropriate commit message.
 
 #### Committing with the Message
 
@@ -256,13 +256,13 @@ You can set GitWiz as Git [`prepare-commit-msg`](https://git-scm.com/docs/githoo
 To set the hook:
 
 ```sh
-oco hook set
+gwz hook set
 ```
 
 To unset the hook:
 
 ```sh
-oco hook unset
+gwz hook unset
 ```
 
 To use the hook:
@@ -313,16 +313,16 @@ jobs:
           # set openAI api key in repo actions secrets,
           # for openAI keys go to: https://platform.openai.com/account/api-keys
           # for repo secret go to: <your_repo_url>/settings/secrets/actions
-          OCO_OPENAI_API_KEY: ${{ secrets.OCO_OPENAI_API_KEY }}
+          GWZ_OPENAI_API_KEY: ${{ secrets.GWZ_OPENAI_API_KEY }}
 
           # customization
-          OCO_OPENAI_MAX_TOKENS: 500
-          OCO_OPENAI_BASE_PATH: ''
-          OCO_DESCRIPTION: false
-          OCO_EMOJI: false
-          OCO_MODEL: gpt-3.5-turbo-16k
-          OCO_LANGUAGE: en
-          OCO_PROMPT_MODULE: conventional-commit
+          GWZ_OPENAI_MAX_TOKENS: 500
+          GWZ_OPENAI_BASE_PATH: ''
+          GWZ_DESCRIPTION: false
+          GWZ_EMOJI: false
+          GWZ_MODEL: gpt-3.5-turbo-16k
+          GWZ_LANGUAGE: en
+          GWZ_PROMPT_MODULE: conventional-commit
 ```
 
 That is it. Now when you push to any branch in your repo — all NEW commits are being improved by your never-tired AI.

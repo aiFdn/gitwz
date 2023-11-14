@@ -27900,71 +27900,71 @@ var validateConfig = (key, condition, validationMessage) => {
   }
 };
 var configValidators = {
-  ["OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */](value, config7 = {}) {
-    validateConfig("OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */, value, "Cannot be empty");
+  ["GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */](value, config7 = {}) {
+    validateConfig("GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */, value, "Cannot be empty");
     validateConfig(
-      "OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */,
+      "GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */,
       value.startsWith("sk-"),
       'Must start with "sk-"'
     );
     validateConfig(
-      "OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */,
-      config7["OCO_OPENAI_BASE_PATH" /* OCO_OPENAI_BASE_PATH */] || value.length === 51,
+      "GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */,
+      config7["GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */] || value.length === 51,
       "Must be 51 characters long"
     );
     return value;
   },
-  ["OCO_DESCRIPTION" /* OCO_DESCRIPTION */](value) {
+  ["GWZ_DESCRIPTION" /* GWZ_DESCRIPTION */](value) {
     validateConfig(
-      "OCO_DESCRIPTION" /* OCO_DESCRIPTION */,
+      "GWZ_DESCRIPTION" /* GWZ_DESCRIPTION */,
       typeof value === "boolean",
       "Must be true or false"
     );
     return value;
   },
-  ["OCO_OPENAI_MAX_TOKENS" /* OCO_OPENAI_MAX_TOKENS */](value) {
+  ["GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */](value) {
     if (typeof value === "string") {
       value = parseInt(value);
       validateConfig(
-        "OCO_OPENAI_MAX_TOKENS" /* OCO_OPENAI_MAX_TOKENS */,
+        "GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */,
         !isNaN(value),
         "Must be a number"
       );
     }
     validateConfig(
-      "OCO_OPENAI_MAX_TOKENS" /* OCO_OPENAI_MAX_TOKENS */,
+      "GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */,
       value ? typeof value === "number" : void 0,
       "Must be a number"
     );
     return value;
   },
-  ["OCO_EMOJI" /* OCO_EMOJI */](value) {
+  ["GWZ_EMOJI" /* GWZ_EMOJI */](value) {
     validateConfig(
-      "OCO_EMOJI" /* OCO_EMOJI */,
+      "GWZ_EMOJI" /* GWZ_EMOJI */,
       typeof value === "boolean",
       "Must be true or false"
     );
     return value;
   },
-  ["OCO_LANGUAGE" /* OCO_LANGUAGE */](value) {
+  ["GWZ_LANGUAGE" /* GWZ_LANGUAGE */](value) {
     validateConfig(
-      "OCO_LANGUAGE" /* OCO_LANGUAGE */,
+      "GWZ_LANGUAGE" /* GWZ_LANGUAGE */,
       getI18nLocal(value),
       `${value} is not supported yet`
     );
     return getI18nLocal(value);
   },
-  ["OCO_OPENAI_BASE_PATH" /* OCO_OPENAI_BASE_PATH */](value) {
+  ["GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */](value) {
     validateConfig(
-      "OCO_OPENAI_BASE_PATH" /* OCO_OPENAI_BASE_PATH */,
+      "GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */,
       typeof value === "string",
       "Must be string"
     );
     return value;
   },
-  ["OCO_MODEL" /* OCO_MODEL */](value) {
+  ["GWZ_MODEL" /* GWZ_MODEL */](value) {
     validateConfig(
-      "OCO_MODEL" /* OCO_MODEL */,
+      "GWZ_MODEL" /* GWZ_MODEL */,
       [
         "gpt-3.5-turbo",
         "gpt-4",
@@ -27975,17 +27975,17 @@ var configValidators = {
     );
     return value;
   },
-  ["OCO_MESSAGE_TEMPLATE_PLACEHOLDER" /* OCO_MESSAGE_TEMPLATE_PLACEHOLDER */](value) {
+  ["GWZ_MESSAGE_TEMPLATE_PLACEHOLDER" /* GWZ_MESSAGE_TEMPLATE_PLACEHOLDER */](value) {
     validateConfig(
-      "OCO_MESSAGE_TEMPLATE_PLACEHOLDER" /* OCO_MESSAGE_TEMPLATE_PLACEHOLDER */,
+      "GWZ_MESSAGE_TEMPLATE_PLACEHOLDER" /* GWZ_MESSAGE_TEMPLATE_PLACEHOLDER */,
       value.startsWith("$"),
       `${value} must start with $, for example: '$msg'`
     );
     return value;
   },
-  ["OCO_PROMPT_MODULE" /* OCO_PROMPT_MODULE */](value) {
+  ["GWZ_PROMPT_MODULE" /* GWZ_PROMPT_MODULE */](value) {
     validateConfig(
-      "OCO_PROMPT_MODULE" /* OCO_PROMPT_MODULE */,
+      "GWZ_PROMPT_MODULE" /* GWZ_PROMPT_MODULE */,
       ["conventional-commit", "@commitlint"].includes(value),
       `${value} is not supported yet, use '@commitlint' or 'conventional-commit' (default)`
     );
@@ -27995,15 +27995,15 @@ var configValidators = {
 var configPath = (0, import_path.join)((0, import_os.homedir)(), ".gitwz");
 var getConfig = () => {
   const configFromEnv = {
-    OCO_OPENAI_API_KEY: process.env.OCO_OPENAI_API_KEY,
-    OCO_OPENAI_MAX_TOKENS: process.env.OCO_OPENAI_MAX_TOKENS ? Number(process.env.OCO_OPENAI_MAX_TOKENS) : void 0,
-    OCO_OPENAI_BASE_PATH: process.env.OCO_OPENAI_BASE_PATH,
-    OCO_DESCRIPTION: process.env.OCO_DESCRIPTION === "true" ? true : false,
-    OCO_EMOJI: process.env.OCO_EMOJI === "true" ? true : false,
-    OCO_MODEL: process.env.OCO_MODEL || "gpt-3.5-turbo-16k",
-    OCO_LANGUAGE: process.env.OCO_LANGUAGE || "en",
-    OCO_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.OCO_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
-    OCO_PROMPT_MODULE: process.env.OCO_PROMPT_MODULE || "conventional-commit"
+    GWZ_OPENAI_API_KEY: process.env.GWZ_OPENAI_API_KEY,
+    GWZ_OPENAI_MAX_TOKENS: process.env.GWZ_OPENAI_MAX_TOKENS ? Number(process.env.GWZ_OPENAI_MAX_TOKENS) : void 0,
+    GWZ_OPENAI_BASE_PATH: process.env.GWZ_OPENAI_BASE_PATH,
+    GWZ_DESCRIPTION: process.env.GWZ_DESCRIPTION === "true" ? true : false,
+    GWZ_EMOJI: process.env.GWZ_EMOJI === "true" ? true : false,
+    GWZ_MODEL: process.env.GWZ_MODEL || "gpt-4-1106-preview",
+    GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || "en",
+    GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
+    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit"
   };
   const configExists = (0, import_fs.existsSync)(configPath);
   if (!configExists)
@@ -28024,7 +28024,7 @@ var getConfig = () => {
       config7[configKey] = validValue;
     } catch (error) {
       ce(
-        `'${configKey}' name is invalid, it should be either 'OCO_${configKey.toUpperCase()}' or it doesn't exist.`
+        `'${configKey}' name is invalid, it should be either 'GWZ_${configKey.toUpperCase()}' or it doesn't exist.`
       );
       ce(
         `Manually fix the '.env' file or global '~/.gitwz' config file.`
@@ -28100,21 +28100,21 @@ function tokenCount(content) {
 
 // src/api.ts
 var config2 = getConfig();
-var maxTokens = config2?.OCO_OPENAI_MAX_TOKENS;
-var basePath = config2?.OCO_OPENAI_BASE_PATH;
-var apiKey = config2?.OCO_OPENAI_API_KEY;
+var maxTokens = config2?.GWZ_OPENAI_MAX_TOKENS;
+var basePath = config2?.GWZ_OPENAI_BASE_PATH;
+var apiKey = config2?.GWZ_OPENAI_API_KEY;
 var [command, mode] = process.argv.slice(2);
 if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   ae("gitwz");
   ce(
-    "OCO_OPENAI_API_KEY is not set, please run `oco config set OCO_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`"
+    "GWZ_OPENAI_API_KEY is not set, please run `gwz config set GWZ_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`"
   );
   ce(
     "For help look into README https://github.com/SHSharkar/gitwz#setup"
   );
   process.exit(1);
 }
-var MODEL = config2?.OCO_MODEL || "gpt-3.5-turbo";
+var MODEL = config2?.GWZ_MODEL || "gpt-3.5-turbo";
 var OpenAi = class {
   openAiApiConfiguration = new import_openai.Configuration({
     apiKey
@@ -28183,7 +28183,7 @@ var computeHash = async (content, algorithm = "sha256") => {
 var import_openai2 = __toESM(require_dist2(), 1);
 var import_types = __toESM(require_lib4(), 1);
 var config3 = getConfig();
-var translation = i18n[config3?.OCO_LANGUAGE || "en"];
+var translation = i18n[config3?.GWZ_LANGUAGE || "en"];
 var getTypeRuleExtraDescription = (type, prompt) => prompt?.questions?.type?.enum?.[type]?.description;
 var llmReadableRules = {
   blankline: (key, applicable) => `There should ${applicable} be a blank line at the beginning of the ${key}.`,
@@ -28300,8 +28300,8 @@ Example Git Diff is to follow:`
 var INIT_MAIN_PROMPT = (language, prompts) => ({
   role: import_openai2.ChatCompletionRequestMessageRoleEnum.System,
   content: `${IDENTITY} Your mission is to create clean and comprehensive commit messages in the given @commitlint convention and explain WHAT were the changes and WHY the changes were done. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message.
-${config3?.OCO_EMOJI ? "Use GitMoji convention to preface the commit." : "Do not preface the commit with anything."}
-${config3?.OCO_DESCRIPTION ? `Add a short description of WHY the changes are done after the commit message. Don't start it with "This commit", just describe the changes.` : "Don't add any descriptions to the commit, only commit message."}
+${config3?.GWZ_EMOJI ? "Use GitMoji convention to preface the commit." : "Do not preface the commit with anything."}
+${config3?.GWZ_DESCRIPTION ? `Add a short description of WHY the changes are done after the commit message. Don't start it with "This commit", just describe the changes.` : "Don't add any descriptions to the commit, only commit message."}
 Use the present tense. Use ${language} to answer.
     
 You will strictly follow the following conventions to generate the content of the commit message:
@@ -28369,7 +28369,7 @@ var getCommitlintLLMConfig = async () => {
 
 // src/modules/commitlint/config.ts
 var config4 = getConfig();
-var translation2 = i18n[config4?.OCO_LANGUAGE || "en"];
+var translation2 = i18n[config4?.GWZ_LANGUAGE || "en"];
 var configureCommitlintIntegration = async (force = false) => {
   const spin = le();
   spin.start("Loading @commitlint configuration");
@@ -28407,13 +28407,13 @@ var configureCommitlintIntegration = async (force = false) => {
 
 // src/prompts.ts
 var config5 = getConfig();
-var translation3 = i18n[config5?.OCO_LANGUAGE || "en"];
+var translation3 = i18n[config5?.GWZ_LANGUAGE || "en"];
 var IDENTITY = "You are to act as the author of a commit message in git.";
 var INIT_MAIN_PROMPT2 = (language) => ({
   role: import_openai3.ChatCompletionRequestMessageRoleEnum.System,
   content: `${IDENTITY} Your mission is to create clean and comprehensive commit messages as per the conventional commit convention and explain WHAT were the changes and mainly WHY the changes were done. I'll send you an output of 'git diff --staged' command, and you are to convert it into a commit message.
-    ${config5?.OCO_EMOJI ? "Use GitMoji convention to preface the commit." : "Do not preface the commit with anything."}
-    ${config5?.OCO_DESCRIPTION ? `Add a short description of WHY the changes are done after the commit message. Don't start it with "This commit", just describe the changes.` : "Don't add any descriptions to the commit, only commit message."}
+    ${config5?.GWZ_EMOJI ? "Use GitMoji convention to preface the commit." : "Do not preface the commit with anything."}
+    ${config5?.GWZ_DESCRIPTION ? `Add a short description of WHY the changes are done after the commit message. Don't start it with "This commit", just describe the changes.` : "Don't add any descriptions to the commit, only commit message."}
     Use the present tense. Lines must not be longer than 74 characters. Use ${language} for the commit message.`
 });
 var INIT_DIFF_PROMPT = {
@@ -28445,16 +28445,16 @@ var INIT_DIFF_PROMPT = {
 };
 var INIT_CONSISTENCY_PROMPT = (translation4) => ({
   role: import_openai3.ChatCompletionRequestMessageRoleEnum.Assistant,
-  content: `${config5?.OCO_EMOJI ? "\u{1F41B} " : ""}${translation4.commitFix}
-${config5?.OCO_EMOJI ? "\u2728 " : ""}${translation4.commitFeat}
-${config5?.OCO_DESCRIPTION ? translation4.commitDescription : ""}`
+  content: `${config5?.GWZ_EMOJI ? "\u{1F41B} " : ""}${translation4.commitFix}
+${config5?.GWZ_EMOJI ? "\u2728 " : ""}${translation4.commitFeat}
+${config5?.GWZ_DESCRIPTION ? translation4.commitDescription : ""}`
 });
 var getMainCommitPrompt = async () => {
-  switch (config5?.OCO_PROMPT_MODULE) {
+  switch (config5?.GWZ_PROMPT_MODULE) {
     case "@commitlint":
       if (!await commitlintLLMConfigExists()) {
         ie(
-          `OCO_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`
+          `GWZ_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`
         );
         await configureCommitlintIntegration();
       }
@@ -28512,7 +28512,7 @@ var generateCommitMessageByDiff = async (diff) => {
     const INIT_MESSAGES_PROMPT_LENGTH = INIT_MESSAGES_PROMPT.map(
       (msg) => tokenCount(msg.content) + 4
     ).reduce((a2, b2) => a2 + b2, 0);
-    const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config6?.OCO_OPENAI_MAX_TOKENS;
+    const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config6?.GWZ_OPENAI_MAX_TOKENS;
     if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
       const commitMessagePromises = await getCommitMsgsPromisesFromFileDiffs(
         diff,

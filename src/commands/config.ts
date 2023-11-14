@@ -14,15 +14,15 @@ import { getI18nLocal } from '../i18n';
 dotenv.config();
 
 export enum CONFIG_KEYS {
-  OCO_OPENAI_API_KEY = 'OCO_OPENAI_API_KEY',
-  OCO_OPENAI_MAX_TOKENS = 'OCO_OPENAI_MAX_TOKENS',
-  OCO_OPENAI_BASE_PATH = 'OCO_OPENAI_BASE_PATH',
-  OCO_DESCRIPTION = 'OCO_DESCRIPTION',
-  OCO_EMOJI = 'OCO_EMOJI',
-  OCO_MODEL = 'OCO_MODEL',
-  OCO_LANGUAGE = 'OCO_LANGUAGE',
-  OCO_MESSAGE_TEMPLATE_PLACEHOLDER = 'OCO_MESSAGE_TEMPLATE_PLACEHOLDER',
-  OCO_PROMPT_MODULE = 'OCO_PROMPT_MODULE'
+  GWZ_OPENAI_API_KEY = 'GWZ_OPENAI_API_KEY',
+  GWZ_OPENAI_MAX_TOKENS = 'GWZ_OPENAI_MAX_TOKENS',
+  GWZ_OPENAI_BASE_PATH = 'GWZ_OPENAI_BASE_PATH',
+  GWZ_DESCRIPTION = 'GWZ_DESCRIPTION',
+  GWZ_EMOJI = 'GWZ_EMOJI',
+  GWZ_MODEL = 'GWZ_MODEL',
+  GWZ_LANGUAGE = 'GWZ_LANGUAGE',
+  GWZ_MESSAGE_TEMPLATE_PLACEHOLDER = 'GWZ_MESSAGE_TEMPLATE_PLACEHOLDER',
+  GWZ_PROMPT_MODULE = 'GWZ_PROMPT_MODULE'
 }
 
 export const DEFAULT_MODEL_TOKEN_LIMIT = 4096;
@@ -47,25 +47,25 @@ const validateConfig = (
 };
 
 export const configValidators = {
-  [CONFIG_KEYS.OCO_OPENAI_API_KEY](value: any, config: any = {}) {
-    validateConfig(CONFIG_KEYS.OCO_OPENAI_API_KEY, value, 'Cannot be empty');
+  [CONFIG_KEYS.GWZ_OPENAI_API_KEY](value: any, config: any = {}) {
+    validateConfig(CONFIG_KEYS.GWZ_OPENAI_API_KEY, value, 'Cannot be empty');
     validateConfig(
-      CONFIG_KEYS.OCO_OPENAI_API_KEY,
+      CONFIG_KEYS.GWZ_OPENAI_API_KEY,
       value.startsWith('sk-'),
       'Must start with "sk-"'
     );
     validateConfig(
-      CONFIG_KEYS.OCO_OPENAI_API_KEY,
-      config[CONFIG_KEYS.OCO_OPENAI_BASE_PATH] || value.length === 51,
+      CONFIG_KEYS.GWZ_OPENAI_API_KEY,
+      config[CONFIG_KEYS.GWZ_OPENAI_BASE_PATH] || value.length === 51,
       'Must be 51 characters long'
     );
 
     return value;
   },
 
-  [CONFIG_KEYS.OCO_DESCRIPTION](value: any) {
+  [CONFIG_KEYS.GWZ_DESCRIPTION](value: any) {
     validateConfig(
-      CONFIG_KEYS.OCO_DESCRIPTION,
+      CONFIG_KEYS.GWZ_DESCRIPTION,
       typeof value === 'boolean',
       'Must be true or false'
     );
@@ -73,18 +73,18 @@ export const configValidators = {
     return value;
   },
 
-  [CONFIG_KEYS.OCO_OPENAI_MAX_TOKENS](value: any) {
+  [CONFIG_KEYS.GWZ_OPENAI_MAX_TOKENS](value: any) {
     // If the value is a string, convert it to a number.
     if (typeof value === 'string') {
       value = parseInt(value);
       validateConfig(
-        CONFIG_KEYS.OCO_OPENAI_MAX_TOKENS,
+        CONFIG_KEYS.GWZ_OPENAI_MAX_TOKENS,
         !isNaN(value),
         'Must be a number'
       );
     }
     validateConfig(
-      CONFIG_KEYS.OCO_OPENAI_MAX_TOKENS,
+      CONFIG_KEYS.GWZ_OPENAI_MAX_TOKENS,
       value ? typeof value === 'number' : undefined,
       'Must be a number'
     );
@@ -92,9 +92,9 @@ export const configValidators = {
     return value;
   },
 
-  [CONFIG_KEYS.OCO_EMOJI](value: any) {
+  [CONFIG_KEYS.GWZ_EMOJI](value: any) {
     validateConfig(
-      CONFIG_KEYS.OCO_EMOJI,
+      CONFIG_KEYS.GWZ_EMOJI,
       typeof value === 'boolean',
       'Must be true or false'
     );
@@ -102,27 +102,27 @@ export const configValidators = {
     return value;
   },
 
-  [CONFIG_KEYS.OCO_LANGUAGE](value: any) {
+  [CONFIG_KEYS.GWZ_LANGUAGE](value: any) {
     validateConfig(
-      CONFIG_KEYS.OCO_LANGUAGE,
+      CONFIG_KEYS.GWZ_LANGUAGE,
       getI18nLocal(value),
       `${value} is not supported yet`
     );
     return getI18nLocal(value);
   },
 
-  [CONFIG_KEYS.OCO_OPENAI_BASE_PATH](value: any) {
+  [CONFIG_KEYS.GWZ_OPENAI_BASE_PATH](value: any) {
     validateConfig(
-      CONFIG_KEYS.OCO_OPENAI_BASE_PATH,
+      CONFIG_KEYS.GWZ_OPENAI_BASE_PATH,
       typeof value === 'string',
       'Must be string'
     );
     return value;
   },
 
-  [CONFIG_KEYS.OCO_MODEL](value: any) {
+  [CONFIG_KEYS.GWZ_MODEL](value: any) {
     validateConfig(
-      CONFIG_KEYS.OCO_MODEL,
+      CONFIG_KEYS.GWZ_MODEL,
       [
         'gpt-3.5-turbo',
         'gpt-4',
@@ -133,18 +133,18 @@ export const configValidators = {
     );
     return value;
   },
-  [CONFIG_KEYS.OCO_MESSAGE_TEMPLATE_PLACEHOLDER](value: any) {
+  [CONFIG_KEYS.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER](value: any) {
     validateConfig(
-      CONFIG_KEYS.OCO_MESSAGE_TEMPLATE_PLACEHOLDER,
+      CONFIG_KEYS.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER,
       value.startsWith('$'),
       `${value} must start with $, for example: '$msg'`
     );
     return value;
   },
 
-  [CONFIG_KEYS.OCO_PROMPT_MODULE](value: any) {
+  [CONFIG_KEYS.GWZ_PROMPT_MODULE](value: any) {
     validateConfig(
-      CONFIG_KEYS.OCO_PROMPT_MODULE,
+      CONFIG_KEYS.GWZ_PROMPT_MODULE,
       ['conventional-commit', '@commitlint'].includes(value),
       `${value} is not supported yet, use '@commitlint' or 'conventional-commit' (default)`
     );
@@ -161,18 +161,18 @@ const configPath = pathJoin(homedir(), '.gitwz');
 
 export const getConfig = (): ConfigType | null => {
   const configFromEnv = {
-    OCO_OPENAI_API_KEY: process.env.OCO_OPENAI_API_KEY,
-    OCO_OPENAI_MAX_TOKENS: process.env.OCO_OPENAI_MAX_TOKENS
-      ? Number(process.env.OCO_OPENAI_MAX_TOKENS)
+    GWZ_OPENAI_API_KEY: process.env.GWZ_OPENAI_API_KEY,
+    GWZ_OPENAI_MAX_TOKENS: process.env.GWZ_OPENAI_MAX_TOKENS
+      ? Number(process.env.GWZ_OPENAI_MAX_TOKENS)
       : undefined,
-    OCO_OPENAI_BASE_PATH: process.env.OCO_OPENAI_BASE_PATH,
-    OCO_DESCRIPTION: process.env.OCO_DESCRIPTION === 'true' ? true : false,
-    OCO_EMOJI: process.env.OCO_EMOJI === 'true' ? true : false,
-    OCO_MODEL: process.env.OCO_MODEL || 'gpt-3.5-turbo-16k',
-    OCO_LANGUAGE: process.env.OCO_LANGUAGE || 'en',
-    OCO_MESSAGE_TEMPLATE_PLACEHOLDER:
-      process.env.OCO_MESSAGE_TEMPLATE_PLACEHOLDER || '$msg',
-    OCO_PROMPT_MODULE: process.env.OCO_PROMPT_MODULE || 'conventional-commit'
+    GWZ_OPENAI_BASE_PATH: process.env.GWZ_OPENAI_BASE_PATH,
+    GWZ_DESCRIPTION: process.env.GWZ_DESCRIPTION === 'true' ? true : false,
+    GWZ_EMOJI: process.env.GWZ_EMOJI === 'true' ? true : false,
+    GWZ_MODEL: process.env.GWZ_MODEL || 'gpt-4-1106-preview',
+    GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || 'en',
+    GWZ_MESSAGE_TEMPLATE_PLACEHOLDER:
+      process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || '$msg',
+    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || 'conventional-commit'
   };
 
   const configExists = existsSync(configPath);
@@ -199,7 +199,7 @@ export const getConfig = (): ConfigType | null => {
       config[configKey] = validValue;
     } catch (error) {
       outro(
-        `'${configKey}' name is invalid, it should be either 'OCO_${configKey.toUpperCase()}' or it doesn't exist.`
+        `'${configKey}' name is invalid, it should be either 'GWZ_${configKey.toUpperCase()}' or it doesn't exist.`
       );
       outro(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
       process.exit(1);

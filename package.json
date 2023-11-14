@@ -17,7 +17,7 @@
   "main": "cli.js",
   "bin": {
     "gitwz": "./out/cli.cjs",
-    "oco": "./out/cli.cjs"
+    "gwz": "./out/cli.cjs"
   },
   "repository": {
     "url": "https://github.com/SHSharkar/gitwz"

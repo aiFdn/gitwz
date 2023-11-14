@@ -48,7 +48,7 @@ export const generateCommitMessageByDiff = async (
       DEFAULT_MODEL_TOKEN_LIMIT -
       ADJUSTMENT_FACTOR -
       INIT_MESSAGES_PROMPT_LENGTH -
-      config?.OCO_OPENAI_MAX_TOKENS;
+      config?.GWZ_OPENAI_MAX_TOKENS;
 
     if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
       const commitMessagePromises = await getCommitMsgsPromisesFromFileDiffs(

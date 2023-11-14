@@ -32,7 +32,7 @@ const getGitRemotes = async () => {
 // Check for the presence of message templates
 const checkMessageTemplate = (extraArgs: string[]): string | false => {
   for (const key in extraArgs) {
-    if (extraArgs[key].includes(config?.OCO_MESSAGE_TEMPLATE_PLACEHOLDER))
+    if (extraArgs[key].includes(config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER))
       return extraArgs[key];
   }
   return false;
@@ -51,11 +51,11 @@ const generateCommitMessageFromGitDiff = async (
 
     const messageTemplate = checkMessageTemplate(extraArgs);
     if (
-      config?.OCO_MESSAGE_TEMPLATE_PLACEHOLDER &&
+      config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER &&
       typeof messageTemplate === 'string'
     ) {
       commitMessage = messageTemplate.replace(
-        config?.OCO_MESSAGE_TEMPLATE_PLACEHOLDER,
+        config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER,
         commitMessage
       );
     }
@@ -161,7 +161,7 @@ export async function commit(
 
     if (changedFiles) await gitAdd({ files: changedFiles });
     else {
-      outro('No changes detected, write some code and run `oco` again');
+      outro('No changes detected, write some code and run  `gwz` again');
       process.exit(1);
     }
   }

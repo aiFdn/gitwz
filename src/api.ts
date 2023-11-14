@@ -19,9 +19,9 @@ import { tokenCount } from './utils/tokenCount';
 
 const config = getConfig();
 
-let maxTokens = config?.OCO_OPENAI_MAX_TOKENS;
-let basePath = config?.OCO_OPENAI_BASE_PATH;
-let apiKey = config?.OCO_OPENAI_API_KEY;
+let maxTokens = config?.GWZ_OPENAI_MAX_TOKENS;
+let basePath = config?.GWZ_OPENAI_BASE_PATH;
+let apiKey = config?.GWZ_OPENAI_API_KEY;
 
 const [command, mode] = process.argv.slice(2);
 
@@ -29,14 +29,14 @@ if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
   intro('gitwz');
 
   outro(
-    'OCO_OPENAI_API_KEY is not set, please run `oco config set OCO_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`'
+    'GWZ_OPENAI_API_KEY is not set, please run `gwz config set GWZ_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`'
   );
   outro('For help look into README https://github.com/SHSharkar/gitwz#setup');
 
   process.exit(1);
 }
 
-const MODEL = config?.OCO_MODEL || 'gpt-3.5-turbo';
+const MODEL = config?.GWZ_MODEL || 'gpt-3.5-turbo';
 
 class OpenAi {
   private openAiApiConfiguration = new OpenAiApiConfiguration({
