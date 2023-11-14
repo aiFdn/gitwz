@@ -21546,10 +21546,10 @@ var configValidators = {
       [
         "gpt-3.5-turbo",
         "gpt-4",
-        "gpt-3.5-turbo-16k",
+        "gpt-4-1106-preview",
         "gpt-3.5-turbo-0613"
       ].includes(value),
-      `${value} is not supported yet, use 'gpt-4', 'gpt-3.5-turbo-16k' (default), 'gpt-3.5-turbo-0613' or 'gpt-3.5-turbo'`
+      `${value} is not supported yet, use 'gpt-4', 'gpt-4-1106-preview' (default), 'gpt-3.5-turbo-0613' or 'gpt-3.5-turbo'`
     );
     return value;
   },
@@ -21578,7 +21578,7 @@ var getConfig = () => {
     GWZ_OPENAI_BASE_PATH: process.env.GWZ_OPENAI_BASE_PATH,
     GWZ_DESCRIPTION: process.env.GWZ_DESCRIPTION === "true" ? true : false,
     GWZ_EMOJI: process.env.GWZ_EMOJI === "true" ? true : false,
-    GWZ_MODEL: process.env.GWZ_MODEL || "gpt-3.5-turbo-16k",
+    GWZ_MODEL: process.env.GWZ_MODEL || "gpt-4-1106-preview",
     GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || "en",
     GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
     GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit"

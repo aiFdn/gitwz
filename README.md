@@ -68,7 +68,7 @@ GWZ_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
 GWZ_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI api>
 GWZ_DESCRIPTION=<postface a message with ~3 sentences description of the changes>
 GWZ_EMOJI=<boolean, add GitMoji>
-GWZ_MODEL=<either 'gpt-4', 'gpt-3.5-turbo-16k' (default), 'gpt-3.5-turbo-0613' or 'gpt-3.5-turbo'>
+GWZ_MODEL=<either 'gpt-4', 'gpt-4-1106-preview' (default), 'gpt-3.5-turbo-0613' or 'gpt-3.5-turbo'>
 GWZ_LANGUAGE=<locale, scroll to the bottom to see options>
 GWZ_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
 GWZ_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
@@ -98,7 +98,7 @@ gwz config set GWZ_EMOJI=false
 
 ### Switch to GPT-4 or other models
 
-By default, GitWiz uses `gpt-3.5-turbo-16k` model.
+By default, GitWiz uses `gpt-4-1106-preview` model.
 
 You may switch to GPT-4 which performs better, but costs ~x15 times more 🤠
 
@@ -320,7 +320,7 @@ jobs:
           GWZ_OPENAI_BASE_PATH: ''
           GWZ_DESCRIPTION: false
           GWZ_EMOJI: false
-          GWZ_MODEL: gpt-3.5-turbo-16k
+          GWZ_MODEL: gpt-4-1106-preview
           GWZ_LANGUAGE: en
           GWZ_PROMPT_MODULE: conventional-commit
 ```
