@@ -21692,7 +21692,7 @@ if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   );
   process.exit(1);
 }
-var MODEL = config2?.GWZ_MODEL || "gpt-3.5-turbo";
+var MODEL = config2?.GWZ_MODEL || "gpt-4-1106-preview";
 var OpenAi = class {
   openAiApiConfiguration = new import_openai.Configuration({
     apiKey
