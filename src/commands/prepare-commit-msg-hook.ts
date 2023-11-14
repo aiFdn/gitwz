@@ -35,13 +35,13 @@ export const prepareCommitMessageHook = async (
 
     if (!staged) return;
 
-    intro('opencommit');
+    intro('gitwz');
 
     const config = getConfig();
 
     if (!config?.OCO_OPENAI_API_KEY) {
       throw new Error(
-        'No OPEN_AI_API exists. Set your OPEN_AI_API=<key> in ~/.opencommit'
+        'No OPEN_AI_API exists. Set your OPEN_AI_API=<key> in ~/.gitwz'
       );
     }
 

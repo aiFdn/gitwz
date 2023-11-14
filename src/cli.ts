@@ -15,7 +15,7 @@ const extraArgs = process.argv.slice(2);
 cli(
   {
     version: packageJSON.version,
-    name: 'opencommit',
+    name: 'gitwz',
     commands: [configCommand, hookCommand, commitlintConfigCommand],
     flags: {},
     ignoreArgv: (type) => type === 'unknown-flag' || type === 'argument',

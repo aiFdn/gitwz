@@ -1,52 +1,52 @@
 <div align="center">
   <div>
-    <img src=".github/logo-grad.svg" alt="OpenCommit logo"/>
-    <h1 align="center">OpenCommit</h1>
+    <img src=".github/logo-grad.svg" alt="GitWiz logo"/>
+    <h1 align="center">GitWiz</h1>
     <h4 align="center">Follow the bird <a href="https://twitter.com/io_Y_oi"><img src="https://img.shields.io/twitter/follow/io_Y_oi?style=flat&label=io_Y_oi&logo=twitter&color=0bf&logoColor=fff" align="center"></a>
   </div>
 	<h2>Auto-generate meaningful commits in 1 second</h2>
 	<p>Killing lame commits with AI 🤯🔫</p>
-	<a href="https://www.npmjs.com/package/opencommit"><img src="https://img.shields.io/npm/v/opencommit" alt="Current version"></a>
+	<a href="https://www.npmjs.com/package/gitwz"><img src="https://img.shields.io/npm/v/gitwz" alt="Current version"></a>
   <h4 align="center"><a href="https://twitter.com/io_Y_oi/status/1683448136973582336">🪩 Winner of GitHub 2023 HACKATHON 🪩</a></h4>
 </div>
 
 ---
 
 <div align="center">
-    <img src=".github/opencommit-example.png" alt="OpenCommit example"/>
+    <img src=".github/gitwz-example.png" alt="GitWiz example"/>
 </div>
 
-All the commits in this repo are authored by OpenCommit — look at [the commits](https://github.com/di-sukharev/opencommit/commit/eae7618d575ee8d2e9fff5de56da79d40c4bc5fc) to see how OpenCommit works. Emojis and long commit descriptions are configurable.
+All the commits in this repo are authored by GitWiz — look at [the commits](https://github.com/SHSharkar/gitwz/commit/eae7618d575ee8d2e9fff5de56da79d40c4bc5fc) to see how GitWiz works. Emojis and long commit descriptions are configurable.
 
-## Setup OpenCommit as a CLI tool
+## Setup GitWiz as a CLI tool
 
-You can use OpenCommit by simply running it via the CLI like this `oco`. 2 seconds and your staged changes are committed with a meaningful message.
+You can use GitWiz by simply running it via the CLI like this `oco`. 2 seconds and your staged changes are committed with a meaningful message.
 
-1. Install OpenCommit globally to use in any repository:
+1. Install GitWiz globally to use in any repository:
 
    ```sh
-   npm install -g opencommit
+   npm install -g gitwz
    ```
 
    MacOS may ask to run the command with `sudo` when installing a package globally.
 
 2. Get your API key from [OpenAI](https://platform.openai.com/account/api-keys). Make sure that you add your payment details, so the API works.
 
-3. Set the key to OpenCommit config:
+3. Set the key to GitWiz config:
 
    ```sh
    oco config set OCO_OPENAI_API_KEY=<your_api_key>
    ```
 
-   Your API key is stored locally in the `~/.opencommit` config file.
+   Your API key is stored locally in the `~/.gitwz` config file.
 
 ## Usage
 
-You can call OpenCommit directly to generate a commit message for your staged changes:
+You can call GitWiz directly to generate a commit message for your staged changes:
 
 ```sh
 git add <files...>
-opencommit
+gitwz
 ```
 
 You can also use the `oco` shortcut:
@@ -60,7 +60,7 @@ oco
 
 ### Local per repo configuration
 
-Create a `.env` file and add OpenCommit config variables there like this:
+Create a `.env` file and add GitWiz config variables there like this:
 
 ```env
 OCO_OPENAI_API_KEY=<your OpenAI API token>
@@ -98,7 +98,7 @@ oco config set OCO_EMOJI=false
 
 ### Switch to GPT-4 or other models
 
-By default, OpenCommit uses `gpt-3.5-turbo-16k` model.
+By default, GitWiz uses `gpt-3.5-turbo-16k` model.
 
 You may switch to GPT-4 which performs better, but costs ~x15 times more 🤠
 
@@ -131,11 +131,11 @@ oco config set OCO_LANGUAGE=française
 ```
 
 The default language setting is **English**
-All available languages are currently listed in the [i18n](https://github.com/di-sukharev/opencommit/tree/master/src/i18n) folder
+All available languages are currently listed in the [i18n](https://github.com/SHSharkar/gitwz/tree/master/src/i18n) folder
 
 ### Switch to `@commitlint`
 
-OpenCommit allows you to choose the prompt module used to generate commit messages. By default, OpenCommit uses its conventional-commit message generator. However, you can switch to using the `@commitlint` prompt module if you prefer. This option lets you generate commit messages in respect with the local config.
+GitWiz allows you to choose the prompt module used to generate commit messages. By default, GitWiz uses its conventional-commit message generator. However, you can switch to using the `@commitlint` prompt module if you prefer. This option lets you generate commit messages in respect with the local config.
 
 You can set this option by running the following command:
 
@@ -161,7 +161,7 @@ oco config set OCO_PROMPT_MODULE=conventional-commit
 
 #### Integrating with `@commitlint`
 
-The integration between `@commitlint` and OpenCommit is done automatically the first time OpenCommit is run with `OCO_PROMPT_MODULE` set to `@commitlint`. However, if you need to force set or reset the configuration for `@commitlint`, you can run the following command:
+The integration between `@commitlint` and GitWiz is done automatically the first time GitWiz is run with `OCO_PROMPT_MODULE` set to `@commitlint`. However, if you need to force set or reset the configuration for `@commitlint`, you can run the following command:
 
 ```sh
 oco commitlint force
@@ -175,15 +175,15 @@ oco commitlint get
 
 This allows you to ensure that the configuration is set up as desired.
 
-Additionally, the integration creates a file named `.opencommit-commitlint` which contains the prompts used for the local `@commitlint` configuration. You can modify this file to fine-tune the example commit message generated by OpenAI. This gives you the flexibility to make adjustments based on your preferences or project guidelines.
+Additionally, the integration creates a file named `.gitwz-commitlint` which contains the prompts used for the local `@commitlint` configuration. You can modify this file to fine-tune the example commit message generated by OpenAI. This gives you the flexibility to make adjustments based on your preferences or project guidelines.
 
-OpenCommit generates a file named `.opencommit-commitlint` in your project directory which contains the prompts used for the local `@commitlint` configuration. You can modify this file to fine-tune the example commit message generated by OpenAI. If the local `@commitlint` configuration changes, this file will be updated the next time OpenCommit is run.
+GitWiz generates a file named `.gitwz-commitlint` in your project directory which contains the prompts used for the local `@commitlint` configuration. You can modify this file to fine-tune the example commit message generated by OpenAI. If the local `@commitlint` configuration changes, this file will be updated the next time GitWiz is run.
 
 This offers you greater control over the generated commit messages, allowing for customization that aligns with your project's conventions.
 
 ## Git flags
 
-The `opencommit` or `oco` commands can be used in place of the `git commit -m "${generatedMessage}"` command. This means that any regular flags that are used with the `git commit` command will also be applied when using `opencommit` or `oco`.
+The `gitwz` or `oco` commands can be used in place of the `git commit -m "${generatedMessage}"` command. This means that any regular flags that are used with the `git commit` command will also be applied when using `gitwz` or `oco`.
 
 ```sh
 oco --no-verify
@@ -201,13 +201,13 @@ To include a message in the generated message, you can utilize the template func
 oco '#205: $msg’
 ```
 
-> opencommit examines placeholders in the parameters, allowing you to append additional information before and after the placeholders, such as the relevant Issue or Pull Request. Similarly, you have the option to customize the OCO_MESSAGE_TEMPLATE_PLACEHOLDER configuration item, for example, simplifying it to $m!"
+> gitwz examines placeholders in the parameters, allowing you to append additional information before and after the placeholders, such as the relevant Issue or Pull Request. Similarly, you have the option to customize the OCO_MESSAGE_TEMPLATE_PLACEHOLDER configuration item, for example, simplifying it to $m!"
 
 ### Message Template Placeholder Config
 
 #### Overview
 
-The `OCO_MESSAGE_TEMPLATE_PLACEHOLDER` feature in the `opencommit` tool allows users to embed a custom message within the generated commit message using a template function. This configuration is designed to enhance the flexibility and customizability of commit messages, making it easier for users to include relevant information directly within their commits.
+The `OCO_MESSAGE_TEMPLATE_PLACEHOLDER` feature in the `gitwz` tool allows users to embed a custom message within the generated commit message using a template function. This configuration is designed to enhance the flexibility and customizability of commit messages, making it easier for users to include relevant information directly within their commits.
 
 #### Implementation Details
 
@@ -232,20 +232,20 @@ Once users have generated their desired commit message, they can proceed to comm
 
 ### Ignore files
 
-You can remove files from being sent to OpenAI by creating a `.opencommitignore` file. For example:
+You can remove files from being sent to OpenAI by creating a `.gitwzignore` file. For example:
 
 ```ignorelang
 path/to/large-asset.zip
 **/*.jpg
 ```
 
-This helps prevent opencommit from uploading artifacts and large files.
+This helps prevent gitwz from uploading artifacts and large files.
 
-By default, opencommit ignores files matching: `*-lock.*` and `*.lock`
+By default, gitwz ignores files matching: `*-lock.*` and `*.lock`
 
 ## Git hook (KILLER FEATURE)
 
-You can set OpenCommit as Git [`prepare-commit-msg`](https://git-scm.com/docs/githooks#_prepare_commit_msg) hook. Hook integrates with your IDE Source Control and allows you to edit the message before committing.
+You can set GitWiz as Git [`prepare-commit-msg`](https://git-scm.com/docs/githooks#_prepare_commit_msg) hook. Hook integrates with your IDE Source Control and allows you to edit the message before committing.
 
 To set the hook:
 
@@ -266,18 +266,18 @@ git add <files...>
 git commit
 ```
 
-Or follow the process of your IDE Source Control feature, when it calls `git commit` command — OpenCommit will integrate into the flow.
+Or follow the process of your IDE Source Control feature, when it calls `git commit` command — GitWiz will integrate into the flow.
 
-## Setup OpenCommit as a GitHub Action (BETA) 🔥
+## Setup GitWiz as a GitHub Action (BETA) 🔥
 
-OpenCommit is now available as a GitHub Action which automatically improves all new commits messages when you push to remote!
+GitWiz is now available as a GitHub Action which automatically improves all new commits messages when you push to remote!
 
 This is great if you want to make sure all of the commits in all of your repository branches are meaningful and not lame like `fix1` or `done2`.
 
-Create a file `.github/workflows/opencommit.yml` with the contents below:
+Create a file `.github/workflows/gitwz.yml` with the contents below:
 
 ```yml
-name: 'OpenCommit Action'
+name: 'GitWiz Action'
 
 on:
   push:
@@ -286,9 +286,9 @@ on:
     branches-ignore: [main master dev development release]
 
 jobs:
-  opencommit:
+  gitwz:
     timeout-minutes: 10
-    name: OpenCommit
+    name: GitWiz
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -299,7 +299,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: di-sukharev/opencommit@github-action-v1.0.4
+      - uses: SHSharkar/gitwz@github-action-v1.0.4
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -321,7 +321,7 @@ jobs:
 
 That is it. Now when you push to any branch in your repo — all NEW commits are being improved by your never-tired AI.
 
-Make sure you exclude public collaboration branches (`main`, `dev`, `etc`) in `branches-ignore`, so OpenCommit does not rebase commits there while improving the messages.
+Make sure you exclude public collaboration branches (`main`, `dev`, `etc`) in `branches-ignore`, so GitWiz does not rebase commits there while improving the messages.
 
 Interactive rebase (`rebase -i`) changes commits' SHA, so the commit history in remote becomes different from your local branch history. This is okay if you work on the branch alone, but may be inconvenient for other collaborators.
 
@@ -329,8 +329,8 @@ Interactive rebase (`rebase -i`) changes commits' SHA, so the commit history in 
 
 You pay for your requests to OpenAI API on your own.
 
-OpenCommit stores your key locally.
+GitWiz stores your key locally.
 
-OpenCommit by default uses 3.5-turbo-16k model, it should not exceed $0.10 per casual working day.
+GitWiz by default uses 3.5-turbo-16k model, it should not exceed $0.10 per casual working day.
 
 You may switch to gpt-4, it's better, but more expensive.

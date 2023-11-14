@@ -1,5 +1,5 @@
 {
-  "name": "opencommit",
+  "name": "gitwz",
   "version": "3.0.4",
   "description": "Auto-generate impressive commits in 1 second. Killing lame commits with AI 🤯🔫",
   "keywords": [
@@ -8,7 +8,7 @@
     "gpt",
     "ai",
     "openai",
-    "opencommit",
+    "gitwz",
     "aicommit",
     "aicommits",
     "gptcommit",
@@ -16,14 +16,14 @@
   ],
   "main": "cli.js",
   "bin": {
-    "opencommit": "./out/cli.cjs",
+    "gitwz": "./out/cli.cjs",
     "oco": "./out/cli.cjs"
   },
   "repository": {
-    "url": "https://github.com/di-sukharev/opencommit"
+    "url": "https://github.com/SHSharkar/gitwz"
   },
   "type": "module",
-  "author": "https://github.com/di-sukharev",
+  "author": "https://github.com/SHSharkar",
   "license": "MIT",
   "files": [
     "out/cli.cjs",
@@ -31,7 +31,7 @@
   ],
   "release": {
     "branches": [
-      "master"
+      "main"
     ]
   },
   "publishConfig": {
@@ -77,6 +77,6 @@
     "ignore": "^5.2.4",
     "ini": "^3.0.1",
     "inquirer": "^9.1.4",
-    "openai": "^3.2.1"
+    "openai": "^4.17.5"
   }
 }

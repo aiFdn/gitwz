@@ -27992,7 +27992,7 @@ var configValidators = {
     return value;
   }
 };
-var configPath = (0, import_path.join)((0, import_os.homedir)(), ".opencommit");
+var configPath = (0, import_path.join)((0, import_os.homedir)(), ".gitwz");
 var getConfig = () => {
   const configFromEnv = {
     OCO_OPENAI_API_KEY: process.env.OCO_OPENAI_API_KEY,
@@ -28027,7 +28027,7 @@ var getConfig = () => {
         `'${configKey}' name is invalid, it should be either 'OCO_${configKey.toUpperCase()}' or it doesn't exist.`
       );
       ce(
-        `Manually fix the '.env' file or global '~/.opencommit' config file.`
+        `Manually fix the '.env' file or global '~/.gitwz' config file.`
       );
       process.exit(1);
     }
@@ -28058,7 +28058,7 @@ var configCommand = G3(
     parameters: ["<mode>", "<key=values...>"]
   },
   async (argv) => {
-    ae("opencommit \u2014 config");
+    ae("gitwz \u2014 config");
     try {
       const { mode: mode2, keyValues } = argv._;
       if (mode2 === "get" /* get */) {
@@ -28105,12 +28105,12 @@ var basePath = config2?.OCO_OPENAI_BASE_PATH;
 var apiKey = config2?.OCO_OPENAI_API_KEY;
 var [command, mode] = process.argv.slice(2);
 if (!apiKey && command !== "config" && mode !== "set" /* set */) {
-  ae("opencommit");
+  ae("gitwz");
   ce(
     "OCO_OPENAI_API_KEY is not set, please run `oco config set OCO_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`"
   );
   ce(
-    "For help look into README https://github.com/di-sukharev/opencommit#setup"
+    "For help look into README https://github.com/SHSharkar/gitwz#setup"
   );
   process.exit(1);
 }
@@ -28151,7 +28151,7 @@ var OpenAi = class {
         if (openAiError?.message)
           ce(openAiError.message);
         ce(
-          "For help look into README https://github.com/di-sukharev/opencommit#setup"
+          "For help look into README https://github.com/SHSharkar/gitwz#setup"
         );
       }
       throw err;
@@ -28164,7 +28164,7 @@ var api = new OpenAi();
 var import_openai3 = __toESM(require_dist2(), 1);
 
 // src/modules/commitlint/constants.ts
-var COMMITLINT_LLM_CONFIG_PATH = `${process.env.PWD}/.opencommit-commitlint`;
+var COMMITLINT_LLM_CONFIG_PATH = `${process.env.PWD}/.gitwz-commitlint`;
 
 // src/modules/commitlint/crypto.ts
 var import_crypto = __toESM(require("crypto"), 1);
@@ -28738,7 +28738,7 @@ async function improveCommitMessages(commitsToImprove) {
   ce("Done \u{1F9D9}");
 }
 async function run() {
-  ae("OpenCommit \u2014 improving lame commit messages");
+  ae("GitWiz \u2014 improving lame commit messages");
   try {
     if (import_github.default.context.eventName === "push") {
       ce(`Processing commits in a Push event`);
@@ -28753,7 +28753,7 @@ async function run() {
     } else {
       ce("Wrong action.");
       import_core3.default.error(
-        `OpenCommit was called on ${import_github.default.context.payload.action}. OpenCommit is supposed to be used on "push" action.`
+        `GitWiz was called on ${import_github.default.context.payload.action}. GitWiz is supposed to be used on "push" action.`
       );
     }
   } catch (error) {

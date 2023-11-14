@@ -23,7 +23,7 @@ export const configureCommitlintIntegration = async (force = false) => {
 
   // debug complete @commitlint configuration
   // await fs.writeFile(
-  //   `${OPENCOMMIT_COMMITLINT_CONFIG}-commitlint-debug`,
+  //   `${GITWZ_COMMITLINT_CONFIG}-commitlint-debug`,
   //   JSON.stringify(commitLintConfig, null, 2)
   // );
 

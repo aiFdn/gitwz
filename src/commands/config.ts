@@ -157,7 +157,7 @@ export type ConfigType = {
   [key in CONFIG_KEYS]?: any;
 };
 
-const configPath = pathJoin(homedir(), '.opencommit');
+const configPath = pathJoin(homedir(), '.gitwz');
 
 export const getConfig = (): ConfigType | null => {
   const configFromEnv = {
@@ -201,9 +201,7 @@ export const getConfig = (): ConfigType | null => {
       outro(
         `'${configKey}' name is invalid, it should be either 'OCO_${configKey.toUpperCase()}' or it doesn't exist.`
       );
-      outro(
-        `Manually fix the '.env' file or global '~/.opencommit' config file.`
-      );
+      outro(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
       process.exit(1);
     }
   }
@@ -243,7 +241,7 @@ export const configCommand = command(
     parameters: ['<mode>', '<key=values...>']
   },
   async (argv) => {
-    intro('opencommit — config');
+    intro('gitwz — config');
     try {
       const { mode, keyValues } = argv._;
 

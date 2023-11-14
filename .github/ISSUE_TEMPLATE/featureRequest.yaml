@@ -1,18 +1,18 @@
 ---
 name: 🛠️ Feature Request
-description: Suggest an idea to help us improve Opencommit
-title: "[Feature]: "
+description: Suggest an idea to help us improve GitWiz
+title: '[Feature]: '
 labels:
-  - "feature_request"
+  - 'feature_request'
 
 body:
   - type: markdown
     attributes:
       value: |
         **Thanks :heart: for taking the time to fill out this feature request report!**
-        We kindly ask that you search to see if an issue [already exists](https://github.com/di-sukharev/opencommit/issues?q=is%3Aissue+sort%3Acreated-desc+) for your feature.
+        We kindly ask that you search to see if an issue [already exists](https://github.com/SHSharkar/gitwz/issues?q=is%3Aissue+sort%3Acreated-desc+) for your feature.
 
-        We are also happy to accept contributions from our users. For more details see [here](https://github.com/di-sukharev/opencommit/blob/master/.github/CONTRIBUTING.md).
+        We are also happy to accept contributions from our users. For more details see [here](https://github.com/SHSharkar/gitwz/blob/master/.github/CONTRIBUTING.md).
 
   - type: textarea
     attributes:

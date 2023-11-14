@@ -18,7 +18,7 @@ export const commitlintConfigCommand = command(
     parameters: ['<mode>']
   },
   async (argv) => {
-    intro('opencommit — configure @commitlint');
+    intro('gitwz — configure @commitlint');
     try {
       const { mode } = argv._;
 

@@ -26,14 +26,12 @@ let apiKey = config?.OCO_OPENAI_API_KEY;
 const [command, mode] = process.argv.slice(2);
 
 if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
-  intro('opencommit');
+  intro('gitwz');
 
   outro(
     'OCO_OPENAI_API_KEY is not set, please run `oco config set OCO_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`'
   );
-  outro(
-    'For help look into README https://github.com/di-sukharev/opencommit#setup'
-  );
+  outro('For help look into README https://github.com/SHSharkar/gitwz#setup');
 
   process.exit(1);
 }
@@ -91,7 +89,7 @@ class OpenAi {
 
         if (openAiError?.message) outro(openAiError.message);
         outro(
-          'For help look into README https://github.com/di-sukharev/opencommit#setup'
+          'For help look into README https://github.com/SHSharkar/gitwz#setup'
         );
       }
 
@@ -100,14 +98,12 @@ class OpenAi {
   };
 }
 
-export const getOpenCommitLatestVersion = async (): Promise<
-  string | undefined
-> => {
+export const getGitWizLatestVersion = async (): Promise<string | undefined> => {
   try {
-    const { stdout } = await execa('npm', ['view', 'opencommit', 'version']);
+    const { stdout } = await execa('npm', ['view', 'gitwz', 'version']);
     return stdout;
   } catch (_) {
-    outro('Error while getting the latest version of opencommit');
+    outro('Error while getting the latest version of gitwz');
     return undefined;
   }
 };

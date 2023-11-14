@@ -193,7 +193,7 @@ async function improveCommitMessages(
 }
 
 async function run() {
-  intro('OpenCommit — improving lame commit messages');
+  intro('GitWiz — improving lame commit messages');
 
   try {
     if (github.context.eventName === 'push') {
@@ -216,7 +216,7 @@ async function run() {
     } else {
       outro('Wrong action.');
       core.error(
-        `OpenCommit was called on ${github.context.payload.action}. OpenCommit is supposed to be used on "push" action.`
+        `GitWiz was called on ${github.context.payload.action}. GitWiz is supposed to be used on "push" action.`
       );
     }
   } catch (error: any) {

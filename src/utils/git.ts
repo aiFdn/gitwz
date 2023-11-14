@@ -16,11 +16,11 @@ export const assertGitRepo = async () => {
 //   (file) => `:(exclude)${file}`
 // );
 
-export const getOpenCommitIgnore = (): Ignore => {
+export const getGitWizIgnore = (): Ignore => {
   const ig = ignore();
 
   try {
-    ig.add(readFileSync('.opencommitignore').toString().split('\n'));
+    ig.add(readFileSync('.gitwzignore').toString().split('\n'));
   } catch (e) {}
 
   return ig;
@@ -50,7 +50,7 @@ export const getStagedFiles = async (): Promise<string[]> => {
 
   const filesList = files.split('\n');
 
-  const ig = getOpenCommitIgnore();
+  const ig = getGitWizIgnore();
   const allowedFiles = filesList.filter((file) => !ig.ignores(file));
 
   if (!allowedFiles) return [];

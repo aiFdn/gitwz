@@ -1,4 +1,4 @@
-# @commitlint Module for opencommit
+# @commitlint Module for gitwz
 
 1. Load commitlint configuration within tree.
 2. Generate a commit with commitlint prompt:
