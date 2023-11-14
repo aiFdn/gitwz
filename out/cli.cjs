@@ -22409,7 +22409,7 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
     ce(source_default.red("No changes detected"));
     process.exit(1);
   }
-  ae("open-commit");
+  ae("gitwz");
   if (errorChangedFiles ?? errorStagedFiles) {
     ce(`${source_default.red("\u2716")} ${errorChangedFiles ?? errorStagedFiles}`);
     process.exit(1);
