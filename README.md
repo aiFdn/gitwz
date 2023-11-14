@@ -1,23 +1,3 @@
-<div align="center">
-  <div>
-    <img src=".github/logo-grad.svg" alt="GitWiz logo"/>
-    <h1 align="center">GitWiz</h1>
-    <h4 align="center">Follow the bird <a href="https://twitter.com/io_Y_oi"><img src="https://img.shields.io/twitter/follow/io_Y_oi?style=flat&label=io_Y_oi&logo=twitter&color=0bf&logoColor=fff" align="center"></a>
-  </div>
-	<h2>Auto-generate meaningful commits in 1 second</h2>
-	<p>Killing lame commits with AI 🤯🔫</p>
-	<a href="https://www.npmjs.com/package/gitwz"><img src="https://img.shields.io/npm/v/gitwz" alt="Current version"></a>
-  <h4 align="center"><a href="https://twitter.com/io_Y_oi/status/1683448136973582336">🪩 Winner of GitHub 2023 HACKATHON 🪩</a></h4>
-</div>
-
----
-
-<div align="center">
-    <img src=".github/gitwz-example.png" alt="GitWiz example"/>
-</div>
-
-All the commits in this repo are authored by GitWiz — look at [the commits](https://github.com/SHSharkar/gitwz/commit/eae7618d575ee8d2e9fff5de56da79d40c4bc5fc) to see how GitWiz works. Emojis and long commit descriptions are configurable.
-
 ## Setup GitWiz as a CLI tool
 
 You can use GitWiz by simply running it via the CLI like this `gwz`. 2 seconds and your staged changes are committed with a meaningful message.
