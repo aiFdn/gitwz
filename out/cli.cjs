@@ -16384,8 +16384,8 @@ function G3(t, e2) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "3.0.4",
-  description: "Auto-generate impressive commits in 1 second. Killing lame commits with AI \u{1F92F}\u{1F52B}",
+  version: "4.0.4",
+  description: "Use AI to convert boring git commits into impressive ones in seconds!",
   keywords: [
     "git",
     "chatgpt",
