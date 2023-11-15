@@ -28004,7 +28004,7 @@ var getConfig = () => {
     GWZ_OPENAI_BASE_PATH: process.env.GWZ_OPENAI_BASE_PATH,
     GWZ_DESCRIPTION: process.env.GWZ_DESCRIPTION === "true" ? true : false,
     GWZ_EMOJI: process.env.GWZ_EMOJI === "true" ? true : false,
-    GWZ_MODEL: process.env.GWZ_MODEL || "gpt-4-1106-preview",
+    GWZ_MODEL: process.env.GWZ_MODEL || "gpt-3.5-turbo-1106",
     GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || "en",
     GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
     GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit"
@@ -28118,7 +28118,7 @@ if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   );
   process.exit(1);
 }
-var MODEL = config2?.GWZ_MODEL || "gpt-4-1106-preview";
+var MODEL = config2?.GWZ_MODEL || "gpt-3.5-turbo-1106";
 var OpenAi = class {
   openAiApiConfiguration = new import_openai.Configuration({
     apiKey

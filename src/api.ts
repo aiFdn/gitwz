@@ -36,7 +36,7 @@ if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
   process.exit(1);
 }
 
-const MODEL = config?.GWZ_MODEL || 'gpt-4-1106-preview';
+const MODEL = config?.GWZ_MODEL || 'gpt-3.5-turbo-1106';
 
 class OpenAi {
   private openAiApiConfiguration = new OpenAiApiConfiguration({
