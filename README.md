@@ -375,10 +375,10 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
        permissions: write-all
        steps:
          - name: Setup Node.js Environment
-           uses: actions/setup-node@v2
+           uses: actions/setup-node@v4
            with:
-             node-version: '16'
-         - uses: actions/checkout@v3
+             node-version: '18'
+         - uses: actions/checkout@v4
            with:
              fetch-depth: 0
          - uses: SHSharkar/gitwz@github-action-v1.0.4
