@@ -55842,11 +55842,10 @@ async function improveMessagesInChunks(diffsAndSHAs) {
 }
 var getDiffsBySHAs = async (SHAs) => {
   const diffPromises = SHAs.map((sha) => getCommitDiff(sha));
-  const diffs = await Promise.all(diffPromises).catch((error) => {
+  return await Promise.all(diffPromises).catch((error) => {
     $e(`Error in Promise.all(getCommitDiffs(SHAs)): ${error}.`);
     throw error;
   });
-  return diffs;
 };
 async function improveCommitMessages(commitsToImprove) {
   if (commitsToImprove.length) {
@@ -55861,10 +55860,7 @@ async function improveCommitMessages(commitsToImprove) {
   $e("Done.");
   const improvedMessagesWithSHAs = await improveMessagesInChunks(diffsWithSHAs);
   console.log(`Improved ${improvedMessagesWithSHAs.length} commits: `, improvedMessagesWithSHAs);
-  const messagesChanged = improvedMessagesWithSHAs.some(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ({ sha, msg }, index) => msg !== commitsToImprove[index].message
-  );
+  const messagesChanged = improvedMessagesWithSHAs.some(({ msg }, index) => msg !== commitsToImprove[index].message);
   if (!messagesChanged) {
     console.log("No changes in commit messages detected, skipping rebase");
     return;
@@ -55916,11 +55912,17 @@ async function run() {
       );
     }
   } catch (error) {
-    const err = error?.message || error;
-    import_core20.default.setFailed(err);
+    if (error instanceof Error) {
+      import_core20.default.setFailed(error.message);
+    } else {
+      import_core20.default.setFailed(String(error) || "An unknown error occurred");
+    }
   }
 }
-run();
+run().catch((error) => {
+  console.error("An error occurred:", error);
+  import_core20.default.setFailed(error instanceof Error ? error.message : "An unknown error occurred");
+});
 /*! Bundled license information:
 
 undici/lib/fetch/body.js:

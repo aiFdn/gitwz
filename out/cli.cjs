@@ -34168,9 +34168,9 @@ Z2(
   async () => {
     await checkIsLatestVersion();
     if (await isHookCalled()) {
-      prepareCommitMessageHook();
+      await prepareCommitMessageHook();
     } else {
-      commit(extraArgs);
+      await commit(extraArgs);
     }
   },
   extraArgs

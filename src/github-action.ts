@@ -68,7 +68,7 @@ async function improveMessagesInChunks(diffsAndSHAs: DiffAndSHA[]) {
             improvedMessagesAndSHAs.push(...chunkOfImprovedMessagesBySha);
 
             // sometimes openAI errors with 429 code (too many requests),
-            // so lets sleep a bit
+            // so let's sleep a bit
             const sleepFor = 1000 * randomIntFromInterval(1, 5) + 100 * randomIntFromInterval(1, 5);
 
             outro(`Improved ${chunkOfPromises.length} messages. Sleeping for ${sleepFor}`);
@@ -94,12 +94,10 @@ async function improveMessagesInChunks(diffsAndSHAs: DiffAndSHA[]) {
 const getDiffsBySHAs = async (SHAs: string[]) => {
     const diffPromises = SHAs.map((sha) => getCommitDiff(sha));
 
-    const diffs = await Promise.all(diffPromises).catch((error) => {
+    return await Promise.all(diffPromises).catch((error) => {
         outro(`Error in Promise.all(getCommitDiffs(SHAs)): ${error}.`);
         throw error;
     });
-
-    return diffs;
 };
 
 async function improveCommitMessages(commitsToImprove: { id: string; message: string }[]): Promise<void> {
@@ -121,10 +119,7 @@ async function improveCommitMessages(commitsToImprove: { id: string; message: st
     console.log(`Improved ${improvedMessagesWithSHAs.length} commits: `, improvedMessagesWithSHAs);
 
     // Check if there are actually any changes in the commit messages
-    const messagesChanged = improvedMessagesWithSHAs.some(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ({ sha, msg }, index) => msg !== commitsToImprove[index].message,
-    );
+    const messagesChanged = improvedMessagesWithSHAs.some(({ msg }, index) => msg !== commitsToImprove[index].message);
 
     if (!messagesChanged) {
         // eslint-disable-next-line no-console
@@ -197,10 +192,17 @@ async function run() {
                 `GitWiz was called on ${github.context.payload.action}. GitWiz is supposed to be used on "push" action.`,
             );
         }
-    } catch (error: any) {
-        const err = error?.message || error;
-        core.setFailed(err);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        } else {
+            core.setFailed(String(error) || 'An unknown error occurred');
+        }
     }
 }
 
-run();
+run().catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('An error occurred:', error);
+    core.setFailed(error instanceof Error ? error.message : 'An unknown error occurred');
+});

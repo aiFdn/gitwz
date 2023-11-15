@@ -3,6 +3,7 @@ import axios from 'axios';
 import chalk from 'chalk';
 import { execa } from 'execa';
 import OpenAI from 'openai';
+import { ChatCompletionMessageParam } from 'openai/resources';
 
 import { CONFIG_MODES, DEFAULT_MODEL_TOKEN_LIMIT, getConfig } from './commands/config';
 import { GenerateCommitMessageErrorEnum } from './generateCommitMessageFromGitDiff';
@@ -33,8 +34,8 @@ class OpenAi {
     constructor() {}
 
     public generateCommitMessage = async (
-        messages: Array<{ role: string; content: string }>,
-    ): Promise<string | undefined> => {
+        messages: Array<ChatCompletionMessageParam>,
+    ): Promise<string | null | undefined> => {
         const params = {
             model: MODEL,
             messages,

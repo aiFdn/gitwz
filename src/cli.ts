@@ -2,6 +2,8 @@
 
 import { cli } from 'cleye';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import packageJSON from '../package.json';
 import { commit } from './commands/commit';
 import { commitlintConfigCommand } from './commands/commitlint';
@@ -25,9 +27,9 @@ cli(
         await checkIsLatestVersion();
 
         if (await isHookCalled()) {
-            prepareCommitMessageHook();
+            await prepareCommitMessageHook();
         } else {
-            commit(extraArgs);
+            await commit(extraArgs);
         }
     },
     extraArgs,
