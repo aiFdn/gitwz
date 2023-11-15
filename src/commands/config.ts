@@ -124,12 +124,16 @@ export const configValidators = {
     validateConfig(
       CONFIG_KEYS.GWZ_MODEL,
       [
-        'gpt-3.5-turbo',
-        'gpt-4',
         'gpt-4-1106-preview',
-        'gpt-3.5-turbo-0613'
+        'gpt-4',
+        'gpt-4-0613',
+        'gpt-4-0314',
+        'gpt-3.5-turbo-1106',
+        'gpt-3.5-turbo',
+        'gpt-3.5-turbo-0613',
+        'gpt-3.5-turbo-0301'
       ].includes(value),
-      `${value} is not supported yet, use 'gpt-4', 'gpt-4-1106-preview' (default), 'gpt-3.5-turbo-0613', 'gpt-3.5-turbo' or 'gpt-4-1106-preview'`
+      `${value} is not supported yet, use 'gpt-4-1106-preview','gpt-4','gpt-4-0613','gpt-4-0314','gpt-3.5-turbo-1106','gpt-3.5-turbo','gpt-3.5-turbo-0613','gpt-3.5-turbo-0301'`
     );
     return value;
   },
