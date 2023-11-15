@@ -1,10 +1,10 @@
-name: 'GitWiz — improve commits with AI 🧙'
-description: 'Replaces lame commit messages with meaningful AI-generated messages when you push to remote'
-author: 'https://github.com/di-sukharev'
-repo: 'https://github.com/SHSharkar/gitwz/tree/github-action'
+name: 'GitWiz — Use AI to Enhance Your Git Commits'
+description: 'Automate commit messages with meaningful AI-generated messages.'
+author: 'https://github.com/SHSharkar'
+repo: 'https://github.com/SHSharkar/gitwz'
 branding:
   icon: 'git-commit'
-  color: 'green'
+  color: 'purple'
 keywords:
   [
     'git',
@@ -16,14 +16,16 @@ keywords:
     'aicommit',
     'aicommits',
     'gptcommit',
+    'gitwz',
+    'gitwiz',
     'commit'
   ]
 
 inputs:
   GITHUB_TOKEN:
-    description: 'GitHub token'
+    description: 'GitHub Token'
     required: true
 
 runs:
-  using: 'node16'
+  using: 'node18'
   main: 'out/github-action.cjs'
