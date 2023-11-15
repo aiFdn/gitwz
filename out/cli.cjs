@@ -16384,7 +16384,7 @@ function G3(t, e2) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "4.0.4",
+  version: "4.0.6",
   description: "Use AI to convert boring git commits into impressive ones in seconds!",
   keywords: [
     "git",
