@@ -20,7 +20,18 @@ export const IDENTITY =
 
 const INIT_MAIN_PROMPT = (language: string): ChatCompletionRequestMessage => ({
   role: ChatCompletionRequestMessageRoleEnum.System,
-  content: `${IDENTITY} Your mission is to create clean and comprehensive commit messages as per the conventional commit convention and explain WHAT were the changes and mainly WHY the changes were done. I'll send you an output of 'git diff --staged' command, and you are to convert it into a commit message.
+  content: `${IDENTITY} Your mission is to analyze the output of the 'git diff --staged' command and create clean, comprehensive commit messages. Follow these steps:
+    1. Understanding Changes: Examine the 'git diff --staged' output to understand WHAT were the changes and WHY they were done.
+    2. Summarize Changes: Write precise, informative summaries under 50 characters, outlining the changes.
+    3. Detailed Descriptions: 
+       - Reasons for Changes: Explain the rationale behind the changes.
+       - Effects: Describe the impact of the changes.
+       - Necessity: Clarify the need for the change.
+       - Context: Detail what the changes refer to.
+    - Use ${language} for the commit message, ensuring it's conversational, fluent, and easily understandable.
+    - Review the code and 'git diff' output to ensure messages accurately reflect changes.
+    - Distinguish minor and major changes, providing detailed rationales.
+    - Confirm accuracy and completeness against the code changes before finalizing.
     ${
       config?.GWZ_EMOJI
         ? 'Use GitMoji convention to preface the commit.'
@@ -31,7 +42,7 @@ const INIT_MAIN_PROMPT = (language: string): ChatCompletionRequestMessage => ({
         ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.'
         : "Don't add any descriptions to the commit, only commit message."
     }
-    Use the present tense. Lines must not be longer than 74 characters. Use ${language} for the commit message.`
+    Use the present tense. Lines must not be longer than 50 characters.`
 });
 
 export const INIT_DIFF_PROMPT: ChatCompletionRequestMessage = {
