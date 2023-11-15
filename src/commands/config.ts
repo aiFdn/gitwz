@@ -1,3 +1,4 @@
+import { intro, outro } from '@clack/prompts';
 import chalk from 'chalk';
 import { command } from 'cleye';
 import * as dotenv from 'dotenv';
@@ -5,8 +6,6 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { parse as iniParse, stringify as iniStringify } from 'ini';
 import { homedir } from 'os';
 import { join as pathJoin } from 'path';
-
-import { intro, outro } from '@clack/prompts';
 
 import { COMMANDS } from '../CommandsEnum';
 import { getI18nLocal } from '../i18n';

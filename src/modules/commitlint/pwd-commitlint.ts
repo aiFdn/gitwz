@@ -9,6 +9,7 @@ const nodeModulesPath = path.join(process.env.PWD || process.cwd(), 'node_module
  * @returns
  */
 export const getCommitLintPWDConfig = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const load = require(nodeModulesPath).default;
 
     if (load && typeof load === 'function') {

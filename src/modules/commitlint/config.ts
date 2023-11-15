@@ -19,7 +19,7 @@ export const configureCommitlintIntegration = async (force = false) => {
 
     const fileExists = await utils.commitlintLLMConfigExists();
 
-    let commitLintConfig = await getCommitLintPWDConfig();
+    const commitLintConfig = await getCommitLintPWDConfig();
 
     // debug complete @commitlint configuration
     // await fs.writeFile(

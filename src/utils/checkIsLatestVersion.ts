@@ -1,6 +1,5 @@
-import chalk from 'chalk';
-
 import { outro } from '@clack/prompts';
+import chalk from 'chalk';
 
 import currentPackage from '../../package.json';
 import { getGitWizLatestVersion } from '../api';

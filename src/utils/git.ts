@@ -1,8 +1,7 @@
+import { outro, spinner } from '@clack/prompts';
 import { execa } from 'execa';
 import { readFileSync } from 'fs';
 import ignore, { Ignore } from 'ignore';
-
-import { outro, spinner } from '@clack/prompts';
 
 export const assertGitRepo = async () => {
     try {
@@ -21,7 +20,9 @@ export const getGitWizIgnore = (): Ignore => {
 
     try {
         ig.add(readFileSync('.gitwzignore').toString().split('\n'));
-    } catch (e) {}
+    } catch (e) {
+        /* empty */
+    }
 
     return ig;
 };

@@ -1,10 +1,9 @@
+import { intro, outro } from '@clack/prompts';
 import chalk from 'chalk';
 import { command } from 'cleye';
 import { existsSync } from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
-
-import { intro, outro } from '@clack/prompts';
 
 import { COMMANDS } from '../CommandsEnum.js';
 import { assertGitRepo, getCoreHooksPath } from '../utils/git.js';

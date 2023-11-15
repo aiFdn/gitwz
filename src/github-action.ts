@@ -1,10 +1,9 @@
-import { unlinkSync, writeFileSync } from 'fs';
-
 import core from '@actions/core';
 import exec from '@actions/exec';
 import github from '@actions/github';
 import { intro, outro } from '@clack/prompts';
 import { PushEvent } from '@octokit/webhooks-types';
+import { unlinkSync, writeFileSync } from 'fs';
 
 import { generateCommitMessageByDiff } from './generateCommitMessageFromGitDiff';
 import { randomIntFromInterval } from './utils/randomIntFromInterval';
@@ -52,7 +51,7 @@ async function improveMessagesInChunks(diffsAndSHAs: DiffAndSHA[]) {
     outro(`Improving commit messages in chunks of ${chunkSize}.`);
     const improvePromises = diffsAndSHAs!.map((commit) => generateCommitMessageByDiff(commit.diff));
 
-    let improvedMessagesAndSHAs: MsgAndSHA[] = [];
+    const improvedMessagesAndSHAs: MsgAndSHA[] = [];
     for (let step = 0; step < improvePromises.length; step += chunkSize) {
         const chunkOfPromises = improvePromises.slice(step, step + chunkSize);
 
@@ -118,14 +117,17 @@ async function improveCommitMessages(commitsToImprove: { id: string; message: st
 
     const improvedMessagesWithSHAs = await improveMessagesInChunks(diffsWithSHAs);
 
+    // eslint-disable-next-line no-console
     console.log(`Improved ${improvedMessagesWithSHAs.length} commits: `, improvedMessagesWithSHAs);
 
     // Check if there are actually any changes in the commit messages
     const messagesChanged = improvedMessagesWithSHAs.some(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ({ sha, msg }, index) => msg !== commitsToImprove[index].message,
     );
 
     if (!messagesChanged) {
+        // eslint-disable-next-line no-console
         console.log('No changes in commit messages detected, skipping rebase');
         return;
     }

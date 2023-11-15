@@ -1,7 +1,6 @@
+import { confirm, intro, isCancel, multiselect, outro, select, spinner } from '@clack/prompts';
 import chalk from 'chalk';
 import { execa } from 'execa';
-
-import { confirm, intro, isCancel, multiselect, outro, select, spinner } from '@clack/prompts';
 
 import { generateCommitMessageByDiff } from '../generateCommitMessageFromGitDiff';
 import { assertGitRepo, getChangedFiles, getDiff, getStagedFiles, gitAdd } from '../utils/git';
@@ -111,7 +110,7 @@ ${chalk.grey('——————————————————')}`,
     }
 };
 
-export async function commit(extraArgs: string[] = [], isStageAllFlag: Boolean = false) {
+export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean = false) {
     if (isStageAllFlag) {
         const changedFiles = await getChangedFiles();
 

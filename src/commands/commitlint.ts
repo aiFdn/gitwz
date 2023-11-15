@@ -1,7 +1,6 @@
+import { intro, outro } from '@clack/prompts';
 import chalk from 'chalk';
 import { command } from 'cleye';
-
-import { intro, outro } from '@clack/prompts';
 
 import { COMMANDS } from '../CommandsEnum';
 import { configureCommitlintIntegration } from '../modules/commitlint/config';

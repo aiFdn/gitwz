@@ -1,9 +1,8 @@
+import { intro, outro } from '@clack/prompts';
 import axios from 'axios';
 import chalk from 'chalk';
 import { execa } from 'execa';
 import OpenAI from 'openai';
-
-import { intro, outro } from '@clack/prompts';
 
 import { CONFIG_MODES, DEFAULT_MODEL_TOKEN_LIMIT, getConfig } from './commands/config';
 import { GenerateCommitMessageErrorEnum } from './generateCommitMessageFromGitDiff';
@@ -11,8 +10,8 @@ import { tokenCount } from './utils/tokenCount';
 
 const config = getConfig();
 
-let maxTokens = config?.GWZ_OPENAI_MAX_TOKENS || 500;
-let apiKey = config?.GWZ_OPENAI_API_KEY;
+const maxTokens = config?.GWZ_OPENAI_MAX_TOKENS || 500;
+const apiKey = config?.GWZ_OPENAI_API_KEY;
 const MODEL = config?.GWZ_MODEL || 'gpt-3.5-turbo';
 
 const [command, mode] = process.argv.slice(2);

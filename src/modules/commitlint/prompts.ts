@@ -1,8 +1,7 @@
-import chalk from 'chalk';
-import OpenAI from 'openai';
-
 import { outro } from '@clack/prompts';
 import { PromptConfig, QualifiedConfig, RuleConfigSeverity, RuleConfigTuple } from '@commitlint/types';
+import chalk from 'chalk';
+import OpenAI from 'openai';
 
 import { getConfig } from '../../commands/config';
 import { i18n, I18nLocals } from '../../i18n';

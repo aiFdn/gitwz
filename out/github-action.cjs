@@ -46225,7 +46225,6 @@ var require_lib4 = __commonJS({
 });
 
 // src/github-action.ts
-var import_fs3 = require("fs");
 var import_core20 = __toESM(require_core(), 1);
 var import_exec = __toESM(require_exec(), 1);
 var import_github = __toESM(require_github(), 1);
@@ -46417,6 +46416,9 @@ function me() {
   const r3 = ["[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)", "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))"].join("|");
   return new RegExp(r3, "g");
 }
+
+// src/github-action.ts
+var import_fs3 = require("fs");
 
 // node_modules/axios/lib/helpers/bind.js
 function bind(fn, thisArg) {
@@ -55558,7 +55560,7 @@ var configureCommitlintIntegration = async (force = false) => {
   const spin = de();
   spin.start("Loading @commitlint configuration");
   const fileExists = await commitlintLLMConfigExists();
-  let commitLintConfig = await getCommitLintPWDConfig();
+  const commitLintConfig = await getCommitLintPWDConfig();
   const hash = await computeHash(JSON.stringify(commitLintConfig));
   spin.stop(`Read @commitlint configuration (hash: ${hash})`);
   if (fileExists) {
@@ -55814,7 +55816,7 @@ async function improveMessagesInChunks(diffsAndSHAs) {
   const chunkSize = diffsAndSHAs.length % 2 === 0 ? 4 : 3;
   $e(`Improving commit messages in chunks of ${chunkSize}.`);
   const improvePromises = diffsAndSHAs.map((commit) => generateCommitMessageByDiff(commit.diff));
-  let improvedMessagesAndSHAs = [];
+  const improvedMessagesAndSHAs = [];
   for (let step = 0; step < improvePromises.length; step += chunkSize) {
     const chunkOfPromises = improvePromises.slice(step, step + chunkSize);
     try {
@@ -55860,6 +55862,7 @@ async function improveCommitMessages(commitsToImprove) {
   const improvedMessagesWithSHAs = await improveMessagesInChunks(diffsWithSHAs);
   console.log(`Improved ${improvedMessagesWithSHAs.length} commits: `, improvedMessagesWithSHAs);
   const messagesChanged = improvedMessagesWithSHAs.some(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ({ sha, msg }, index) => msg !== commitsToImprove[index].message
   );
   if (!messagesChanged) {

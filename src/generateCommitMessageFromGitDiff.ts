@@ -32,6 +32,7 @@ export enum GenerateCommitMessageErrorEnum {
 const ADJUSTMENT_FACTOR = 20;
 
 export const generateCommitMessageByDiff = async (diff: string): Promise<string> => {
+    // eslint-disable-next-line no-useless-catch
     try {
         const INIT_MESSAGES_PROMPT = await getMainCommitPrompt();
 
