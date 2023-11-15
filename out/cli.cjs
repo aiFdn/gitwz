@@ -23838,7 +23838,7 @@ function G3(t2, e3) {
 var package_default = {
   name: "gitwz",
   version: "4.0.10",
-  packageManager: "^npm@16.0.0",
+  packageManager: "^npm@18.0.0",
   description: "Use AI to convert boring git commits into impressive ones in seconds!",
   keywords: [
     "git",
