@@ -45,7 +45,7 @@
         "build": "rimraf out && node esbuild.config.js",
         "build:push": "npm run build && git add . && git commit -m 'build' && git push",
         "deploy": "npm version patch && npm run build:push && git push --tags && npm publish --tag latest",
-        "lint": "eslint src --ext ts && tsc --noEmit",
+        "lint": "eslint src --ext ts --fix && tsc --noEmit",
         "format": "prettier --write src"
     },
     "devDependencies": {
@@ -63,7 +63,6 @@
         "eslint-plugin-prettier": "^5.0.1",
         "eslint-plugin-simple-import-sort": "^10.0.0",
         "prettier": "^3.1.0",
-        "ts-node": "^10.9.1",
         "tsx": "^4.1.2",
         "typescript": "^5.2.2"
     },
