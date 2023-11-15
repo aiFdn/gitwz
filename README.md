@@ -1,51 +1,58 @@
-## Setup GitWiz as a CLI tool
+# **GitWiz: Supercharge Your Git Commits**
 
-You can use GitWiz by simply running it via the CLI like this `gwz`. 2 seconds and your staged changes are committed with a meaningful message.
+## **🔧 Setup GitWiz as a CLI Tool**
 
-1. Install GitWiz globally to use in any repository:
+Transform your Git experience with GitWiz. It's a breeze to run via the CLI (`gwz`), committing your changes with insightful messages in seconds.
+
+### **Installation Guide**
+
+1. **Global Installation**:  
+   Bring GitWiz to any repository on your system:
 
    ```sh
    npm install -g gitwz
    ```
 
-   MacOS may ask to run the command with `sudo` when installing a package globally.
+   > **MacOS Tip**: You might need `sudo` for a global install.
 
-2. Get your API key from [OpenAI](https://platform.openai.com/account/api-keys). Make sure that you add your payment details, so the API works.
+2. **API Key Acquisition**:  
+   Grab your API key from [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys). Don't forget to include your payment details for full API functionality.
 
-3. Set the key to GitWiz config:
+3. **Configuring Your API Key**:  
+   Seamlessly integrate your API key into GitWiz:
 
    ```sh
    gwz config set GWZ_OPENAI_API_KEY=<your_api_key>
    ```
 
-   Your API key is stored locally in the `~/.gitwz` config file.
+   Rest assured, your key is securely stored in `~/.gitwz`.
 
-## Usage
+## **🚀 Usage**
 
-You can call GitWiz directly to generate a commit message for your staged changes:
+Invoke GitWiz to craft commit messages for staged changes:
 
 ```sh
 git add <files...>
 gitwz
 ```
 
-You can also use the `gwz` shortcut:
+Or, opt for the `gwz` shortcut:
 
 ```sh
 git add <files...>
 gwz
 ```
 
-## Configuration
+## **⚙️ Configuration**
 
-### Local per repo configuration
+### Local per Repo Setup
 
-Create a `.env` file and add GitWiz config variables there like this:
+Personalize GitWiz for each project by creating a `.env` file with these settings:
 
 ```env
 GWZ_OPENAI_API_KEY=<your OpenAI API token>
 GWZ_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
-GWZ_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI api>
+GWZ_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI API>
 GWZ_DESCRIPTION=<postface a message with ~3 sentences description of the changes>
 GWZ_EMOJI=<boolean, add GitMoji>
 GWZ_MODEL=<either 'gpt-4-1106-preview','gpt-4','gpt-4-0613','gpt-4-0314','gpt-3.5-turbo-1106','gpt-3.5-turbo','gpt-3.5-turbo-0613','gpt-3.5-turbo-0301'>
@@ -54,150 +61,224 @@ GWZ_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
 GWZ_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
 ```
 
-### Global config for all repos
+## **⚙️ Global Configuration**
 
-Local config still has more priority than Global config, but you may set `GWZ_MODEL` and `GWZ_LOCALE` globally and set local configs for `GWZ_EMOJI` and `GWZ_DESCRIPTION` per repo which is more convenient.
+Effortlessly apply settings across all repositories with GitWiz's global configuration options:
 
-Simply set any of the variables above like this:
+- **API Key**:
+
+  ```sh
+  gwz config set GWZ_OPENAI_API_KEY=<your OpenAI API token>
+  ```
+
+  Securely store your OpenAI API token for global access.
+
+- **Max Response Tokens**:
+
+  ```sh
+  gwz config set GWZ_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
+  ```
+
+  Control the maximum response tokens from the OpenAI API.
+
+- **OpenAI API Base Path**:
+
+  ```sh
+  gwz config set GWZ_OPENAI_BASE_PATH=<proxy path to OpenAI API>
+  ```
+
+  Optionally set a proxy path to the OpenAI API.
+
+- **Description Postface**:
+
+  ```sh
+  gwz config set GWZ_DESCRIPTION=<postface a message with ~3 sentences>
+  ```
+
+  Append a brief description, up to 3 sentences, to your commit messages.
+
+- **GitMoji Integration**:
+
+  ```sh
+  gwz config set GWZ_EMOJI=true
+  ```
+
+  Enhance commit messages with GitMoji. Learn more about GitMoji [here](https://gitmoji.dev/).
+
+  To disable GitMoji:
+
+  ```sh
+  gwz config set GWZ_EMOJI=false
+  ```
+
+- **Model Selection**:
+
+  ```sh
+  gwz config set GWZ_MODEL=<model_name>
+  ```
+
+  Choose from a variety of GPT models for different performance and cost options.
+
+- **Language Selection**:
+
+  ```sh
+  gwz config set GWZ_LANGUAGE=<locale>
+  ```
+
+  Set your preferred language for commit messages. Check the [i18n folder](https://github.com/SHSharkar/gitwz/tree/main/src/i18n) for available languages.
+
+- **Message Template Placeholder**:
+
+  ```sh
+  gwz config set GWZ_MESSAGE_TEMPLATE_PLACEHOLDER=<placeholder_format>
+  ```
+
+  Customize the format of your commit message placeholders.
+
+- **Prompt Module**:
+  ```sh
+  gwz config set GWZ_PROMPT_MODULE=<module_choice>
+  ```
+  Choose between `conventional-commit` or `@commitlint` for generating commit messages.
+
+### Switching Models: Flexibility at Your Fingertips
+
+- **Default Model**: GitWiz starts with `gpt-3.5-turbo-1106`.
+- **Upgrade to GPT-4**: For superior performance (note the higher cost):
+
+  ```sh
+  gwz config set GWZ_MODEL=gpt-4
+  ```
+
+- **GPT-4 Turbo (Preview)**: A savvy blend of capability and economy:
+
+  ```sh
+  gwz config set GWZ_MODEL=gpt-4-1106-preview
+  ```
+
+## **🌍 Language Configuration**
+
+Tailor GitWiz to communicate in your preferred language. Set the language for commit messages globally:
 
 ```sh
-gwz config set GWZ_MODEL=gpt-4
-```
-
-Configure [GitMoji](https://gitmoji.dev/) to preface a message.
-
-```sh
-gwz config set GWZ_EMOJI=true
-```
-
-To remove preface emojis:
-
-```sh
-gwz config set GWZ_EMOJI=false
-```
-
-### Switch to GPT-4 or other models
-
-By default, GitWiz uses `gpt-4-1106-preview` model.
-
-You may switch to GPT-4 which performs better, but costs ~x15 times more 🤠
-
-```sh
-gwz config set GWZ_MODEL=gpt-4
-```
-
-or for as a cheaper option:
-
-```sh
-gwz config set GWZ_MODEL=gpt-3.5-turbo
-```
-
-or for GPT-4 Turbo (Preview) which is more capable, has knowledge of world events up to April 2023, a 128k context window and 2-3x cheaper vs GPT-4:
-
-```sh
-gwz config set GWZ_MODEL=gpt-4-1106-preview
-```
-
-Make sure that you spell it `gpt-4` (lowercase) and that you have API access to the 4th model. Even if you have ChatGPT+, that doesn't necessarily mean that you have API access to GPT-4.
-
-### Locale configuration
-
-To globally specify the language used to generate commit messages:
-
-```sh
-# de, German ,Deutsch
+# Example for setting German
 gwz config set GWZ_LANGUAGE=de
+# Or using the full language name
 gwz config set GWZ_LANGUAGE=German
-gwz config set GWZ_LANGUAGE=Deutsch
 
-# fr, French, française
+# Example for setting French
 gwz config set GWZ_LANGUAGE=fr
+# Or using the full language name
 gwz config set GWZ_LANGUAGE=French
-gwz config set GWZ_LANGUAGE=française
 ```
 
-The default language setting is **English**
-All available languages are currently listed in the [i18n](https://github.com/SHSharkar/gitwz/tree/master/src/i18n) folder
+The default language is set to **English**.
 
-### Switch to `@commitlint`
+Explore the full list of supported languages and their respective codes in the [i18n folder](https://github.com/SHSharkar/gitwz/tree/main/src/i18n) of the GitWiz repository.
 
-GitWiz allows you to choose the prompt module used to generate commit messages. By default, GitWiz uses its conventional-commit message generator. However, you can switch to using the `@commitlint` prompt module if you prefer. This option lets you generate commit messages in respect with the local config.
+## **🔍 Opt for `@commitlint`**
 
-You can set this option by running the following command:
+GitWiz offers the flexibility to choose your preferred style for generating commit messages. By default, it uses the `conventional-commit` format, but you can easily switch to `@commitlint` for a more structured and standardized approach.
 
-```sh
-gwz config set GWZ_PROMPT_MODULE=<module>
-```
+### Switching to `@commitlint`:
 
-Replace `<module>` with either `conventional-commit` or `@commitlint`.
+1. **Set the Prompt Module**:  
+   Change the prompt module to `@commitlint` using the following command:
 
-#### Example:
+   ```sh
+   gwz config set GWZ_PROMPT_MODULE=@commitlint
+   ```
 
-To switch to using th` '@commitlint` prompt module, run:
+   This command directs GitWiz to use `@commitlint` conventions when generating commit messages.
 
-```sh
-gwz config set GWZ_PROMPT_MODULE=@commitlint
-```
+2. **Reverting to Default**:  
+   If you wish to return to the default `conventional-commit` style, simply run:
 
-To switch back to the default conventional-commit message generator, run:
+   ```sh
+   gwz config set GWZ_PROMPT_MODULE=conventional-commit
+   ```
 
-```sh
-gwz config set GWZ_PROMPT_MODULE=conventional-commit
-```
+### Integrating `@commitlint` with GitWiz:
 
-#### Integrating with `@commitlint`
+- **Automatic Integration**:  
+  The first time you run GitWiz with `GWZ_PROMPT_MODULE` set to `@commitlint`, the tool will automatically configure the integration.
 
-The integration between `@commitlint` and GitWiz is done automatically the first time GitWiz is run with `GWZ_PROMPT_MODULE` set to `@commitlint`. However, if you need to force set or reset the configuration for `@commitlint`, you can run the following command:
+- **Manual Configuration**:  
+  If you need to force reset or set the `@commitlint` configuration, use the command:
 
-```sh
-gwz commitlint force
-```
+  ```sh
+  gwz commitlint force
+  ```
 
-To view the generated configuration for `@commitlint`, you can use this command:
+- **Viewing Current Configuration**:  
+  To check your current `@commitlint` configuration, utilize:
 
-```sh
-gwz commitlint get
-```
+  ```sh
+  gwz commitlint get
+  ```
 
-This allows you to ensure that the configuration is set up as desired.
+- **Customization with `.gitwz-commitlint`**:  
+  GitWiz creates a `.gitwz-commitlint` file in your project directory. This file contains the prompts used for the local `@commitlint` configuration, and you can edit it to fine-tune the generated commit messages according to your project's guidelines.
 
-Additionally, the integration creates a file named `.gitwz-commitlint` which contains the prompts used for the local `@commitlint` configuration. You can modify this file to fine-tune the example commit message generated by OpenAI. This gives you the flexibility to make adjustments based on your preferences or project guidelines.
+### Why Choose `@commitlint`?
 
-GitWiz generates a file named `.gitwz-commitlint` in your project directory which contains the prompts used for the local `@commitlint` configuration. You can modify this file to fine-tune the example commit message generated by OpenAI. If the local `@commitlint` configuration changes, this file will be updated the next time GitWiz is run.
+`@commitlint` is ideal for projects that require a high level of commit message discipline and consistency. It enforces a set of rules for commit message formatting, making your commit history more readable and organized. Opting for `@commitlint` with GitWiz combines the power of AI-generated messages with the structured approach of `@commitlint`, giving you the best of both worlds.
 
-This offers you greater control over the generated commit messages, allowing for customization that aligns with your project's conventions.
+## **🚩 Git Flags: Enhanced Flexibility and Compatibility**
 
-## Git flags
+The `gitwz` or `gwz` commands are designed to seamlessly integrate with your existing Git workflow, offering compatibility with standard Git flags. This integration ensures that GitWiz adapts to your version control practices, enhancing them with AI-powered commit messages without altering the familiar Git command structure.
 
-The `gitwz` or `gwz` commands can be used in place of the `git commit -m "${generatedMessage}"` command. This means that any regular flags that are used with the `git commit` command will also be applied when using `gitwz` or `gwz`.
+### Seamless Integration with Git Commit Flags
 
-```sh
-gwz --no-verify
-```
+- **Command Equivalence**:  
+  When you use `gitwz` or `gwz`, it acts as a direct substitute for the `git commit -m` command, incorporating the generated message automatically.
 
-is translated to :
+  **Example**:  
+  The command:
 
-```sh
-git commit -m "${generatedMessage}" --no-verify
-```
+  ```sh
+  gwz --no-verify
+  ```
 
-To include a message in the generated message, you can utilize the template function, for instance:
+  is equivalent to:
 
-```sh
-gwz '#205: $msg’
-```
+  ```sh
+  git commit -m "${generatedMessage}" --no-verify
+  ```
 
-> gitwz examines placeholders in the parameters, allowing you to append additional information before and after the placeholders, such as the relevant Issue or Pull Request. Similarly, you have the option to customize the GWZ_MESSAGE_TEMPLATE_PLACEHOLDER configuration item, for example, simplifying it to $m!"
+  In this scenario, `--no-verify` or any other Git flag you use will be applied just as it is with a standard Git commit.
 
-### Message Template Placeholder Config
+### Advanced Message Customization
 
-#### Overview
+- **Template Functionality**:  
+  GitWiz provides a template feature, allowing you to enrich the AI-generated commit message with custom text. This is especially useful for adding contextual information such as issue numbers, tags, or descriptive prefixes.
 
-The `GWZ_MESSAGE_TEMPLATE_PLACEHOLDER` feature in the `gitwz` tool allows users to embed a custom message within the generated commit message using a template function. This configuration is designed to enhance the flexibility and customizability of commit messages, making it easier for users to include relevant information directly within their commits.
+  **Usage**:  
+  To prepend a custom string to your generated message, use the command:
 
-#### Implementation Details
+  ```sh
+  gwz 'Issue #205: $msg'
+  ```
 
-In our codebase, the implementation of this feature can be found in the following segment:
+  Here, `Issue #205: ` is your custom addition, and `$msg` serves as a placeholder for the generated message.
+
+- **Placeholder Configuration**:  
+  GitWiz analyzes placeholders within command parameters, offering flexibility in how your custom text is incorporated. You can define your preferred placeholder format in the GitWiz configuration, which will be recognized and replaced in the commit message.
+
+  **Example**:  
+  If you set your `GWZ_MESSAGE_TEMPLATE_PLACEHOLDER` to a simpler form like `$m`, GitWiz will use this new placeholder in processing your commit messages.
+
+### Enhancing Your Version Control Practices
+
+By utilizing these features, GitWiz not only maintains the core functionalities of Git but also introduces a layer of AI-enhanced efficiency and customization to your commit process. It's designed to fit smoothly into your existing Git routine, ensuring a familiar yet improved experience.
+
+### **Message Template Placeholder Implementation**
+
+The `Message Template Placeholder` feature in GitWiz allows you to seamlessly blend custom text with AI-generated commit messages. This functionality is particularly useful when you want to include specific tags, references, or any standardized text formats in your commits.
+
+#### How It Works:
+
+The underlying mechanism of this feature involves replacing a placeholder in your message template with the generated commit message. This process is handled by the following code snippet:
 
 ```javascript
 commitMessage = messageTemplate.replace(
@@ -206,117 +287,135 @@ commitMessage = messageTemplate.replace(
 );
 ```
 
-This line is responsible for replacing the placeholder in the `messageTemplate` with the actual `commitMessage`.
+In this implementation:
 
-#### Usage
+- `messageTemplate` refers to the template you've set, containing the placeholder.
+- `GWZ_MESSAGE_TEMPLATE_PLACEHOLDER` is the configurable placeholder within your template. By default, it could be something like `$msg`.
+- The `replace` function swaps the placeholder with the actual commit message generated by GitWiz.
 
-For instance, using the command `gwz '$msg #205’`, users can leverage this feature. The provided code represents the backend mechanics of such commands, ensuring that the placeholder is replaced with the appropriate commit message.
+#### Practical Example:
 
-#### Committing with the Message
+If you've set your `GWZ_MESSAGE_TEMPLATE_PLACEHOLDER` to `$msg` and your `messageTemplate` is something like `"Fixes issue #123: $msg"`, GitWiz will replace `$msg` with the AI-generated message. So, if GitWiz generates "Updated the README for clarity", your final commit message becomes "Fixes issue #123: Updated the README for clarity".
 
-Once users have generated their desired commit message, they can proceed to commit using the generated message. By understanding the feature's full potential and its implementation details, users can confidently use the generated messages for their commits.
+This feature adds a layer of customization to your automated commit messages, ensuring they align with your project's or team's specific conventions or requirements.
 
-### Ignore files
+## **🚫 Ignore Unwanted Files**
 
-You can remove files from being sent to OpenAI by creating a `.gitwzignore` file. For example:
+GitWiz offers a smart way to exclude specific files or directories from being processed. This is particularly useful for preventing large, irrelevant, or sensitive files from being included in the AI analysis.
 
-```ignorelang
-path/to/large-asset.zip
-**/*.jpg
-```
+### How to Set Up `.gitwzignore`:
 
-This helps prevent gitwz from uploading artifacts and large files.
+1. **Create a `.gitwzignore` File**:  
+   Just like `.gitignore`, create a `.gitwzignore` file in your project's root directory.
 
-By default, gitwz ignores files matching: `*-lock.*` and `*.lock`
+2. **Specify Files or Patterns**:  
+   Inside this file, list the files or patterns you want GitWiz to ignore. For example:
 
-## Git hook (KILLER FEATURE)
+   ```ignorelang
+   # Ignore a specific file
+   path/to/large-asset.zip
 
-You can set GitWiz as Git [`prepare-commit-msg`](https://git-scm.com/docs/githooks#_prepare_commit_msg) hook. Hook integrates with your IDE Source Control and allows you to edit the message before committing.
+   # Ignore all JPG files in any directory
+   **/*.jpg
+   ```
 
-To set the hook:
+3. **GitWiz Respects Your Privacy**:  
+   GitWiz will automatically exclude these files from processing, ensuring that only relevant and permitted content is analyzed for commit message generation.
+
+### Default Ignored Patterns:
+
+By default, GitWiz is configured to ignore certain types of files to optimize performance and security. These include:
+
+- Lockfiles typically generated by package managers (like `*-lock.*` and `*.lock`).
+
+### Customizing for Your Needs:
+
+You have the flexibility to tailor the `.gitwzignore` file to suit your project's specific requirements. This ensures that GitWiz focuses only on the files that contribute meaningfully to your commit messages, while maintaining the integrity and efficiency of your repository.
+
+## **🔗 Git Hook: The Game-Changer**
+
+Set up GitWiz as a `prepare-commit-msg` hook for seamless integration:
 
 ```sh
 gwz hook set
 ```
 
-To unset the hook:
+Unset with ease:
 
 ```sh
 gwz hook unset
 ```
 
-To use the hook:
+Use it traditionally with `git commit`, or let your IDE's Source Control feature take the lead.
 
-```sh
-git add <files...>
-git commit
-```
+## **🌟 GitWiz as a GitHub Action (BETA)**
 
-Or follow the process of your IDE Source Control feature, when it calls `git commit` command — GitWiz will integrate into the flow.
+Automate commit message enhancement with GitWiz, now available as a GitHub Action. This powerful feature automatically improves commit messages across all branches when you push to your remote repository.
 
-## Setup GitWiz as a GitHub Action (BETA) 🔥
+### Setting Up GitWiz GitHub Action
 
-GitWiz is now available as a GitHub Action which automatically improves all new commits messages when you push to remote!
+1. **Create the Workflow File**:  
+   Create a `.github/workflows/gitwz.yml` file in your repository to define the GitWiz action.
 
-This is great if you want to make sure all of the commits in all of your repository branches are meaningful and not lame like `fix1` or `done2`.
+2. **Configure the Workflow**:  
+   Use the following YAML configuration, with detailed comments for guidance:
 
-Create a file `.github/workflows/gitwz.yml` with the contents below:
+   ```yml
+   name: 'GitWiz Action'
 
-```yml
-name: 'GitWiz Action'
+   on:
+     push:
+       branches-ignore: [main, master, dev, development, release]
 
-on:
-  push:
-    # this list of branches is often enough,
-    # but you may still ignore other public branches
-    branches-ignore: [main master dev development release]
+   jobs:
+     gitwz:
+       timeout-minutes: 10
+       name: GitWiz
+       runs-on: ubuntu-latest
+       permissions: write-all
+       steps:
+         - name: Setup Node.js Environment
+           uses: actions/setup-node@v2
+           with:
+             node-version: '16'
+         - uses: actions/checkout@v3
+           with:
+             fetch-depth: 0
+         - uses: SHSharkar/gitwz@github-action-v1.0.4
+           with:
+             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-jobs:
-  gitwz:
-    timeout-minutes: 10
-    name: GitWiz
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: SHSharkar/gitwz@github-action-v1.0.4
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           # Set up your OpenAI API key in the repository's action secrets
+           # For obtaining OpenAI keys, visit: https://platform.openai.com/account/api-keys
+           # To add to your repository's secrets, navigate to: <your_repo_url>/settings/secrets/actions
+           env:
+             GWZ_OPENAI_API_KEY: ${{ secrets.GWZ_OPENAI_API_KEY }}
+             GWZ_OPENAI_MAX_TOKENS: 500
+             GWZ_OPENAI_BASE_PATH: ''
+             GWZ_DESCRIPTION: false
+             GWZ_EMOJI: false
+             GWZ_MODEL: gpt-3.5-turbo-1106
+             GWZ_LANGUAGE: en
+             GWZ_PROMPT_MODULE: conventional-commit
+   ```
 
-        env:
-          # set openAI api key in repo actions secrets,
-          # for openAI keys go to: https://platform.openai.com/account/api-keys
-          # for repo secret go to: <your_repo_url>/settings/secrets/actions
-          GWZ_OPENAI_API_KEY: ${{ secrets.GWZ_OPENAI_API_KEY }}
+3. **Customization**:  
+   Adjust the YAML configuration to fit your project's needs. You can set branch exclusions in `branches-ignore` to avoid GitWiz rebasing commits in collaborative branches.
 
-          # customization
-          GWZ_OPENAI_MAX_TOKENS: 500
-          GWZ_OPENAI_BASE_PATH: ''
-          GWZ_DESCRIPTION: false
-          GWZ_EMOJI: false
-          GWZ_MODEL: gpt-4-1106-preview
-          GWZ_LANGUAGE: en
-          GWZ_PROMPT_MODULE: conventional-commit
-```
+### Important Notes for Using GitWiz GitHub Action
 
-That is it. Now when you push to any branch in your repo — all NEW commits are being improved by your never-tired AI.
+- **Automatic Enhancement**: GitWiz automatically improves all new commit messages when pushing to any branch not listed in `branches-ignore`.
+- **Branch Management**: Take care with branch exclusions, particularly in collaborative settings, to maintain commit history integrity.
+- **Workflow Adaptation**: Tailor the action to your workflow, including the GitWiz model, language preference, and other parameters.
 
-Make sure you exclude public collaboration branches (`main`, `dev`, `etc`) in `branches-ignore`, so GitWiz does not rebase commits there while improving the messages.
+## **💳 Payments: Transparent and Controlled**
 
-Interactive rebase (`rebase -i`) changes commits' SHA, so the commit history in remote becomes different from your local branch history. This is okay if you work on the branch alone, but may be inconvenient for other collaborators.
+- GitWiz operates on your OpenAI API token, billed directly to you.
+- Default model: `gpt-3.5-turbo-1106`. Manage costs while enjoying enhanced capabilities.
+- Opt for `gpt-4-1106-preview` for a premium experience.
 
-## Payments
+## **Credits and Acknowledgements**
 
-You pay for your requests to OpenAI API on your own.
+GitWiz is a reimagined version, forked from the innovative work of [di-sukharev](https://github.com/di-sukharev) on the [OpenCommit](https://github.com/di-sukharev/opencommit) project. This tool builds upon the foundational concepts of OpenCommit, enhancing and tailoring functionalities to deliver an elevated user experience.
 
-GitWiz stores your key locally.
-
-GitWiz by default uses 3.5-turbo-16k model, it should not exceed $0.10 per casual working day.
-
-You may switch to gpt-4, it's better, but more expensive.
+A special thanks to [di-sukharev](https://github.com/di-sukharev) and contributors to the OpenCommit project for their original ideas and contributions, which have been instrumental in the development of GitWiz.
