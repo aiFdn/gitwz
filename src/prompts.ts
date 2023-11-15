@@ -16,11 +16,11 @@ const config = getConfig();
 const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
 
 export const IDENTITY =
-  'You are to act as the author of a commit message in git.';
+  'Write a commit message in Git as the author.';
 
 const INIT_MAIN_PROMPT = (language: string): ChatCompletionRequestMessage => ({
   role: ChatCompletionRequestMessageRoleEnum.System,
-  content: `${IDENTITY} Your mission is to analyze the output of the 'git diff --staged' command and create clean, comprehensive commit messages. Follow these steps:
+  content: `${IDENTITY} Your task is to check the results of the 'git diff --staged' command and write clear, concise commit messages. Follow these steps:
     1. Understanding Changes: Examine the 'git diff --staged' output to understand WHAT were the changes and WHY they were done.
     2. Summarize Changes: Write precise, informative summaries under 50 characters, outlining the changes.
     3. Detailed Descriptions: 
@@ -34,15 +34,15 @@ const INIT_MAIN_PROMPT = (language: string): ChatCompletionRequestMessage => ({
     - Confirm accuracy and completeness against the code changes before finalizing.
     ${
       config?.GWZ_EMOJI
-        ? 'Use GitMoji convention to preface the commit.'
-        : 'Do not preface the commit with anything.'
+        ? 'Use the GitMoji convention for your commit message.'
+        : 'Don\'t start the commit with any preface.'
     }
     ${
       config?.GWZ_DESCRIPTION
-        ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.'
-        : "Don't add any descriptions to the commit, only commit message."
+        ? "Include a brief explanation of reasons behind the changes, following the commit message. Describe the changes directly, no need to start with 'This commit'."
+        : "Only include the commit message, no descriptions needed."
     }
-    Use the present tense. Lines must not be longer than 50 characters.`
+    Ensure you strictly follow the rule to keep your git summary in present tense and not longer than 50 characters.`
 });
 
 export const INIT_DIFF_PROMPT: ChatCompletionRequestMessage = {
