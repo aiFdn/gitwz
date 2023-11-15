@@ -381,7 +381,7 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
          - uses: actions/checkout@v4
            with:
              fetch-depth: 0
-         - uses: SHSharkar/gitwz@v4.0.6
+         - uses: SHSharkar/gitwz@v4.0.7
            with:
              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
