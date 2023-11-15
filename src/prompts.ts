@@ -1,9 +1,5 @@
-import {
-  ChatCompletionRequestMessage,
-  ChatCompletionRequestMessageRoleEnum
-} from 'openai';
-
 import { note } from '@clack/prompts';
+import OpenAI from 'openai';
 
 import { getConfig } from './commands/config';
 import { i18n, I18nLocals } from './i18n';
@@ -15,12 +11,10 @@ import * as utils from './modules/commitlint/utils';
 const config = getConfig();
 const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
 
-export const IDENTITY =
-  'Write a commit message in Git as the author.';
-
-const INIT_MAIN_PROMPT = (language: string): ChatCompletionRequestMessage => ({
-  role: ChatCompletionRequestMessageRoleEnum.System,
-  content: `${IDENTITY} Your task is to check the results of the 'git diff --staged' command and write clear, concise commit messages. Follow these steps:
+export const IDENTITY = 'Write a commit message in Git as the author.';
+const INIT_MAIN_PROMPT = (language: string): OpenAI.Chat.CreateChatCompletionRequestMessage => ({
+    role: 'system',
+    content: `${IDENTITY} Your task is to check the results of the 'git diff --staged' command and write clear, concise commit messages. Follow these steps:
     1. Understanding Changes: Examine the 'git diff --staged' output to understand WHAT were the changes and WHY they were done.
     2. Summarize Changes: Write precise, informative summaries under 50 characters, outlining the changes.
     3. Detailed Descriptions: 
@@ -33,21 +27,21 @@ const INIT_MAIN_PROMPT = (language: string): ChatCompletionRequestMessage => ({
     - Distinguish minor and major changes, providing detailed rationales.
     - Confirm accuracy and completeness against the code changes before finalizing.
     ${
-      config?.GWZ_EMOJI
-        ? 'Use the GitMoji convention for your commit message.'
-        : 'Don\'t start the commit with any preface.'
+        config?.GWZ_EMOJI
+            ? 'Use the GitMoji convention for your commit message.'
+            : "Don't start the commit with any preface."
     }
     ${
-      config?.GWZ_DESCRIPTION
-        ? "Include a brief explanation of reasons behind the changes, following the commit message. Describe the changes directly, no need to start with 'This commit'."
-        : "Only include the commit message, no descriptions needed."
+        config?.GWZ_DESCRIPTION
+            ? "Include a brief explanation of reasons behind the changes, following the commit message. Describe the changes directly, no need to start with 'This commit'."
+            : 'Only include the commit message, no descriptions needed.'
     }
-    Ensure you strictly follow the rule to keep your git summary in present tense and not longer than 50 characters.`
+    Ensure you strictly follow the rule to keep your git summary in present tense and not longer than 50 characters.`,
 });
 
-export const INIT_DIFF_PROMPT: ChatCompletionRequestMessage = {
-  role: ChatCompletionRequestMessageRoleEnum.User,
-  content: `diff --git a/src/server.ts b/src/server.ts
+export const INIT_DIFF_PROMPT: OpenAI.Chat.CreateChatCompletionRequestMessage = {
+    role: 'user',
+    content: `diff --git a/src/server.ts b/src/server.ts
     index ad4db42..f3b18a9 100644
     --- a/src/server.ts
     +++ b/src/server.ts
@@ -70,52 +64,40 @@ export const INIT_DIFF_PROMPT: ChatCompletionRequestMessage = {
                 -  console.log(\`Server listening on port \${port}\`);
                 +app.listen(process.env.PORT || PORT, () => {
                     +  console.log(\`Server listening on port \${PORT}\`);
-                });`
+                });`,
 };
 
-const INIT_CONSISTENCY_PROMPT = (
-  translation: ConsistencyPrompt
-): ChatCompletionRequestMessage => ({
-  role: ChatCompletionRequestMessageRoleEnum.Assistant,
-  content: `${config?.GWZ_EMOJI ? '🐛 ' : ''}${translation.commitFix}
+const INIT_CONSISTENCY_PROMPT = (translation: ConsistencyPrompt): OpenAI.Chat.CreateChatCompletionRequestMessage => ({
+    role: 'assistant',
+    content: `${config?.GWZ_EMOJI ? '🐛 ' : ''}${translation.commitFix}
 ${config?.GWZ_EMOJI ? '✨ ' : ''}${translation.commitFeat}
-${config?.GWZ_DESCRIPTION ? translation.commitDescription : ''}`
+${config?.GWZ_DESCRIPTION ? translation.commitDescription : ''}`,
 });
 
-export const getMainCommitPrompt = async (): Promise<
-  ChatCompletionRequestMessage[]
-> => {
-  switch (config?.GWZ_PROMPT_MODULE) {
-    case '@commitlint':
-      if (!(await utils.commitlintLLMConfigExists())) {
-        note(
-          `GWZ_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`
-        );
-        await configureCommitlintIntegration();
-      }
+export const getMainCommitPrompt = async (): Promise<OpenAI.Chat.CreateChatCompletionRequestMessage[]> => {
+    switch (config?.GWZ_PROMPT_MODULE) {
+        case '@commitlint':
+            if (!(await utils.commitlintLLMConfigExists())) {
+                note(`GWZ_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`);
+                await configureCommitlintIntegration();
+            }
 
-      // Replace example prompt with a prompt that's generated by OpenAI for the commitlint config.
-      const commitLintConfig = await utils.getCommitlintLLMConfig();
+            // Replace example prompt with a prompt that's generated by OpenAI for the commitlint config.
+            // eslint-disable-next-line no-case-declarations
+            const commitLintConfig = await utils.getCommitlintLLMConfig();
 
-      return [
-        commitlintPrompts.INIT_MAIN_PROMPT(
-          translation.localLanguage,
-          commitLintConfig.prompts
-        ),
-        INIT_DIFF_PROMPT,
-        INIT_CONSISTENCY_PROMPT(
-          commitLintConfig.consistency[
-            translation.localLanguage
-          ] as ConsistencyPrompt
-        )
-      ];
+            return [
+                commitlintPrompts.INIT_MAIN_PROMPT(translation.localLanguage, commitLintConfig.prompts),
+                INIT_DIFF_PROMPT,
+                INIT_CONSISTENCY_PROMPT(commitLintConfig.consistency[translation.localLanguage] as ConsistencyPrompt),
+            ];
 
-    default:
-      // conventional-commit
-      return [
-        INIT_MAIN_PROMPT(translation.localLanguage),
-        INIT_DIFF_PROMPT,
-        INIT_CONSISTENCY_PROMPT(translation)
-      ];
-  }
+        default:
+            // conventional-commit
+            return [
+                INIT_MAIN_PROMPT(translation.localLanguage),
+                INIT_DIFF_PROMPT,
+                INIT_CONSISTENCY_PROMPT(translation),
+            ];
+    }
 };

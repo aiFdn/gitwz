@@ -13,22 +13,22 @@ import { checkIsLatestVersion } from './utils/checkIsLatestVersion';
 const extraArgs = process.argv.slice(2);
 
 cli(
-  {
-    version: packageJSON.version,
-    name: 'gitwz',
-    commands: [configCommand, hookCommand, commitlintConfigCommand],
-    flags: {},
-    ignoreArgv: (type) => type === 'unknown-flag' || type === 'argument',
-    help: { description: packageJSON.description }
-  },
-  async () => {
-    await checkIsLatestVersion();
+    {
+        version: packageJSON.version,
+        name: 'gitwz',
+        commands: [configCommand, hookCommand, commitlintConfigCommand],
+        flags: {},
+        ignoreArgv: (type) => type === 'unknown-flag' || type === 'argument',
+        help: { description: packageJSON.description },
+    },
+    async () => {
+        await checkIsLatestVersion();
 
-    if (await isHookCalled()) {
-      prepareCommitMessageHook();
-    } else {
-      commit(extraArgs);
-    }
-  },
-  extraArgs
+        if (await isHookCalled()) {
+            prepareCommitMessageHook();
+        } else {
+            commit(extraArgs);
+        }
+    },
+    extraArgs,
 );

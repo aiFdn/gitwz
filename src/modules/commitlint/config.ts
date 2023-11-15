@@ -14,66 +14,62 @@ const config = getConfig();
 const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
 
 export const configureCommitlintIntegration = async (force = false) => {
-  const spin = spinner();
-  spin.start('Loading @commitlint configuration');
+    const spin = spinner();
+    spin.start('Loading @commitlint configuration');
 
-  const fileExists = await utils.commitlintLLMConfigExists();
+    const fileExists = await utils.commitlintLLMConfigExists();
 
-  let commitLintConfig = await getCommitLintPWDConfig();
+    let commitLintConfig = await getCommitLintPWDConfig();
 
-  // debug complete @commitlint configuration
-  // await fs.writeFile(
-  //   `${GITWZ_COMMITLINT_CONFIG}-commitlint-debug`,
-  //   JSON.stringify(commitLintConfig, null, 2)
-  // );
+    // debug complete @commitlint configuration
+    // await fs.writeFile(
+    //   `${GITWZ_COMMITLINT_CONFIG}-commitlint-debug`,
+    //   JSON.stringify(commitLintConfig, null, 2)
+    // );
 
-  const hash = await computeHash(JSON.stringify(commitLintConfig));
+    const hash = await computeHash(JSON.stringify(commitLintConfig));
 
-  spin.stop(`Read @commitlint configuration (hash: ${hash})`);
+    spin.stop(`Read @commitlint configuration (hash: ${hash})`);
 
-  if (fileExists) {
-    // Check if we need to update the prompts.
-    const { hash: existingHash } = await utils.getCommitlintLLMConfig();
-    if (hash === existingHash && !force) {
-      spin.stop(
-        'Hashes are the same, no need to update the config. Run "force" command to bypass.'
-      );
-      return;
+    if (fileExists) {
+        // Check if we need to update the prompts.
+        const { hash: existingHash } = await utils.getCommitlintLLMConfig();
+        if (hash === existingHash && !force) {
+            spin.stop('Hashes are the same, no need to update the config. Run "force" command to bypass.');
+            return;
+        }
     }
-  }
 
-  spin.start('Generating consistency with given @commitlint rules');
+    spin.start('Generating consistency with given @commitlint rules');
 
-  const prompts = inferPromptsFromCommitlintConfig(commitLintConfig);
+    const prompts = inferPromptsFromCommitlintConfig(commitLintConfig);
 
-  const consistencyPrompts =
-    commitlintPrompts.GEN_COMMITLINT_CONSISTENCY_PROMPT(prompts);
+    const consistencyPrompts = commitlintPrompts.GEN_COMMITLINT_CONSISTENCY_PROMPT(prompts);
 
-  // debug prompt which will generate a consistency
-  // await fs.writeFile(
-  //   `${COMMITLINT_LLM_CONFIG}-debug`,
-  //   consistencyPrompts.map((p) => p.content)
-  // );
+    // debug prompt which will generate a consistency
+    // await fs.writeFile(
+    //   `${COMMITLINT_LLM_CONFIG}-debug`,
+    //   consistencyPrompts.map((p) => p.content)
+    // );
 
-  let consistency =
-    (await api.generateCommitMessage(consistencyPrompts)) || '{}';
+    let consistency = (await api.generateCommitMessage(consistencyPrompts)) || '{}';
 
-  // Cleanup the consistency answer. Sometimes 'gpt-3.5-turbo' sends rule's back.
-  prompts.forEach((prompt) => (consistency = consistency.replace(prompt, '')));
-  // ... remaining might be extra set of "\n"
-  consistency = utils.removeDoubleNewlines(consistency);
+    // Cleanup the consistency answer. Sometimes 'gpt-3.5-turbo' sends rule's back.
+    prompts.forEach((prompt) => (consistency = consistency.replace(prompt, '')));
+    // ... remaining might be extra set of "\n"
+    consistency = utils.removeDoubleNewlines(consistency);
 
-  const commitlintLLMConfig: CommitlintLLMConfig = {
-    hash,
-    prompts,
-    consistency: {
-      [translation.localLanguage]: {
-        ...JSON.parse(consistency as string)
-      }
-    }
-  };
+    const commitlintLLMConfig: CommitlintLLMConfig = {
+        hash,
+        prompts,
+        consistency: {
+            [translation.localLanguage]: {
+                ...JSON.parse(consistency as string),
+            },
+        },
+    };
 
-  await utils.writeCommitlintLLMConfig(commitlintLLMConfig);
+    await utils.writeCommitlintLLMConfig(commitlintLLMConfig);
 
-  spin.stop(`Done - please review contents of ${COMMITLINT_LLM_CONFIG_PATH}`);
+    spin.stop(`Done - please review contents of ${COMMITLINT_LLM_CONFIG_PATH}`);
 };

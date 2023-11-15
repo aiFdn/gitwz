@@ -3,29 +3,29 @@ description: 'Automate commit messages with meaningful AI-generated messages.'
 author: 'https://github.com/SHSharkar'
 repo: 'https://github.com/SHSharkar/gitwz'
 branding:
-  icon: 'git-commit'
-  color: 'purple'
+    icon: 'git-commit'
+    color: 'purple'
 keywords:
-  [
-    'git',
-    'chatgpt',
-    'gpt',
-    'ai',
-    'openai',
-    'gitwz',
-    'aicommit',
-    'aicommits',
-    'gptcommit',
-    'gitwz',
-    'gitwiz',
-    'commit'
-  ]
+    [
+        'git',
+        'chatgpt',
+        'gpt',
+        'ai',
+        'openai',
+        'gitwz',
+        'aicommit',
+        'aicommits',
+        'gptcommit',
+        'gitwz',
+        'gitwiz',
+        'commit',
+    ]
 
 inputs:
-  GITHUB_TOKEN:
-    description: 'GitHub Token'
-    required: true
+    GITHUB_TOKEN:
+        description: 'GitHub Token'
+        required: true
 
 runs:
-  using: 'node18'
-  main: 'out/github-action.cjs'
+    using: 'node18'
+    main: 'out/github-action.cjs'
