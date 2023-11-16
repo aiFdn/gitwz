@@ -23868,11 +23868,11 @@ var package_default = {
   ],
   main: "cli.js",
   bin: {
-    gitwz: "./out/cli.cjs",
-    gwz: "./out/cli.cjs"
+    gitwz: "out/cli.cjs",
+    gwz: "out/cli.cjs"
   },
   repository: {
-    url: "https://github.com/SHSharkar/gitwz"
+    url: "git+https://github.com/SHSharkar/gitwz.git"
   },
   type: "module",
   author: "https://github.com/SHSharkar",
