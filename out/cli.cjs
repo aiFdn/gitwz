@@ -23837,7 +23837,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "5.1.0",
+  version: "5.2.0",
   packageManager: "^npm@18.0.0",
   description: "Make your git commits stand out! With AI (OpenAI GPT), transform plain git commits into eye-catching ones in just a few seconds.",
   keywords: [
