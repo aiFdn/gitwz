@@ -3,8 +3,10 @@ import fs from 'fs/promises';
 import { COMMITLINT_LLM_CONFIG_PATH } from './constants';
 import { CommitlintLLMConfig } from './types';
 
+// eslint-disable-next-line jsdoc/require-returns
 /**
  * Removes the "\n" only if occurring twice
+ * @param input
  */
 export const removeDoubleNewlines = (input: string): string => {
     const pattern = /\\n\\n/g;
