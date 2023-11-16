@@ -55,6 +55,27 @@ class OpenAi {
 
             const message = response.choices[0].message;
 
+            if (config?.GWZ_ONE_LINE_COMMIT) {
+                const { choices: oneLineData } = await openai.chat.completions.create({
+                    ...params,
+                    messages: [
+                        {
+                            role: 'system',
+                            content:
+                                messages[0].content +
+                                "Commit messages should be concise and informative, starting with a description under 50 characters followed by a detailed section outlining significant changes. AI prompts need full codebase access and should be updated with the latest code changes. Summaries should be clear and to the point, while descriptions should explain the changes' purpose, impact, and necessity. The AI is expected to thoroughly review the code, identifying major updates, refactors, fixes, or deletions. All file modifications should be consolidated into a single commit message, focusing on critical updates without referencing multiple or inconsistent lines. Before finalizing, ensure the accuracy of messages against the code changes.",
+                        },
+                        {
+                            role: 'user',
+                            content: `Here are commits messages:\n${message?.content}`,
+                        },
+                    ],
+                });
+
+                const oneLineMessage = oneLineData[0].message;
+                return oneLineMessage?.content;
+            }
+
             return message?.content;
         } catch (error) {
             outro(`${chalk.red('✖')} ${JSON.stringify(params)}`);
