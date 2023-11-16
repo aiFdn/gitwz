@@ -85,11 +85,11 @@ ${chalk.grey('——————————————————————
                 if (isPushConfirmedByUser && !isCancel(isPushConfirmedByUser)) {
                     const pushSpinner = spinner();
 
-                    pushSpinner.start(`Running 'git push ${remotes[0]}'`);
+                    pushSpinner.start(`${chalk.blue('INFO:')} Running 'git push ${remotes[0]}'`);
 
                     const { stdout } = await execa('git', ['push', '--verbose', remotes[0]]);
 
-                    pushSpinner.stop(`${chalk.green('✔')} Successfully pushed all commits to ${remotes[0]}`);
+                    pushSpinner.stop(`${chalk.green('SUCCESS:')} Successfully pushed all commits to ${remotes[0]}.`);
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
@@ -106,11 +106,13 @@ ${chalk.grey('——————————————————————
                 if (!isCancel(selectedRemote)) {
                     const pushSpinner = spinner();
 
-                    pushSpinner.start(`Running 'git push ${selectedRemote}'`);
+                    pushSpinner.start(`${chalk.blue('INFO:')} Running 'git push ${selectedRemote}'`);
 
                     const { stdout } = await execa('git', ['push', selectedRemote]);
 
-                    pushSpinner.stop(`${chalk.green('✔')} Successfully pushed all commits to ${selectedRemote}`);
+                    pushSpinner.stop(
+                        `${chalk.green('SUCCESS:')} Successfully pushed all commits to ${selectedRemote}.`,
+                    );
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
@@ -155,8 +157,9 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
 
     intro(`
 ${chalk.bold.green('GitWiz — Use AI to Enhance Your Git Commits')}
-${chalk.blue('Developed by:')} ${chalk.bold('Md. Sazzad Hossain Sharkar')}
-${chalk.blue('GitHub:')} ${chalk.underline.blue('https://github.com/SHSharkar')}
+${chalk.blue('Developed by:')} ${chalk.bold('Md. Sazzad Hossain Sharkar')} (${chalk.underline.blue(
+        'https://github.com/SHSharkar',
+    )})
 
 ${chalk.yellow('Preparing to commit changes...')}
     `);
