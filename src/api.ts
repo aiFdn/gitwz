@@ -62,7 +62,8 @@ class OpenAi {
                         {
                             role: 'system',
                             content:
-                                "Commit messages should be concise and informative, starting with a description under 50 characters followed by a detailed section outlining significant changes. AI prompts need full codebase access and should be updated with the latest code changes. Summaries should be clear and to the point, while descriptions should explain the changes' purpose, impact, and necessity. The AI is expected to thoroughly review the code, identifying major updates, refactors, fixes, or deletions. All file modifications should be consolidated into a single commit message, focusing on critical updates without referencing multiple or inconsistent lines. Before finalizing, ensure the accuracy of messages against the code changes.",
+                                messages[0].content +
+                                'Commit messages should be concise and informative, starting with a summary under 50 characters followed by a detailed section outlining significant changes. Summaries should be clear and to the point, while descriptions should explain the changes purpose, impact, and necessity. All file modifications should be consolidated into a single commit message, focusing on critical updates without referencing multiple or inconsistent lines. Before finalizing, ensure the accuracy of messages against the code changes.',
                         },
                         {
                             role: 'user',
