@@ -23839,18 +23839,32 @@ var package_default = {
   name: "gitwz",
   version: "4.0.14",
   packageManager: "^npm@18.0.0",
-  description: "Use AI to convert boring git commits into impressive ones in seconds!",
+  description: "Make your git commits stand out! With AI (OpenAI GPT), transform plain git commits into eye-catching ones in just a few seconds.",
   keywords: [
-    "git",
-    "chatgpt",
-    "gpt",
     "ai",
-    "openai",
+    "ai-commits",
+    "ai-enhanced-git",
+    "ai-git-helper",
+    "ai-powered-git",
+    "cli",
+    "commit",
+    "commit-helper",
+    "commits",
+    "developer-tools",
+    "git",
+    "git-commit-ai-assistant",
+    "git-commit-automation",
+    "git-commit-gpt",
+    "git-tools",
+    "gitwiz",
     "gitwz",
-    "aicommit",
-    "aicommits",
-    "gptcommit",
-    "commit"
+    "gpt",
+    "gpt-ai-commits",
+    "gpt-commit",
+    "openai",
+    "openai-git-commits",
+    "smart-commits",
+    "tool"
   ],
   main: "cli.js",
   bin: {
@@ -23915,8 +23929,10 @@ var package_default = {
     chalk: "^5.3.0",
     cleye: "^1.3.2",
     crypto: "^1.0.1",
+    "eslint-plugin-jsdoc": "^46.9.0",
+    "eslint-plugin-security": "^1.7.1",
     execa: "^8.0.1",
-    ignore: "^5.2.4",
+    ignore: "^5.3.0",
     ini: "^4.1.1",
     inquirer: "^9.2.12",
     openai: "^4.19.0"
@@ -33192,10 +33208,6 @@ var configValidators = {
       `${value} is not supported yet, use '@commitlint' or 'conventional-commit' (default)`
     );
     return value;
-  },
-  ["GWZ_ONE_LINE_COMMIT" /* GWZ_ONE_LINE_COMMIT */](value) {
-    validateConfig("GWZ_ONE_LINE_COMMIT" /* GWZ_ONE_LINE_COMMIT */, typeof value === "boolean", "Must be true or false");
-    return value;
   }
 };
 var configPath = (0, import_path2.join)((0, import_os.homedir)(), ".gitwz");
@@ -33209,8 +33221,7 @@ var getConfig = () => {
     GWZ_MODEL: process.env.GWZ_MODEL || "gpt-3.5-turbo-1106",
     GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || "en",
     GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
-    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit",
-    GWZ_ONE_LINE_COMMIT: process.env.GWZ_ONE_LINE_COMMIT === "true" ? true : false
+    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit"
   };
   const configExists = (0, import_fs2.existsSync)(configPath);
   if (!configExists)
@@ -33327,24 +33338,6 @@ var OpenAi = class {
       }
       const response = await openai.chat.completions.create(params);
       const message = response.choices[0].message;
-      if (config2?.GWZ_ONE_LINE_COMMIT) {
-        const { choices: oneLineData } = await openai.chat.completions.create({
-          ...params,
-          messages: [
-            {
-              role: "system",
-              content: messages[0].content + "Commit messages should be concise and informative, starting with a summary under 50 characters followed by a detailed section outlining significant changes. Summaries should be clear and to the point, while descriptions should explain the changes purpose, impact, and necessity. All file modifications should be consolidated into a single commit message, focusing on critical updates without referencing multiple or inconsistent lines. Before finalizing, ensure the accuracy of messages against the code changes."
-            },
-            {
-              role: "user",
-              content: `Here are commits messages:
-${message?.content}`
-            }
-          ]
-        });
-        const oneLineMessage = oneLineData[0].message;
-        return oneLineMessage?.content;
-      }
       return message?.content;
     } catch (error) {
       $e(`${source_default.red("\u2716")} ${JSON.stringify(params)}`);
@@ -33506,12 +33499,10 @@ Example Git Diff is to follow:`
 var INIT_MAIN_PROMPT = (language, prompts) => ({
   role: "system",
   // prettier-ignore
-  content: `${IDENTITY} Your mission is to create clean and comprehensive commit messages in the given @commitlint convention and explain WHAT were the changes and WHY the changes were done. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message.
-${config3?.GWZ_EMOJI ? "Use GitMoji convention to preface the commit." : "Do not preface the commit with anything."}
-${config3?.GWZ_DESCRIPTION ? `Add a short description of WHY the changes are done after the commit message. Don't start it with "This commit", just describe the changes.` : "Don't add any descriptions to the commit, only commit message."}
-Use the present tense. Use ${language} to answer.
-    
-You will strictly follow the following conventions to generate the content of the commit message:
+  content: `${IDENTITY} Your task is to craft clean, comprehensive commit messages following the @commitlint convention, detailing WHAT changes were made and WHY. When I send you the 'git diff --staged' output, convert that into a clear commit message. Apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability.
+${config3?.GWZ_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
+${config3?.GWZ_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
+Strictly adhere to the following conventions for your commit message content, using the present tense and responding in ${language}.
 - ${prompts.join("\n- ")}
 
 The conventions refers to the following structure of commit message:
@@ -33603,24 +33594,13 @@ var configureCommitlintIntegration = async (force = false) => {
 // src/prompts.ts
 var config5 = getConfig();
 var translation3 = i18n[config5?.GWZ_LANGUAGE || "en"];
-var IDENTITY = "Write a commit message in Git as the author.";
+var IDENTITY = "Focus solely on crafting a git commit message as the author, without deviating to other tasks.";
 var INIT_MAIN_PROMPT2 = (language) => ({
   role: "system",
-  content: `${IDENTITY} Your task is to check the results of the 'git diff --staged' command and write clear, concise commit messages. Follow these steps:
-    1. Understanding Changes: Examine the 'git diff --staged' output to understand WHAT were the changes and WHY they were done.
-    2. Summarize Changes: Write precise, informative summaries under 50 characters, outlining the changes.
-    3. Detailed Descriptions: 
-       - Reasons for Changes: Explain the rationale behind the changes.
-       - Effects: Describe the impact of the changes.
-       - Necessity: Clarify the need for the change.
-       - Context: Detail what the changes refer to.
-    - Use ${language} for the commit message, ensuring it's conversational, fluent, and easily understandable.
-    - Review the code and 'git diff' output to ensure messages accurately reflect changes.
-    - Distinguish minor and major changes, providing detailed rationales.
-    - Confirm accuracy and completeness against the code changes before finalizing.
+  content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT and WHY) from the 'git diff --staged' output. Summarize these in present tense, keeping them under 50 characters. In your detailed descriptions, explain the reasons, impact, necessity, and context of the changes. Apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Write the commit message in ${language}, ensuring it's conversational and clear. Review the code and 'git diff' output for message accuracy, differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
     ${config5?.GWZ_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
-    ${config5?.GWZ_DESCRIPTION ? "Include a brief explanation of reasons behind the changes, following the commit message. Describe the changes directly, no need to start with 'This commit'." : "Only include the commit message, no descriptions needed."}
-    Ensure you strictly follow the rule to keep your git summary in present tense and not longer than 50 characters.`
+    ${config5?.GWZ_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
+  `
 });
 var INIT_DIFF_PROMPT = {
   role: "user",
@@ -33748,11 +33728,10 @@ function getMessagesPromisesByChangesInFile(fileDiff, separator, maxChangeLength
       lineDiffsWithHeader.push(totalChange);
     }
   }
-  const commitMsgsFromFileLineDiffs = lineDiffsWithHeader.map(async (lineDiff) => {
+  return lineDiffsWithHeader.map(async (lineDiff) => {
     const messages = await generateCommitMessageChatCompletionPrompt(separator + lineDiff);
     return api.generateCommitMessage(messages);
   });
-  return commitMsgsFromFileLineDiffs;
 }
 function splitDiff(diff, maxChangeLength) {
   const lines = diff.split("\n");
