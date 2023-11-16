@@ -65,7 +65,7 @@ ${chalk.grey('——————————————————————
         if (isCommitConfirmedByUser && !isCancel(isCommitConfirmedByUser)) {
             const { stdout } = await execa('git', ['commit', '-m', commitMessage, ...extraArgs]);
 
-            outro(`${chalk.green('✔')} Successfully committed`);
+            outro(`${chalk.green('SUCCESS:')} Successfully committed.`);
 
             outro(stdout);
 
@@ -94,7 +94,7 @@ ${chalk.grey('——————————————————————
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
                 } else {
-                    outro('`git push` aborted');
+                    outro(`${chalk.yellow('WARNING:')} 'git push' aborted - Operation cancelled.`);
                     process.exit(0);
                 }
             } else {
@@ -125,7 +125,7 @@ ${chalk.grey('——————————————————————
             process.exit(0);
         }
     } catch (error) {
-        commitSpinner.stop('📝 Commit message generated');
+        commitSpinner.stop(`${chalk.blue('INFO:')} Commit message generated.`);
 
         const err = error as Error;
         outro(`${chalk.red('✖')} ${err?.message || err}`);
