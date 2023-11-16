@@ -11,21 +11,11 @@ import * as utils from './modules/commitlint/utils';
 const config = getConfig();
 const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
 
-export const IDENTITY = 'Write a commit message in Git as the author.';
-const INIT_MAIN_PROMPT = (language: string): OpenAI.Chat.CreateChatCompletionRequestMessage => ({
+export const IDENTITY =
+    'Focus solely on crafting a git commit message as the author, without deviating to other tasks.';
+const INIT_MAIN_PROMPT = (language: string): { role: string; content: string } => ({
     role: 'system',
-    content: `${IDENTITY} Your task is to check the results of the 'git diff --staged' command and write clear, concise commit messages. Follow these steps:
-    1. Understanding Changes: Examine the 'git diff --staged' output to understand WHAT were the changes and WHY they were done.
-    2. Summarize Changes: Write precise, informative summaries under 50 characters, outlining the changes.
-    3. Detailed Descriptions: 
-       - Reasons for Changes: Explain the rationale behind the changes.
-       - Effects: Describe the impact of the changes.
-       - Necessity: Clarify the need for the change.
-       - Context: Detail what the changes refer to.
-    - Use ${language} for the commit message, ensuring it's conversational, fluent, and easily understandable.
-    - Review the code and 'git diff' output to ensure messages accurately reflect changes.
-    - Distinguish minor and major changes, providing detailed rationales.
-    - Confirm accuracy and completeness against the code changes before finalizing.
+    content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT and WHY) from the 'git diff --staged' output. Summarize these in present tense, keeping them under 50 characters. In your detailed descriptions, explain the reasons, impact, necessity, and context of the changes. Apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Write the commit message in ${language}, ensuring it's conversational and clear. Review the code and 'git diff' output for message accuracy, differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
     ${
         config?.GWZ_EMOJI
             ? 'Use the GitMoji convention for your commit message.'
@@ -33,13 +23,13 @@ const INIT_MAIN_PROMPT = (language: string): OpenAI.Chat.CreateChatCompletionReq
     }
     ${
         config?.GWZ_DESCRIPTION
-            ? "Include a brief explanation of reasons behind the changes, following the commit message. Describe the changes directly, no need to start with 'This commit'."
+            ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'."
             : 'Only include the commit message, no descriptions needed.'
     }
-    Ensure you strictly follow the rule to keep your git summary in present tense and not longer than 50 characters.`,
+  `,
 });
 
-export const INIT_DIFF_PROMPT: OpenAI.Chat.CreateChatCompletionRequestMessage = {
+export const INIT_DIFF_PROMPT: OpenAI.Chat.ChatCompletionUserMessageParam = {
     role: 'user',
     content: `diff --git a/src/server.ts b/src/server.ts
     index ad4db42..f3b18a9 100644
@@ -67,14 +57,28 @@ export const INIT_DIFF_PROMPT: OpenAI.Chat.CreateChatCompletionRequestMessage = 
                 });`,
 };
 
-const INIT_CONSISTENCY_PROMPT = (translation: ConsistencyPrompt): OpenAI.Chat.CreateChatCompletionRequestMessage => ({
+const INIT_CONSISTENCY_PROMPT = (translation: ConsistencyPrompt): { role: string; content: string } => ({
     role: 'assistant',
     content: `${config?.GWZ_EMOJI ? '🐛 ' : ''}${translation.commitFix}
 ${config?.GWZ_EMOJI ? '✨ ' : ''}${translation.commitFeat}
 ${config?.GWZ_DESCRIPTION ? translation.commitDescription : ''}`,
 });
 
-export const getMainCommitPrompt = async (): Promise<OpenAI.Chat.CreateChatCompletionRequestMessage[]> => {
+export const getMainCommitPrompt = async (): Promise<
+    (
+        | OpenAI.Chat.ChatCompletionSystemMessageParam
+        | OpenAI.Chat.ChatCompletionUserMessageParam
+        | OpenAI.Chat.ChatCompletionAssistantMessageParam
+        | OpenAI.Chat.ChatCompletionToolMessageParam
+        | OpenAI.Chat.ChatCompletionFunctionMessageParam
+        | OpenAI.Chat.ChatCompletionCreateParamsNonStreaming
+        | OpenAI.Chat.ChatCompletionCreateParamsStreaming
+        | {
+              role: string;
+              content: string;
+          }
+    )[]
+> => {
     switch (config?.GWZ_PROMPT_MODULE) {
         case '@commitlint':
             if (!(await utils.commitlintLLMConfigExists())) {
