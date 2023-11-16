@@ -33192,6 +33192,10 @@ var configValidators = {
       `${value} is not supported yet, use '@commitlint' or 'conventional-commit' (default)`
     );
     return value;
+  },
+  ["GWZ_ONE_LINE_COMMIT" /* GWZ_ONE_LINE_COMMIT */](value) {
+    validateConfig("GWZ_ONE_LINE_COMMIT" /* GWZ_ONE_LINE_COMMIT */, typeof value === "boolean", "Must be true or false");
+    return value;
   }
 };
 var configPath = (0, import_path2.join)((0, import_os.homedir)(), ".gitwz");
@@ -33205,7 +33209,8 @@ var getConfig = () => {
     GWZ_MODEL: process.env.GWZ_MODEL || "gpt-3.5-turbo-1106",
     GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || "en",
     GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
-    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit"
+    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit",
+    GWZ_ONE_LINE_COMMIT: process.env.GWZ_ONE_LINE_COMMIT === "true" ? true : false
   };
   const configExists = (0, import_fs2.existsSync)(configPath);
   if (!configExists)
@@ -33291,7 +33296,7 @@ function tokenCount(content) {
 var config2 = getConfig();
 var maxTokens = config2?.GWZ_OPENAI_MAX_TOKENS || 500;
 var apiKey = config2?.GWZ_OPENAI_API_KEY;
-var MODEL = config2?.GWZ_MODEL || "gpt-3.5-turbo";
+var MODEL = config2?.GWZ_MODEL || "gpt-3.5-turbo-1106";
 var [command, mode] = process.argv.slice(2);
 if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   oe("gitwz");
@@ -33322,6 +33327,24 @@ var OpenAi = class {
       }
       const response = await openai.chat.completions.create(params);
       const message = response.choices[0].message;
+      if (config2?.GWZ_ONE_LINE_COMMIT) {
+        const { choices: oneLineData } = await openai.chat.completions.create({
+          ...params,
+          messages: [
+            {
+              role: "system",
+              content: messages[0].content + "Commit messages should be concise and informative, starting with a summary under 50 characters followed by a detailed section outlining significant changes. Summaries should be clear and to the point, while descriptions should explain the changes purpose, impact, and necessity. All file modifications should be consolidated into a single commit message, focusing on critical updates without referencing multiple or inconsistent lines. Before finalizing, ensure the accuracy of messages against the code changes."
+            },
+            {
+              role: "user",
+              content: `Here are commits messages:
+${message?.content}`
+            }
+          ]
+        });
+        const oneLineMessage = oneLineData[0].message;
+        return oneLineMessage?.content;
+      }
       return message?.content;
     } catch (error) {
       $e(`${source_default.red("\u2716")} ${JSON.stringify(params)}`);
