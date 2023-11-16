@@ -153,7 +153,14 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
         process.exit(1);
     }
 
-    intro('gitwz');
+    intro(`
+${chalk.bold.green('GitWiz — Use AI to Enhance Your Git Commits')}
+${chalk.blue('Developed by:')} ${chalk.bold('Md. Sazzad Hossain Sharkar')}
+${chalk.blue('GitHub:')} ${chalk.underline.blue('https://github.com/SHSharkar')}
+
+${chalk.yellow('Preparing to commit changes...')}
+    `);
+
     if (errorChangedFiles ?? errorStagedFiles) {
         outro(`${chalk.red('✖')} ${errorChangedFiles ?? errorStagedFiles}`);
         process.exit(1);
