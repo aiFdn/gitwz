@@ -13,7 +13,7 @@ const config = getConfig();
 
 const maxTokens = config?.GWZ_OPENAI_MAX_TOKENS || 500;
 const apiKey = config?.GWZ_OPENAI_API_KEY;
-const MODEL = config?.GWZ_MODEL || 'gpt-3.5-turbo';
+const MODEL = config?.GWZ_MODEL || 'gpt-3.5-turbo-1106';
 
 const [command, mode] = process.argv.slice(2);
 
