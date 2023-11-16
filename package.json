@@ -1,6 +1,6 @@
 {
     "name": "gitwz",
-    "version": "5.0.0",
+    "version": "5.1.0",
     "packageManager": "^npm@18.0.0",
     "description": "Make your git commits stand out! With AI (OpenAI GPT), transform plain git commits into eye-catching ones in just a few seconds.",
     "keywords": [
