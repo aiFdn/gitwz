@@ -3,9 +3,10 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2022,
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": "./tsconfig.json"
     },
-    "plugins": ["simple-import-sort", "import", "@typescript-eslint", "prettier"],
+    "plugins": ["simple-import-sort", "import", "@typescript-eslint", "prettier", "jsdoc", "security"],
     "settings": {
         "import/resolver": {
             "node": {
@@ -23,6 +24,18 @@
         "import/first": "error",
         "import/newline-after-import": "error",
         "import/no-duplicates": "error",
-        "@typescript-eslint/no-non-null-assertion": "off"
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "jsdoc/require-jsdoc": "off",
+        "jsdoc/require-param": "warn",
+        "jsdoc/require-returns": "warn",
+        "complexity": ["warn", 10],
+        "max-depth": ["warn", 4],
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+        "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/prefer-includes": "warn",
+        "@typescript-eslint/prefer-string-starts-ends-with": "warn",
+        "security/detect-object-injection": "off",
+        "security/detect-non-literal-fs-filename": "warn"
     }
 }
