@@ -10,7 +10,21 @@ const config = getConfig();
 
 const generateCommitMessageChatCompletionPrompt = async (
     diff: string,
-): Promise<Array<OpenAI.Chat.CreateChatCompletionRequestMessage>> => {
+): Promise<
+    (
+        | OpenAI.Chat.ChatCompletionSystemMessageParam
+        | OpenAI.Chat.ChatCompletionUserMessageParam
+        | OpenAI.Chat.ChatCompletionAssistantMessageParam
+        | OpenAI.Chat.ChatCompletionToolMessageParam
+        | OpenAI.Chat.ChatCompletionFunctionMessageParam
+        | OpenAI.Chat.ChatCompletionCreateParamsNonStreaming
+        | OpenAI.Chat.ChatCompletionCreateParamsStreaming
+        | {
+              role: string;
+              content: string;
+          }
+    )[]
+> => {
     const INIT_MESSAGES_PROMPT = await getMainCommitPrompt();
 
     const chatContextAsCompletionRequest = [...INIT_MESSAGES_PROMPT];
@@ -90,13 +104,11 @@ function getMessagesPromisesByChangesInFile(fileDiff: string, separator: string,
         }
     }
 
-    const commitMsgsFromFileLineDiffs = lineDiffsWithHeader.map(async (lineDiff) => {
+    return lineDiffsWithHeader.map(async (lineDiff) => {
         const messages = await generateCommitMessageChatCompletionPrompt(separator + lineDiff);
 
         return api.generateCommitMessage(messages);
     });
-
-    return commitMsgsFromFileLineDiffs;
 }
 
 function splitDiff(diff: string, maxChangeLength: number) {
