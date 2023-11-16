@@ -28,6 +28,8 @@ type PromptResolverFunction = (
 /**
  * Extracts more contexte for each type-enum.
  * IDEA: replicate the concept for scopes and refactor to a generic feature.
+ * @param type
+ * @param prompt
  */
 const getTypeRuleExtraDescription = (type: string, prompt?: DeepPartial<PromptConfig>) =>
     prompt?.questions?.type?.enum?.[type]?.description;
@@ -174,7 +176,13 @@ const STRUCTURE_OF_COMMIT = `
 - Description of commit is composed of body and footer (optional): <body-of-commit>\n<footer(s)-of-commit>`;
 
 // Prompt to generate LLM-readable rules based on @commitlint rules.
-const GEN_COMMITLINT_CONSISTENCY_PROMPT = (prompts: string[]): OpenAI.Chat.CreateChatCompletionRequestMessage[] => [
+const GEN_COMMITLINT_CONSISTENCY_PROMPT = (
+    prompts: string[],
+): (
+    | { role: string; content: string }
+    | OpenAI.Chat.ChatCompletionUserMessageParam
+    | OpenAI.Chat.ChatCompletionAssistantMessageParam
+)[] => [
     {
         role: 'assistant',
         // prettier-ignore
@@ -217,15 +225,13 @@ Example Git Diff is to follow:`,
  * @param prompts
  * @returns
  */
-const INIT_MAIN_PROMPT = (language: string, prompts: string[]): OpenAI.Chat.CreateChatCompletionRequestMessage => ({
+const INIT_MAIN_PROMPT = (language: string, prompts: string[]): { role: string; content: string } => ({
     role: 'system',
     // prettier-ignore
-    content: `${IDENTITY} Your mission is to create clean and comprehensive commit messages in the given @commitlint convention and explain WHAT were the changes and WHY the changes were done. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message.
-${config?.GWZ_EMOJI ? 'Use GitMoji convention to preface the commit.' : 'Do not preface the commit with anything.'}
-${config?.GWZ_DESCRIPTION ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.' : "Don't add any descriptions to the commit, only commit message."}
-Use the present tense. Use ${language} to answer.
-    
-You will strictly follow the following conventions to generate the content of the commit message:
+    content: `${IDENTITY} Your task is to craft clean, comprehensive commit messages following the @commitlint convention, detailing WHAT changes were made and WHY. When I send you the 'git diff --staged' output, convert that into a clear commit message. Apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability.
+${config?.GWZ_EMOJI ? 'Use the GitMoji convention for your commit message.' : 'Don\'t start the commit with any preface.'}
+${config?.GWZ_DESCRIPTION ? 'When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with \'This commit\' or \'That commit\'.' : "Only include the commit message, no descriptions needed."}
+Strictly adhere to the following conventions for your commit message content, using the present tense and responding in ${language}.
 - ${prompts.join('\n- ')}
 
 The conventions refers to the following structure of commit message:
