@@ -22,7 +22,6 @@ export enum CONFIG_KEYS {
     GWZ_LANGUAGE = 'GWZ_LANGUAGE',
     GWZ_MESSAGE_TEMPLATE_PLACEHOLDER = 'GWZ_MESSAGE_TEMPLATE_PLACEHOLDER',
     GWZ_PROMPT_MODULE = 'GWZ_PROMPT_MODULE',
-    GWZ_ONE_LINE_COMMIT = 'GWZ_ONE_LINE_COMMIT',
 }
 
 export const DEFAULT_MODEL_TOKEN_LIMIT = 4096;
@@ -125,12 +124,6 @@ export const configValidators = {
 
         return value;
     },
-
-    [CONFIG_KEYS.GWZ_ONE_LINE_COMMIT](value: any) {
-        validateConfig(CONFIG_KEYS.GWZ_ONE_LINE_COMMIT, typeof value === 'boolean', 'Must be true or false');
-
-        return value;
-    },
 };
 
 export type ConfigType = {
@@ -152,7 +145,6 @@ export const getConfig = (): ConfigType | null => {
         GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || 'en',
         GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || '$msg',
         GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || 'conventional-commit',
-        GWZ_ONE_LINE_COMMIT: process.env.GWZ_ONE_LINE_COMMIT === 'true' ? true : false,
     };
 
     const configExists = existsSync(configPath);
