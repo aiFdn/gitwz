@@ -34,15 +34,15 @@ async function getCommitDiff(commitSha: string) {
     return { sha: commitSha, diff: diffResponse.data };
 }
 
-interface DiffAndSHA {
+type DiffAndSHA = {
     sha: SHA;
     diff: Diff;
-}
+};
 
-interface MsgAndSHA {
+type MsgAndSHA = {
     sha: SHA;
     msg: string;
-}
+};
 
 // send only 3-4 size chunks of diffs in steps,
 // because openAI restricts "too many requests" at once with 429 error
