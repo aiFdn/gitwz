@@ -59,7 +59,6 @@ GWZ_MODEL=<either 'gpt-4-1106-preview','gpt-4','gpt-4-0613','gpt-4-0314','gpt-3.
 GWZ_LANGUAGE=<locale, scroll to the bottom to see options>
 GWZ_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
 GWZ_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
-GWZ_ONE_LINE_COMMIT=true
 ```
 
 ## **⚙️ Global Configuration**
@@ -137,16 +136,12 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
     Customize the format of your commit message placeholders.
 
 -   **Prompt Module**:
+
     ```sh
     gwz config set GWZ_PROMPT_MODULE=<module_choice>
     ```
+
     Choose between `conventional-commit` or `@commitlint` for generating commit messages.
-
--   **One Line Commit Integration**:
-
-    ```sh
-    gwz config set GWZ_ONE_LINE_COMMIT=true
-    ```
 
 ### Switching Models: Flexibility at Your Fingertips
 
@@ -401,7 +396,6 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
                       GWZ_MODEL: gpt-3.5-turbo-1106
                       GWZ_LANGUAGE: en
                       GWZ_PROMPT_MODULE: conventional-commit
-                      GWZ_ONE_LINE_COMMIT: true
     ```
 
 3. **Customization**:  
