@@ -33867,25 +33867,32 @@ var generateCommitMessageFromGitDiff = async (diff, extraArgs2) => {
   await assertGitRepo();
   const commitSpinner = de();
   commitSpinner.start("Generating the commit message");
+  const startTime = /* @__PURE__ */ new Date();
   try {
     let commitMessage = await generateCommitMessageByDiff(diff);
     const messageTemplate = checkMessageTemplate(extraArgs2);
     if (config7?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER && typeof messageTemplate === "string") {
       commitMessage = messageTemplate.replace(config7?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER, commitMessage);
     }
-    commitSpinner.stop("\u{1F4DD} Commit message generated");
+    const endTime = /* @__PURE__ */ new Date();
+    const timeTaken = (endTime - startTime) / 1e3;
+    commitSpinner.stop(
+      `${source_default.blue("[Commit Message Generated]")} ${source_default.bgGreen(
+        `Time Taken: ${timeTaken.toFixed(2)} seconds`
+      )}`
+    );
     $e(
-      `Generated commit message:
-${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014")}
-${commitMessage}
-${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014")}`
+      `${source_default.bold.green("Commit Message Successfully Generated in " + timeTaken.toFixed(2) + " seconds")}
+${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014")}
+${source_default.bold(commitMessage)}
+${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014")}`
     );
     const isCommitConfirmedByUser = await se({
       message: "Confirm the commit message?"
     });
     if (isCommitConfirmedByUser && !eD2(isCommitConfirmedByUser)) {
       const { stdout } = await execa("git", ["commit", "-m", commitMessage, ...extraArgs2]);
-      $e(`${source_default.green("\u2714")} Successfully committed`);
+      $e(`${source_default.green("SUCCESS:")} Successfully committed.`);
       $e(stdout);
       const remotes = await getGitRemotes();
       if (!remotes.length) {
@@ -33900,13 +33907,13 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         });
         if (isPushConfirmedByUser && !eD2(isPushConfirmedByUser)) {
           const pushSpinner = de();
-          pushSpinner.start(`Running 'git push ${remotes[0]}'`);
+          pushSpinner.start(`${source_default.blue("INFO:")} Running 'git push ${remotes[0]}'`);
           const { stdout: stdout2 } = await execa("git", ["push", "--verbose", remotes[0]]);
-          pushSpinner.stop(`${source_default.green("\u2714")} Successfully pushed all commits to ${remotes[0]}`);
+          pushSpinner.stop(`${source_default.green("SUCCESS:")} Successfully pushed all commits to ${remotes[0]}.`);
           if (stdout2)
             $e(stdout2);
         } else {
-          $e("`git push` aborted");
+          $e(`${source_default.yellow("WARNING:")} 'git push' aborted - Operation cancelled.`);
           process.exit(0);
         }
       } else {
@@ -33916,17 +33923,26 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         });
         if (!eD2(selectedRemote)) {
           const pushSpinner = de();
-          pushSpinner.start(`Running 'git push ${selectedRemote}'`);
+          pushSpinner.start(`${source_default.blue("INFO:")} Running 'git push ${selectedRemote}'`);
           const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
-          pushSpinner.stop(`${source_default.green("\u2714")} Successfully pushed all commits to ${selectedRemote}`);
+          pushSpinner.stop(
+            `${source_default.green("SUCCESS:")} Successfully pushed all commits to ${selectedRemote}.`
+          );
           if (stdout2)
             $e(stdout2);
         } else
           $e(`${source_default.gray("\u2716")} process cancelled`);
       }
+    } else {
+      $e(
+        `${source_default.yellow(
+          "WARNING:"
+        )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`
+      );
+      process.exit(0);
     }
   } catch (error) {
-    commitSpinner.stop("\u{1F4DD} Commit message generated");
+    commitSpinner.stop(`${source_default.blue("INFO:")} Commit message generated.`);
     const err = error;
     $e(`${source_default.red("\u2716")} ${err?.message || err}`);
     process.exit(1);
@@ -33948,7 +33964,14 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
     $e(source_default.red("No changes detected"));
     process.exit(1);
   }
-  oe("gitwz");
+  oe(`
+${source_default.bold.green("GitWiz \u2014 Use AI to Enhance Your Git Commits")}
+${source_default.blue("Developed by:")} ${source_default.bold("Md. Sazzad Hossain Sharkar")} (${source_default.underline.blue(
+    "https://github.com/SHSharkar"
+  )})
+
+${source_default.yellow("Preparing to commit changes...")}
+    `);
   if (errorChangedFiles ?? errorStagedFiles) {
     $e(`${source_default.red("\u2716")} ${errorChangedFiles ?? errorStagedFiles}`);
     process.exit(1);
@@ -34140,19 +34163,18 @@ var prepareCommitMessageHook = async (isStageAllFlag = false) => {
 // src/utils/checkIsLatestVersion.ts
 var checkIsLatestVersion = async () => {
   const latestVersion = await getGitWizLatestVersion();
-  if (latestVersion) {
-    const currentVersion = package_default.version;
-    if (currentVersion !== latestVersion) {
-      $e(
-        source_default.yellow(
-          `
-You are not using the latest stable version of GitWiz with new features and bug fixes.
-Current version: ${currentVersion}. Latest version: ${latestVersion}.
-\u{1F680} To update run: npm i -g gitwz@latest.
-        `
-        )
-      );
-    }
+  const currentVersion = package_default.version;
+  if (latestVersion && currentVersion !== latestVersion) {
+    $e(
+      `${source_default.bold.blue("INFO:")} You are currently using GitWiz version ${source_default.bold(currentVersion)}. 
+${source_default.bold.green("UPDATE AVAILABLE:")} The latest stable version is ${source_default.bold(latestVersion)}. 
+To update, run: ${source_default.bold.cyan("npm i -g gitwz@latest")}.`
+    );
+  } else {
+    $e(
+      `${source_default.bold.blue("INFO:")} You are currently using GitWiz version ${source_default.bold(currentVersion)}. 
+This is the latest available version.`
+    );
   }
 };
 
