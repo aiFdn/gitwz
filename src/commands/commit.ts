@@ -22,6 +22,7 @@ const checkMessageTemplate = (extraArgs: string[]): string | false => {
     return false;
 };
 
+// eslint-disable-next-line complexity
 const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[]): Promise<void> => {
     await assertGitRepo();
     const commitSpinner = spinner();
@@ -77,6 +78,7 @@ ${chalk.grey('——————————————————')}`,
 
                     pushSpinner.stop(`${chalk.green('✔')} Successfully pushed all commits to ${remotes[0]}`);
 
+                    // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
                 } else {
                     outro('`git push` aborted');
@@ -97,6 +99,7 @@ ${chalk.grey('——————————————————')}`,
 
                     pushSpinner.stop(`${chalk.green('✔')} Successfully pushed all commits to ${selectedRemote}`);
 
+                    // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
                 } else outro(`${chalk.gray('✖')} process cancelled`);
             }
@@ -110,6 +113,7 @@ ${chalk.grey('——————————————————')}`,
     }
 };
 
+// eslint-disable-next-line complexity
 export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean = false) {
     if (isStageAllFlag) {
         const changedFiles = await getChangedFiles();
