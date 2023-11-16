@@ -28,21 +28,34 @@ const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[
     const commitSpinner = spinner();
     commitSpinner.start('Generating the commit message');
 
+    const startTime = new Date();
+
     try {
         let commitMessage = await generateCommitMessageByDiff(diff);
 
         const messageTemplate = checkMessageTemplate(extraArgs);
+
         if (config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER && typeof messageTemplate === 'string') {
             commitMessage = messageTemplate.replace(config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER, commitMessage);
         }
 
-        commitSpinner.stop('📝 Commit message generated');
+        const endTime = new Date();
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const timeTaken = (endTime - startTime) / 1000;
+
+        commitSpinner.stop(
+            `${chalk.blue('[Commit Message Generated]')} ${chalk.bgGreen(
+                `Time Taken: ${timeTaken.toFixed(2)} seconds`,
+            )}`,
+        );
 
         outro(
-            `Generated commit message:
-${chalk.grey('——————————————————')}
-${commitMessage}
-${chalk.grey('——————————————————')}`,
+            `${chalk.bold.green('Commit Message Successfully Generated in ' + timeTaken.toFixed(2) + ' seconds')}
+${chalk.grey('——————————————————————————————')}
+${chalk.bold(commitMessage)}
+${chalk.grey('——————————————————————————————')}`,
         );
 
         const isCommitConfirmedByUser = await confirm({
@@ -103,6 +116,13 @@ ${chalk.grey('——————————————————')}`,
                     if (stdout) outro(stdout);
                 } else outro(`${chalk.gray('✖')} process cancelled`);
             }
+        } else {
+            outro(
+                `${chalk.yellow(
+                    'WARNING:',
+                )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`,
+            );
+            process.exit(0);
         }
     } catch (error) {
         commitSpinner.stop('📝 Commit message generated');
