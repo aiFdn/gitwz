@@ -13,7 +13,7 @@ Transform your Git experience with GitWiz. It's a breeze to run via the CLI (`gw
     npm install -g gitwz
     ```
 
-    > **MacOS Tip**: You might need `sudo` for a global install.
+    > **MacOS Tip**: You might need `sudo` for global installation.
 
 2. **API Key Acquisition**:  
    Grab your API key from [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys). Don't forget to include your payment details for full API functionality.
