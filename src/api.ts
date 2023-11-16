@@ -3,7 +3,6 @@ import axios from 'axios';
 import chalk from 'chalk';
 import { execa } from 'execa';
 import OpenAI from 'openai';
-import { ChatCompletionMessageParam } from 'openai/resources';
 
 import { CONFIG_MODES, DEFAULT_MODEL_TOKEN_LIMIT, getConfig } from './commands/config';
 import { GenerateCommitMessageErrorEnum } from './generateCommitMessageFromGitDiff';
@@ -34,7 +33,19 @@ class OpenAi {
     constructor() {}
 
     public generateCommitMessage = async (
-        messages: Array<ChatCompletionMessageParam>,
+        messages: (
+            | OpenAI.Chat.ChatCompletionSystemMessageParam
+            | OpenAI.Chat.ChatCompletionUserMessageParam
+            | OpenAI.Chat.ChatCompletionAssistantMessageParam
+            | OpenAI.Chat.ChatCompletionToolMessageParam
+            | OpenAI.Chat.ChatCompletionFunctionMessageParam
+            | OpenAI.Chat.ChatCompletionCreateParamsNonStreaming
+            | OpenAI.Chat.ChatCompletionCreateParamsStreaming
+            | {
+                  role: string;
+                  content: string;
+              }
+        )[],
     ): Promise<string | null | undefined> => {
         const params = {
             model: MODEL,
@@ -51,30 +62,11 @@ class OpenAi {
                 throw new Error(GenerateCommitMessageErrorEnum.tooMuchTokens);
             }
 
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             const response = await openai.chat.completions.create(params);
 
             const message = response.choices[0].message;
-
-            if (config?.GWZ_ONE_LINE_COMMIT) {
-                const { choices: oneLineData } = await openai.chat.completions.create({
-                    ...params,
-                    messages: [
-                        {
-                            role: 'system',
-                            content:
-                                messages[0].content +
-                                'Commit messages should be concise and informative, starting with a summary under 50 characters followed by a detailed section outlining significant changes. Summaries should be clear and to the point, while descriptions should explain the changes purpose, impact, and necessity. All file modifications should be consolidated into a single commit message, focusing on critical updates without referencing multiple or inconsistent lines. Before finalizing, ensure the accuracy of messages against the code changes.',
-                        },
-                        {
-                            role: 'user',
-                            content: `Here are commits messages:\n${message?.content}`,
-                        },
-                    ],
-                });
-
-                const oneLineMessage = oneLineData[0].message;
-                return oneLineMessage?.content;
-            }
 
             return message?.content;
         } catch (error) {
