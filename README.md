@@ -4,6 +4,8 @@
 
 Transform your Git experience with GitWiz. It's a breeze to run via the CLI (`gwz`), committing your changes with insightful messages in seconds.
 
+![](https://github.com/SHSharkar/gitwz/.github/intro-poster.png 'Intro Poster of GitWiz')
+
 ### **Installation Guide**
 
 1. **Global Installation**:  
