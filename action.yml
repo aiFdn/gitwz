@@ -1,7 +1,7 @@
 name: 'GitWiz — Use AI to Enhance Your Git Commits'
 description: 'Automate commit messages with meaningful AI-generated messages.'
 author: 'https://github.com/SHSharkar'
-repo: 'https://github.com/SHSharkar/gitwz'
+repo: 'https://github.com/aiFdn/gitwz'
 branding:
     icon: 'git-commit'
     color: 'purple'
