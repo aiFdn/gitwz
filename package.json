@@ -1,7 +1,7 @@
 {
     "name": "gitwz",
     "version": "5.2.1",
-    "description": "Make your git commits stand out! With AI (OpenAI GPT), transform plain git commits into eye-catching ones in just a few seconds.",
+    "description": "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
     "type": "module",
     "license": "MIT",
     "keywords": [
