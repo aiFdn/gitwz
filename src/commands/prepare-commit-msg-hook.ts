@@ -23,7 +23,13 @@ export const prepareCommitMessageHook = async (isStageAllFlag: boolean = false) 
 
             if (changedFiles) await gitAdd({ files: changedFiles });
             else {
-                outro('No changes detected, write some code and run  `gwz` again');
+                outro(
+                    chalk.hex('#FFA500')(
+                        `${chalk.bold.inverse.hex('#FFA500')(
+                            ` WARNING `,
+                        )} No changes detected, write some code and run 'gw' again`,
+                    ),
+                );
                 process.exit(1);
             }
         }
