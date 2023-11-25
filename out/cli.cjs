@@ -23837,7 +23837,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "6.1.0",
+  version: "6.2.0",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
@@ -33896,7 +33896,7 @@ var checkMessageTemplate = (extraArgs2) => {
 var generateCommitMessageFromGitDiff = async (diff, extraArgs2) => {
   await assertGitRepo();
   const commitSpinner = de();
-  commitSpinner.start(`${source_default.black.bold.bgBlue(` INFO `)} Generating the commit message...`);
+  commitSpinner.start(`${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Generating the commit message...`);
   const startTime = /* @__PURE__ */ new Date();
   try {
     let commitMessage = await generateCommitMessageByDiff(diff);
@@ -33922,7 +33922,7 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
     });
     if (isCommitConfirmedByUser && !eD2(isCommitConfirmedByUser)) {
       const { stdout } = await execa("git", ["commit", "-m", commitMessage, ...extraArgs2]);
-      $e(`${source_default.bold.hex("#ffffff").bgGreen(` SUCCESS `)} Successfully committed changes.`);
+      $e(`${source_default.bold.hex("#ffffff").bgHex("#3EC70B")(` SUCCESS `)} Successfully committed changes.`);
       $e(stdout);
       const remotes = await getGitRemotes();
       if (!remotes.length) {
@@ -33938,19 +33938,23 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         if (isPushConfirmedByUser && !eD2(isPushConfirmedByUser)) {
           const pushSpinner = de();
           pushSpinner.start(
-            `${source_default.black.bold.bgBlue(` INFO `)} Running ${source_default.black.bold.bgBlue(
+            `${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Running ${source_default.black.bold.bgBlue(
               ` git push ${remotes[0]} `
             )}`
           );
           const { stdout: stdout2 } = await execa("git", ["push", "--verbose", remotes[0]]);
           pushSpinner.stop(
-            `${source_default.hex("#ffffff").bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${source_default.bold.hex("#ffffff").bgGreen(` ${remotes[0]} `)}.`
+            `${source_default.hex("#ffffff").bold.bgHex("#3EC70B")(
+              ` SUCCESS `
+            )} Successfully pushed all commits to ${source_default.bold.hex("#ffffff").bgHex("#3EC70B")(
+              ` ${remotes[0]} `
+            )}.`
           );
           if (stdout2)
             $e(stdout2);
         } else {
           $e(
-            `${source_default.bold.inverse.hex("#FFA500")(` WARNING `)} 'git push' aborted - Operation cancelled.`
+            `${source_default.bold.inverse.hex("#FF6000")(` WARNING `)} 'git push' aborted - Operation cancelled.`
           );
           process.exit(0);
         }
@@ -33962,31 +33966,35 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         if (!eD2(selectedRemote)) {
           const pushSpinner = de();
           pushSpinner.start(
-            `${source_default.black.bold.bgBlue(` INFO `)} Running ${source_default.black.bold.bgBlue(
+            `${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Running ${source_default.black.bold.bgBlue(
               ` git push ${selectedRemote} `
             )}`
           );
           const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
           pushSpinner.stop(
-            `${source_default.hex("#ffffff").bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${source_default.bold.hex("#ffffff").bgGreen(` ${selectedRemote} `)}.`
+            `${source_default.hex("#ffffff").bold.bgHex("#3EC70B")(
+              ` SUCCESS `
+            )} Successfully pushed all commits to ${source_default.bold.hex("#ffffff").bgHex("#3EC70B")(
+              ` ${selectedRemote} `
+            )}.`
           );
           if (stdout2)
             $e(stdout2);
         } else
-          $e(`${source_default.bold.inverse.hex("#FFA500")(` WARNING `)} process cancelled`);
+          $e(`${source_default.bold.inverse.hex("#FF6000")(` WARNING `)} process cancelled`);
       }
     } else {
       $e(
-        `${source_default.bold.inverse.hex("#FFA500")(
+        `${source_default.bold.inverse.hex("#FF6000")(
           ` WARNING `
         )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`
       );
       process.exit(0);
     }
   } catch (error) {
-    commitSpinner.stop(`${source_default.black.bold.bgBlue(` INFO `)} Commit message generated.`);
+    commitSpinner.stop(`${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Commit message generated.`);
     const err = error;
-    $e(`${source_default.hex("#ffffff").bold.bgRed(` ERROR `)} ${err?.message || err}`);
+    $e(`${source_default.hex("#ffffff").bold.bgHex("#FF0303")(` ERROR `)} ${err?.message || err}`);
     process.exit(1);
   }
 };
@@ -33997,8 +34005,8 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
       await gitAdd({ files: changedFiles2 });
     else {
       $e(
-        source_default.hex("#FFA500")(
-          `${source_default.bold.inverse.hex("#FFA500")(
+        source_default.hex("#FF6000")(
+          `${source_default.bold.inverse.hex("#FF6000")(
             ` WARNING `
           )} No changes detected, write some code and run 'gw' again`
         )
@@ -34010,8 +34018,8 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
   const [changedFiles, errorChangedFiles] = await trytm(getChangedFiles());
   if (!changedFiles?.length && !stagedFiles?.length) {
     $e(
-      source_default.hex("#FFA500")(
-        `${source_default.bold.inverse.hex("#FFA500")(
+      source_default.hex("#FF6000")(
+        `${source_default.bold.inverse.hex("#FF6000")(
           ` WARNING `
         )} No changes detected, write some code and run 'gw' again`
       )
@@ -34019,22 +34027,23 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
     process.exit(1);
   }
   oe(`
-${source_default.bold.inverse.hex("#FFA500")(` GitWiz ${package_default.version} `)}${source_default.italic.dim(
+${source_default.bold.inverse.hex("#FF6000")(` GitWiz ${package_default.version} `)}${source_default.italic.dim(
     ` Use AI to Enhance Your Git Commits `
   )}
-${source_default.inverse.bold.hex("#45CFDD")(` Developed By `)} ${source_default.bold("Md. Sazzad Hossain Sharkar")} (${source_default.underline(
-    "https://github.com/SHSharkar"
-  )})
+    
+${source_default.hex("#ffffff").bold.bgHex("#12486B")(` Developed By `)} ${source_default.bold(
+    "Md. Sazzad Hossain Sharkar"
+  )} (${source_default.underline("https://github.com/SHSharkar")})
     
 ${source_default.yellow("Preparing to commit changes...")}`);
   if (errorChangedFiles ?? errorStagedFiles) {
-    $e(`${source_default.hex("#ffffff").bold.bgRed(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
+    $e(`${source_default.hex("#ffffff").bold.bgHex("#FF0303")(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
     process.exit(1);
   }
   const stagedFilesSpinner = de();
   stagedFilesSpinner.start("Counting staged files...");
   if (!stagedFiles.length) {
-    stagedFilesSpinner.stop(`${source_default.bold.black.bgBlue(` INFO `)} No staged files found.`);
+    stagedFilesSpinner.stop(`${source_default.bold.hex("#ffffff").bgHex("#1640D6")(` INFO `)} No staged files found.`);
     const isStageAllAndCommitConfirmedByUser = await se({
       message: "Do you want to stage all files and generate commit message?"
     });
@@ -34067,7 +34076,7 @@ ${stagedFiles.map(
     generateCommitMessageFromGitDiff(await getDiff({ files: stagedFiles }), extraArgs2)
   );
   if (generateCommitError) {
-    $e(`${source_default.hex("#ffffff").bold.bgRed(` ERROR `)} ${generateCommitError}`);
+    $e(`${source_default.hex("#ffffff").bold.bgHex("#FF0303")(` ERROR `)} ${generateCommitError}`);
     process.exit(1);
   }
   process.exit(0);
@@ -34229,14 +34238,20 @@ var checkIsLatestVersion = async () => {
   const currentVersion = package_default.version;
   if (latestVersion && currentVersion !== latestVersion) {
     $e(
-      `You're currently using GitWiz ${source_default.bold.inverse.hex("#1640D6")(
+      `You're currently using GitWiz ${source_default.bold.hex("#ffffff").bgHex("#1640D6")(
         ` v${currentVersion} `
-      )}. An update to ${source_default.bold.inverse.hex("#54B435")(
+      )}. An update to ${source_default.bold.hex("#ffffff").bold.bgHex("#3EC70B")(
         ` v${latestVersion} `
-      )} is available. Update by typing: ${source_default.bold.black.bgCyan(` npm i -g gitwz@latest `)}.`
+      )} is available. Update by typing: ${source_default.bold.hex("#ffffff").bgHex("#FF6000")(
+        ` npm i -g gitwz@latest `
+      )}.`
     );
   } else {
-    $e(`You're now using the latest version of GitWiz, ${source_default.bold.black.bgGreen(` v${currentVersion} `)}.`);
+    $e(
+      `You're now using the latest version of GitWiz, ${source_default.bold.hex("#ffffff").bold.bgHex("#3EC70B")(
+        ` v${currentVersion} `
+      )}.`
+    );
   }
 };
 
