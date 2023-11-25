@@ -157,7 +157,13 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
 
         if (changedFiles) await gitAdd({ files: changedFiles });
         else {
-            outro('No changes detected, write some code and run  `gwz` again');
+            outro(
+                chalk.hex('#FFA500')(
+                    `${chalk.bold.inverse.hex('#FFA500')(
+                        ` WARNING `,
+                    )} No changes detected, write some code and run 'gw' again`,
+                ),
+            );
             process.exit(1);
         }
     }
@@ -167,8 +173,10 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
 
     if (!changedFiles?.length && !stagedFiles?.length) {
         outro(
-            chalk.red(
-                `${chalk.bold.black.bgRed(` ERROR `)} No changes detected, write some code and run  \`gwz\` again`,
+            chalk.hex('#FFA500')(
+                `${chalk.bold.inverse.hex('#FFA500')(
+                    ` WARNING `,
+                )} No changes detected, write some code and run 'gw' again`,
             ),
         );
         process.exit(1);
