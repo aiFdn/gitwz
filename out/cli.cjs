@@ -23837,7 +23837,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "6.0.2",
+  version: "6.0.3",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
@@ -23899,7 +23899,7 @@ var package_default = {
     start: "node ./out/cli.cjs",
     dev: "tsx ./src/cli.ts",
     build: "rimraf out && node esbuild.config.js",
-    "build:push": `npm run build && git add . && git commit -m "Build: $(date '+%Y-%m-%d %H:%M:%S')" && git push`,
+    "build:push": `npm run build && git add . && git commit -m "Build: $(date '+%B %d, %Y, %I:%M:%S %p')" && git push`,
     deploy: "npm version patch && npm run build:push && git push --tags && npm publish --tag latest",
     lint: "eslint src && tsc --noEmit",
     "lint:fix": "eslint src --ext ts --fix && prettier --write src",
