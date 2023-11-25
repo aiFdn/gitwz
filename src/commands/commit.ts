@@ -2,6 +2,7 @@ import { confirm, intro, isCancel, multiselect, outro, select, spinner } from '@
 import chalk from 'chalk';
 import { execa } from 'execa';
 
+import pkgJson from '../../package.json';
 import { generateCommitMessageByDiff } from '../generateCommitMessageFromGitDiff';
 import { assertGitRepo, getChangedFiles, getDiff, getStagedFiles, gitAdd } from '../utils/git';
 import { trytm } from '../utils/trytm';
@@ -26,7 +27,7 @@ const checkMessageTemplate = (extraArgs: string[]): string | false => {
 const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[]): Promise<void> => {
     await assertGitRepo();
     const commitSpinner = spinner();
-    commitSpinner.start('Generating the commit message');
+    commitSpinner.start(`${chalk.black.bold.bgBlue(` INFO `)} Generating the commit message...`);
 
     const startTime = new Date();
 
@@ -46,13 +47,13 @@ const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[
         const timeTaken = (endTime - startTime) / 1000;
 
         commitSpinner.stop(
-            `${chalk.blue('[Commit Message Generated]')} ${chalk.bgGreen(
-                `Time Taken: ${timeTaken.toFixed(2)} seconds`,
+            `${chalk.bold.black.bgGreen(` SUCCESS `)} ${chalk.black.italic.bgBlue(
+                ` Time Taken: ${timeTaken.toFixed(2)} seconds `,
             )}`,
         );
 
         outro(
-            `${chalk.bold.green('Commit Message Successfully Generated in ' + timeTaken.toFixed(2) + ' seconds')}
+            `${chalk.bold.dim('Commit Message Successfully Generated in ' + timeTaken.toFixed(2) + ' seconds')}
 ${chalk.grey('——————————————————————————————')}
 ${chalk.bold(commitMessage)}
 ${chalk.grey('——————————————————————————————')}`,
@@ -65,7 +66,7 @@ ${chalk.grey('——————————————————————
         if (isCommitConfirmedByUser && !isCancel(isCommitConfirmedByUser)) {
             const { stdout } = await execa('git', ['commit', '-m', commitMessage, ...extraArgs]);
 
-            outro(`${chalk.green('SUCCESS:')} Successfully committed.`);
+            outro(`${chalk.bold.black.bgGreen(` SUCCESS `)} Successfully committed changes.`);
 
             outro(stdout);
 
@@ -85,16 +86,18 @@ ${chalk.grey('——————————————————————
                 if (isPushConfirmedByUser && !isCancel(isPushConfirmedByUser)) {
                     const pushSpinner = spinner();
 
-                    pushSpinner.start(`${chalk.blue('INFO:')} Running 'git push ${remotes[0]}'`);
+                    pushSpinner.start(`${chalk.black.bold.bgBlue(` INFO `)} Running 'git push ${remotes[0]}...'`);
 
                     const { stdout } = await execa('git', ['push', '--verbose', remotes[0]]);
 
-                    pushSpinner.stop(`${chalk.green('SUCCESS:')} Successfully pushed all commits to ${remotes[0]}.`);
+                    pushSpinner.stop(
+                        `${chalk.black.bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${remotes[0]}.`,
+                    );
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
                 } else {
-                    outro(`${chalk.yellow('WARNING:')} 'git push' aborted - Operation cancelled.`);
+                    outro(`${chalk.black.bold.bgYellow(` WARNING `)} 'git push' aborted - Operation cancelled.`);
                     process.exit(0);
                 }
             } else {
@@ -106,31 +109,33 @@ ${chalk.grey('——————————————————————
                 if (!isCancel(selectedRemote)) {
                     const pushSpinner = spinner();
 
-                    pushSpinner.start(`${chalk.blue('INFO:')} Running 'git push ${selectedRemote}'`);
+                    pushSpinner.start(`${chalk.black.bold.bgBlue(` INFO `)} Running 'git push ${selectedRemote}...'`);
 
                     const { stdout } = await execa('git', ['push', selectedRemote]);
 
                     pushSpinner.stop(
-                        `${chalk.green('SUCCESS:')} Successfully pushed all commits to ${selectedRemote}.`,
+                        `${chalk.black.bold.bgGreen(
+                            ` SUCCESS `,
+                        )} Successfully pushed all commits to ${selectedRemote}.`,
                     );
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
-                } else outro(`${chalk.gray('✖')} process cancelled`);
+                } else outro(`${chalk.black.bold.bgGray(` WARNING `)} process cancelled`);
             }
         } else {
             outro(
-                `${chalk.yellow(
-                    'WARNING:',
+                `${chalk.black.bold.bgYellow(
+                    ` WARNING `,
                 )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`,
             );
             process.exit(0);
         }
     } catch (error) {
-        commitSpinner.stop(`${chalk.blue('INFO:')} Commit message generated.`);
+        commitSpinner.stop(`${chalk.black.bold.bgBlue(` INFO `)} Commit message generated.`);
 
         const err = error as Error;
-        outro(`${chalk.red('✖')} ${err?.message || err}`);
+        outro(`${chalk.white.bold.bgRed(` ERROR `)} ${err?.message || err}`);
         process.exit(1);
     }
 };
@@ -151,30 +156,35 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
     const [changedFiles, errorChangedFiles] = await trytm(getChangedFiles());
 
     if (!changedFiles?.length && !stagedFiles?.length) {
-        outro(chalk.red('No changes detected'));
+        outro(
+            chalk.red(
+                `${chalk.bold.black.bgRed(` ERROR `)} No changes detected, write some code and run  \`gwz\` again`,
+            ),
+        );
         process.exit(1);
     }
 
     intro(`
-${chalk.bold.green('GitWiz — Use AI to Enhance Your Git Commits')}
-${chalk.blue('Developed by:')} ${chalk.bold('Md. Sazzad Hossain Sharkar')} (${chalk.underline.blue(
+${chalk.bold.inverse.hex('#FFA500')(` GitWiz ${pkgJson.version} `)}${chalk.italic.dim(
+        ` Use AI to Enhance Your Git Commits `,
+    )}
+${chalk.inverse.bold.hex('#45CFDD')(` Developed By `)} ${chalk.bold('Md. Sazzad Hossain Sharkar')} (${chalk.underline(
         'https://github.com/SHSharkar',
     )})
-
-${chalk.yellow('Preparing to commit changes...')}
-    `);
+    
+${chalk.yellow('Preparing to commit changes...')}`);
 
     if (errorChangedFiles ?? errorStagedFiles) {
-        outro(`${chalk.red('✖')} ${errorChangedFiles ?? errorStagedFiles}`);
+        outro(`${chalk.white.bold.bgRed(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
         process.exit(1);
     }
 
     const stagedFilesSpinner = spinner();
 
-    stagedFilesSpinner.start('Counting staged files');
+    stagedFilesSpinner.start('Counting staged files...');
 
     if (!stagedFiles.length) {
-        stagedFilesSpinner.stop('No files are staged');
+        stagedFilesSpinner.stop(`${chalk.bold.black.bgBlue(` INFO `)} No staged files found.`);
         const isStageAllAndCommitConfirmedByUser = await confirm({
             message: 'Do you want to stage all files and generate commit message?',
         });
@@ -186,7 +196,7 @@ ${chalk.yellow('Preparing to commit changes...')}
 
         if (stagedFiles.length === 0 && changedFiles.length > 0) {
             const files = (await multiselect({
-                message: chalk.cyan('Select the files you want to add to the commit:'),
+                message: chalk.bold(`Select files to stage:`),
                 options: changedFiles.map((file) => ({
                     value: file,
                     label: file,
@@ -203,7 +213,11 @@ ${chalk.yellow('Preparing to commit changes...')}
     }
 
     stagedFilesSpinner.stop(
-        `${stagedFiles.length} staged files:\n${stagedFiles.map((file) => `  ${file}`).join('\n')}`,
+        `${chalk.bold.black.bgBlue(` ${stagedFiles.length} file(s) were staged. `)}\n${stagedFiles
+            .map((file, index) =>
+                stagedFiles.length > 1 ? `  ${chalk.dim(`${index + 1}. ${file}`)}` : `  ${chalk.dim(file)}`,
+            )
+            .join('\n')}`,
     );
 
     const [, generateCommitError] = await trytm(
@@ -211,7 +225,7 @@ ${chalk.yellow('Preparing to commit changes...')}
     );
 
     if (generateCommitError) {
-        outro(`${chalk.red('✖')} ${generateCommitError}`);
+        outro(`${chalk.white.bold.bgRed(` ERROR `)} ${generateCommitError}`);
         process.exit(1);
     }
 
