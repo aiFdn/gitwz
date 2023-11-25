@@ -47,7 +47,7 @@ const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[
         const timeTaken = (endTime - startTime) / 1000;
 
         commitSpinner.stop(
-            `${chalk.bold.black.bgGreen(` SUCCESS `)} ${chalk.black.italic.bgBlue(
+            `${chalk.bold.hex('#ffffff').bgHex('#3EC70B')(` SUCCESS `)} ${chalk.hex('#ffffff').bgHex('#1640D6')(
                 ` Time Taken: ${timeTaken.toFixed(2)} seconds `,
             )}`,
         );
@@ -66,7 +66,7 @@ ${chalk.grey('——————————————————————
         if (isCommitConfirmedByUser && !isCancel(isCommitConfirmedByUser)) {
             const { stdout } = await execa('git', ['commit', '-m', commitMessage, ...extraArgs]);
 
-            outro(`${chalk.bold.black.bgGreen(` SUCCESS `)} Successfully committed changes.`);
+            outro(`${chalk.bold.hex('#ffffff').bgGreen(` SUCCESS `)} Successfully committed changes.`);
 
             outro(stdout);
 
@@ -95,15 +95,19 @@ ${chalk.grey('——————————————————————
                     const { stdout } = await execa('git', ['push', '--verbose', remotes[0]]);
 
                     pushSpinner.stop(
-                        `${chalk.black.bold.bgGreen(
-                            ` SUCCESS `,
-                        )} Successfully pushed all commits to ${chalk.bold.black.bgGreen(` ${remotes[0]} `)}.`,
+                        `${chalk
+                            .hex('#ffffff')
+                            .bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${chalk.bold
+                            .hex('#ffffff')
+                            .bgGreen(` ${remotes[0]} `)}.`,
                     );
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
                 } else {
-                    outro(`${chalk.black.bold.bgYellow(` WARNING `)} 'git push' aborted - Operation cancelled.`);
+                    outro(
+                        `${chalk.bold.inverse.hex('#FFA500')(` WARNING `)} 'git push' aborted - Operation cancelled.`,
+                    );
                     process.exit(0);
                 }
             } else {
@@ -124,18 +128,20 @@ ${chalk.grey('——————————————————————
                     const { stdout } = await execa('git', ['push', selectedRemote]);
 
                     pushSpinner.stop(
-                        `${chalk.black.bold.bgGreen(
-                            ` SUCCESS `,
-                        )} Successfully pushed all commits to ${chalk.bold.black.bgGreen(` ${selectedRemote} `)}.`,
+                        `${chalk
+                            .hex('#ffffff')
+                            .bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${chalk.bold
+                            .hex('#ffffff')
+                            .bgGreen(` ${selectedRemote} `)}.`,
                     );
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
-                } else outro(`${chalk.black.bold.bgGray(` WARNING `)} process cancelled`);
+                } else outro(`${chalk.bold.inverse.hex('#FFA500')(` WARNING `)} process cancelled`);
             }
         } else {
             outro(
-                `${chalk.black.bold.bgYellow(
+                `${chalk.bold.inverse.hex('#FFA500')(
                     ` WARNING `,
                 )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`,
             );
@@ -145,7 +151,7 @@ ${chalk.grey('——————————————————————
         commitSpinner.stop(`${chalk.black.bold.bgBlue(` INFO `)} Commit message generated.`);
 
         const err = error as Error;
-        outro(`${chalk.white.bold.bgRed(` ERROR `)} ${err?.message || err}`);
+        outro(`${chalk.hex('#ffffff').bold.bgRed(` ERROR `)} ${err?.message || err}`);
         process.exit(1);
     }
 };
@@ -193,7 +199,7 @@ ${chalk.inverse.bold.hex('#45CFDD')(` Developed By `)} ${chalk.bold('Md. Sazzad 
 ${chalk.yellow('Preparing to commit changes...')}`);
 
     if (errorChangedFiles ?? errorStagedFiles) {
-        outro(`${chalk.white.bold.bgRed(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
+        outro(`${chalk.hex('#ffffff').bold.bgRed(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
         process.exit(1);
     }
 
@@ -231,7 +237,7 @@ ${chalk.yellow('Preparing to commit changes...')}`);
     }
 
     stagedFilesSpinner.stop(
-        `${chalk.bold.black.bgBlue(` ${stagedFiles.length} file(s) were staged. `)}\n${stagedFiles
+        `${chalk.hex('#ffffff').bold.bgHex('#1640D6')(` ${stagedFiles.length} file(s) were staged. `)}\n${stagedFiles
             .map((file, index) =>
                 stagedFiles.length > 1 ? `  ${chalk.dim(`${index + 1}. ${file}`)}` : `  ${chalk.dim(file)}`,
             )
@@ -243,7 +249,7 @@ ${chalk.yellow('Preparing to commit changes...')}`);
     );
 
     if (generateCommitError) {
-        outro(`${chalk.white.bold.bgRed(` ERROR `)} ${generateCommitError}`);
+        outro(`${chalk.hex('#ffffff').bold.bgRed(` ERROR `)} ${generateCommitError}`);
         process.exit(1);
     }
 
