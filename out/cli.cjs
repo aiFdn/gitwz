@@ -33894,7 +33894,7 @@ var checkMessageTemplate = (extraArgs2) => {
 var generateCommitMessageFromGitDiff = async (diff, extraArgs2) => {
   await assertGitRepo();
   const commitSpinner = de();
-  commitSpinner.start("Generating the commit message");
+  commitSpinner.start(`${source_default.black.bold.bgBlue(` INFO `)} Generating the commit message...`);
   const startTime = /* @__PURE__ */ new Date();
   try {
     let commitMessage = await generateCommitMessageByDiff(diff);
@@ -33905,12 +33905,12 @@ var generateCommitMessageFromGitDiff = async (diff, extraArgs2) => {
     const endTime = /* @__PURE__ */ new Date();
     const timeTaken = (endTime - startTime) / 1e3;
     commitSpinner.stop(
-      `${source_default.blue("[Commit Message Generated]")} ${source_default.bgGreen(
-        `Time Taken: ${timeTaken.toFixed(2)} seconds`
+      `${source_default.bold.black.bgGreen(` SUCCESS `)} ${source_default.black.italic.bgBlue(
+        ` Time Taken: ${timeTaken.toFixed(2)} seconds `
       )}`
     );
     $e(
-      `${source_default.bold.green("Commit Message Successfully Generated in " + timeTaken.toFixed(2) + " seconds")}
+      `${source_default.bold.dim("Commit Message Successfully Generated in " + timeTaken.toFixed(2) + " seconds")}
 ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014")}
 ${source_default.bold(commitMessage)}
 ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014")}`
@@ -33920,7 +33920,7 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
     });
     if (isCommitConfirmedByUser && !eD2(isCommitConfirmedByUser)) {
       const { stdout } = await execa("git", ["commit", "-m", commitMessage, ...extraArgs2]);
-      $e(`${source_default.green("SUCCESS:")} Successfully committed.`);
+      $e(`${source_default.bold.black.bgGreen(` SUCCESS `)} Successfully committed changes.`);
       $e(stdout);
       const remotes = await getGitRemotes();
       if (!remotes.length) {
@@ -33935,13 +33935,15 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         });
         if (isPushConfirmedByUser && !eD2(isPushConfirmedByUser)) {
           const pushSpinner = de();
-          pushSpinner.start(`${source_default.blue("INFO:")} Running 'git push ${remotes[0]}'`);
+          pushSpinner.start(`${source_default.black.bold.bgBlue(` INFO `)} Running 'git push ${remotes[0]}...'`);
           const { stdout: stdout2 } = await execa("git", ["push", "--verbose", remotes[0]]);
-          pushSpinner.stop(`${source_default.green("SUCCESS:")} Successfully pushed all commits to ${remotes[0]}.`);
+          pushSpinner.stop(
+            `${source_default.black.bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${remotes[0]}.`
+          );
           if (stdout2)
             $e(stdout2);
         } else {
-          $e(`${source_default.yellow("WARNING:")} 'git push' aborted - Operation cancelled.`);
+          $e(`${source_default.black.bold.bgYellow(` WARNING `)} 'git push' aborted - Operation cancelled.`);
           process.exit(0);
         }
       } else {
@@ -33951,28 +33953,30 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         });
         if (!eD2(selectedRemote)) {
           const pushSpinner = de();
-          pushSpinner.start(`${source_default.blue("INFO:")} Running 'git push ${selectedRemote}'`);
+          pushSpinner.start(`${source_default.black.bold.bgBlue(` INFO `)} Running 'git push ${selectedRemote}...'`);
           const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
           pushSpinner.stop(
-            `${source_default.green("SUCCESS:")} Successfully pushed all commits to ${selectedRemote}.`
+            `${source_default.black.bold.bgGreen(
+              ` SUCCESS `
+            )} Successfully pushed all commits to ${selectedRemote}.`
           );
           if (stdout2)
             $e(stdout2);
         } else
-          $e(`${source_default.gray("\u2716")} process cancelled`);
+          $e(`${source_default.black.bold.bgGray(` WARNING `)} process cancelled`);
       }
     } else {
       $e(
-        `${source_default.yellow(
-          "WARNING:"
+        `${source_default.black.bold.bgYellow(
+          ` WARNING `
         )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`
       );
       process.exit(0);
     }
   } catch (error) {
-    commitSpinner.stop(`${source_default.blue("INFO:")} Commit message generated.`);
+    commitSpinner.stop(`${source_default.black.bold.bgBlue(` INFO `)} Commit message generated.`);
     const err = error;
-    $e(`${source_default.red("\u2716")} ${err?.message || err}`);
+    $e(`${source_default.white.bold.bgRed(` ERROR `)} ${err?.message || err}`);
     process.exit(1);
   }
 };
@@ -33989,25 +33993,30 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
   const [stagedFiles, errorStagedFiles] = await trytm(getStagedFiles());
   const [changedFiles, errorChangedFiles] = await trytm(getChangedFiles());
   if (!changedFiles?.length && !stagedFiles?.length) {
-    $e(source_default.red("No changes detected"));
+    $e(
+      source_default.red(
+        `${source_default.bold.black.bgRed(` ERROR `)} No changes detected, write some code and run  \`gwz\` again`
+      )
+    );
     process.exit(1);
   }
   oe(`
-${source_default.bold.green("GitWiz \u2014 Use AI to Enhance Your Git Commits")}
-${source_default.blue("Developed by:")} ${source_default.bold("Md. Sazzad Hossain Sharkar")} (${source_default.underline.blue(
+${source_default.bold.inverse.hex("#FFA500")(` GitWiz ${package_default.version} `)}${source_default.italic.dim(
+    ` Use AI to Enhance Your Git Commits `
+  )}
+${source_default.inverse.bold.hex("#45CFDD")(` Developed By `)} ${source_default.bold("Md. Sazzad Hossain Sharkar")} (${source_default.underline(
     "https://github.com/SHSharkar"
   )})
-
-${source_default.yellow("Preparing to commit changes...")}
-    `);
+    
+${source_default.yellow("Preparing to commit changes...")}`);
   if (errorChangedFiles ?? errorStagedFiles) {
-    $e(`${source_default.red("\u2716")} ${errorChangedFiles ?? errorStagedFiles}`);
+    $e(`${source_default.white.bold.bgRed(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
     process.exit(1);
   }
   const stagedFilesSpinner = de();
-  stagedFilesSpinner.start("Counting staged files");
+  stagedFilesSpinner.start("Counting staged files...");
   if (!stagedFiles.length) {
-    stagedFilesSpinner.stop("No files are staged");
+    stagedFilesSpinner.stop(`${source_default.bold.black.bgBlue(` INFO `)} No staged files found.`);
     const isStageAllAndCommitConfirmedByUser = await se({
       message: "Do you want to stage all files and generate commit message?"
     });
@@ -34017,7 +34026,7 @@ ${source_default.yellow("Preparing to commit changes...")}
     }
     if (stagedFiles.length === 0 && changedFiles.length > 0) {
       const files = await ae({
-        message: source_default.cyan("Select the files you want to add to the commit:"),
+        message: source_default.bold(`Select files to stage:`),
         options: changedFiles.map((file) => ({
           value: file,
           label: file
@@ -34031,14 +34040,16 @@ ${source_default.yellow("Preparing to commit changes...")}
     process.exit(1);
   }
   stagedFilesSpinner.stop(
-    `${stagedFiles.length} staged files:
-${stagedFiles.map((file) => `  ${file}`).join("\n")}`
+    `${source_default.bold.black.bgBlue(` ${stagedFiles.length} file(s) were staged. `)}
+${stagedFiles.map(
+      (file, index) => stagedFiles.length > 1 ? `  ${source_default.dim(`${index + 1}. ${file}`)}` : `  ${source_default.dim(file)}`
+    ).join("\n")}`
   );
   const [, generateCommitError] = await trytm(
     generateCommitMessageFromGitDiff(await getDiff({ files: stagedFiles }), extraArgs2)
   );
   if (generateCommitError) {
-    $e(`${source_default.red("\u2716")} ${generateCommitError}`);
+    $e(`${source_default.white.bold.bgRed(` ERROR `)} ${generateCommitError}`);
     process.exit(1);
   }
   process.exit(0);
@@ -34194,15 +34205,14 @@ var checkIsLatestVersion = async () => {
   const currentVersion = package_default.version;
   if (latestVersion && currentVersion !== latestVersion) {
     $e(
-      `${source_default.bold.blue("INFO:")} You are currently using GitWiz version ${source_default.bold(currentVersion)}. 
-${source_default.bold.green("UPDATE AVAILABLE:")} The latest stable version is ${source_default.bold(latestVersion)}. 
-To update, run: ${source_default.bold.cyan("npm i -g gitwz@latest")}.`
+      `You're currently using GitWiz ${source_default.bold.inverse.hex("#1640D6")(
+        ` v${currentVersion} `
+      )}. An update to ${source_default.bold.inverse.hex("#54B435")(
+        ` v${latestVersion} `
+      )} is available. Update by typing: ${source_default.bold.black.bgCyan(` npm i -g gitwz@latest `)}.`
     );
   } else {
-    $e(
-      `${source_default.bold.blue("INFO:")} You are currently using GitWiz version ${source_default.bold(currentVersion)}. 
-This is the latest available version.`
-    );
+    $e(`You're now using the latest version of GitWiz, ${source_default.bold.black.bgGreen(` v${currentVersion} `)}.`);
   }
 };
 
