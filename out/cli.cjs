@@ -23837,7 +23837,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "6.0.3",
+  version: "6.0.4",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
@@ -33996,7 +33996,13 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
     if (changedFiles2)
       await gitAdd({ files: changedFiles2 });
     else {
-      $e("No changes detected, write some code and run  `gwz` again");
+      $e(
+        source_default.hex("#FFA500")(
+          `${source_default.bold.inverse.hex("#FFA500")(
+            ` WARNING `
+          )} No changes detected, write some code and run 'gw' again`
+        )
+      );
       process.exit(1);
     }
   }
@@ -34004,8 +34010,10 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
   const [changedFiles, errorChangedFiles] = await trytm(getChangedFiles());
   if (!changedFiles?.length && !stagedFiles?.length) {
     $e(
-      source_default.red(
-        `${source_default.bold.black.bgRed(` ERROR `)} No changes detected, write some code and run  \`gwz\` again`
+      source_default.hex("#FFA500")(
+        `${source_default.bold.inverse.hex("#FFA500")(
+          ` WARNING `
+        )} No changes detected, write some code and run 'gw' again`
       )
     );
     process.exit(1);
@@ -34185,7 +34193,13 @@ var prepareCommitMessageHook = async (isStageAllFlag = false) => {
       if (changedFiles)
         await gitAdd({ files: changedFiles });
       else {
-        $e("No changes detected, write some code and run  `gwz` again");
+        $e(
+          source_default.hex("#FFA500")(
+            `${source_default.bold.inverse.hex("#FFA500")(
+              ` WARNING `
+            )} No changes detected, write some code and run 'gw' again`
+          )
+        );
         process.exit(1);
       }
     }
