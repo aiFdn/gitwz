@@ -10,13 +10,19 @@ export const checkIsLatestVersion = async () => {
 
     if (latestVersion && currentVersion !== latestVersion) {
         outro(
-            `You're currently using GitWiz ${chalk.bold.inverse.hex('#1640D6')(
+            `You're currently using GitWiz ${chalk.bold.hex('#ffffff').bgHex('#1640D6')(
                 ` v${currentVersion} `,
-            )}. An update to ${chalk.bold.inverse.hex('#54B435')(
+            )}. An update to ${chalk.bold.hex('#ffffff').bold.bgHex('#3EC70B')(
                 ` v${latestVersion} `,
-            )} is available. Update by typing: ${chalk.bold.black.bgCyan(` npm i -g gitwz@latest `)}.`,
+            )} is available. Update by typing: ${chalk.bold.hex('#ffffff').bgHex('#FF6000')(
+                ` npm i -g gitwz@latest `,
+            )}.`,
         );
     } else {
-        outro(`You're now using the latest version of GitWiz, ${chalk.bold.black.bgGreen(` v${currentVersion} `)}.`);
+        outro(
+            `You're now using the latest version of GitWiz, ${chalk.bold.hex('#ffffff').bold.bgHex('#3EC70B')(
+                ` v${currentVersion} `,
+            )}.`,
+        );
     }
 };
