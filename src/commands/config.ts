@@ -177,6 +177,7 @@ export const setConfig = (keyValues: [key: string, value: string][]) => {
     const config = getConfig() || {};
 
     for (const [configKey, configValue] of keyValues) {
+        // eslint-disable-next-line no-prototype-builtins
         if (!configValidators.hasOwnProperty(configKey)) {
             throw new Error(`Unsupported config key: ${configKey}`);
         }
