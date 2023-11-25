@@ -50,6 +50,8 @@ export const generateCommitMessageByDiff = async (diff: string): Promise<string>
     try {
         const INIT_MESSAGES_PROMPT = await getMainCommitPrompt();
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         const INIT_MESSAGES_PROMPT_LENGTH = INIT_MESSAGES_PROMPT.map((msg) => tokenCount(msg.content) + 4).reduce(
             (a, b) => a + b,
             0,
