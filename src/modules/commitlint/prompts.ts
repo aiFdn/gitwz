@@ -8,7 +8,7 @@ import { i18n, I18nLocals } from '../../i18n';
 import { IDENTITY, INIT_DIFF_PROMPT } from '../../prompts';
 
 const config = getConfig();
-const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
+const translation = i18n[(config?.GW_LANGUAGE as I18nLocals) || 'en'];
 
 type DeepPartial<T> = {
     [P in keyof T]?: {
@@ -229,8 +229,8 @@ const INIT_MAIN_PROMPT = (language: string, prompts: string[]): { role: string; 
     role: 'system',
     // prettier-ignore
     content: `${IDENTITY} Your task is to craft clean, comprehensive commit messages following the @commitlint convention, detailing WHAT changes were made and WHY. When I send you the 'git diff --staged' output, convert that into a clear commit message. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability.
-${config?.GWZ_EMOJI ? 'Use the GitMoji convention for your commit message.' : 'Don\'t start the commit with any preface.'}
-${config?.GWZ_DESCRIPTION ? 'When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with \'This commit\' or \'That commit\'.' : "Only include the commit message, no descriptions needed."}
+${config?.GW_EMOJI ? 'Use the GitMoji convention for your commit message.' : 'Don\'t start the commit with any preface.'}
+${config?.GW_DESCRIPTION ? 'When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with \'This commit\' or \'That commit\'.' : "Only include the commit message, no descriptions needed."}
 Strictly adhere to the following conventions for your commit message content, using the present tense and responding in ${language}.
 - ${prompts.join('\n- ')}
 

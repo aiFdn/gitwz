@@ -11,7 +11,7 @@ import { CommitlintLLMConfig } from './types';
 import * as utils from './utils';
 
 const config = getConfig();
-const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
+const translation = i18n[(config?.GW_LANGUAGE as I18nLocals) || 'en'];
 
 export const configureCommitlintIntegration = async (force = false) => {
     const spin = spinner();

@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import { COMMITLINT_LLM_CONFIG_PATH } from './constants';
 import { CommitlintLLMConfig } from './types';
 
-// eslint-disable-next-line jsdoc/require-returns
+// eslint-disable-next-line
 /**
  * Removes the "\n" only if occurring twice
  * @param input
@@ -36,6 +36,5 @@ export const writeCommitlintLLMConfig = async (commitlintLLMConfig: CommitlintLL
 
 export const getCommitlintLLMConfig = async (): Promise<CommitlintLLMConfig> => {
     const content = await fs.readFile(COMMITLINT_LLM_CONFIG_PATH);
-    const commitLintLLMConfig = JSON.parse(content.toString()) as CommitlintLLMConfig;
-    return commitLintLLMConfig;
+    return JSON.parse(content.toString()) as CommitlintLLMConfig;
 };
