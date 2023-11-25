@@ -10458,7 +10458,7 @@ var require_browser = __commonJS({
     exports.load = load2;
     exports.useColors = useColors;
     exports.storage = localstorage();
-    exports.destroy = (() => {
+    exports.destroy = /* @__PURE__ */ (() => {
       let warned = false;
       return () => {
         if (!warned) {
@@ -14511,7 +14511,7 @@ function I5(e3, t2) {
     throw new TypeError(`${t2} is not a function.`);
 }
 function D3(e3, t2) {
-  if (!function(e4) {
+  if (!/* @__PURE__ */ function(e4) {
     return "object" == typeof e4 && null !== e4 || "function" == typeof e4;
   }(e3))
     throw new TypeError(`${t2} is not an object.`);
@@ -23838,8 +23838,9 @@ function G3(t2, e3) {
 var package_default = {
   name: "gitwz",
   version: "5.2.1",
-  packageManager: "^npm@18.0.0",
   description: "Make your git commits stand out! With AI (OpenAI GPT), transform plain git commits into eye-catching ones in just a few seconds.",
+  type: "module",
+  license: "MIT",
   keywords: [
     "ai",
     "ai-commits",
@@ -23869,14 +23870,18 @@ var package_default = {
   main: "cli.js",
   bin: {
     gitwz: "out/cli.cjs",
-    gwz: "out/cli.cjs"
+    gwz: "out/cli.cjs",
+    gw: "out/cli.cjs"
   },
   repository: {
-    url: "git+https://github.com/SHSharkar/gitwz.git"
+    url: "git+https://github.com/aiFdn/gitwz.git"
   },
-  type: "module",
-  author: "https://github.com/SHSharkar",
-  license: "MIT",
+  author: "Md. Sazzad Hossain Sharkar <md@szd.sh> (https://github.com/SHSharkar/)",
+  homepage: "https://github.com/aiFdn/gitwz#readme",
+  bugs: {
+    url: "https://github.com/aiFdn/gitwz/issues",
+    email: "md@szd.sh"
+  },
   files: [
     "out/cli.cjs",
     "out/tiktoken_bg.wasm"
@@ -23896,26 +23901,27 @@ var package_default = {
     build: "rimraf out && node esbuild.config.js",
     "build:push": "npm run build && git add . && git commit -m 'build' && git push",
     deploy: "npm version patch && npm run build:push && git push --tags && npm publish --tag latest",
-    lint: "eslint src --ext ts --fix && tsc --noEmit",
+    lint: "eslint src && tsc --noEmit",
+    "lint:fix": "eslint src --ext ts --fix && prettier --write src",
     format: "prettier --write src"
   },
   devDependencies: {
-    "@commitlint/types": "^18.4.0",
+    "@commitlint/types": "^18.4.3",
     "@types/ini": "^1.3.33",
     "@types/inquirer": "^9.0.7",
-    "@types/node": "^20.9.0",
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
     dotenv: "^16.3.1",
-    esbuild: "^0.19.5",
-    eslint: "^8.53.0",
+    esbuild: "^0.19.7",
+    eslint: "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     prettier: "^3.1.0",
-    tsx: "^4.1.2",
-    typescript: "^5.2.2"
+    tsx: "^4.5.0",
+    typescript: "^5.3.2"
   },
   dependencies: {
     "@actions/core": "^1.10.1",
@@ -23928,13 +23934,12 @@ var package_default = {
     axios: "^1.6.2",
     chalk: "^5.3.0",
     cleye: "^1.3.2",
-    "eslint-plugin-jsdoc": "^46.9.0",
-    "eslint-plugin-security": "^1.7.1",
     execa: "^8.0.1",
     ignore: "^5.3.0",
     ini: "^4.1.1",
     inquirer: "^9.2.12",
-    openai: "^4.19.0"
+    "log-symbols": "^6.0.0",
+    openai: "^4.20.0"
   }
 };
 
@@ -25643,7 +25648,7 @@ if (process.platform === "linux") {
 }
 
 // node_modules/signal-exit/dist/mjs/index.js
-var processOk = (process8) => !!process8 && typeof process8 === "object" && typeof process8.removeListener === "function" && typeof process8.emit === "function" && typeof process8.reallyExit === "function" && typeof process8.listeners === "function" && typeof process8.kill === "function" && typeof process8.pid === "number" && typeof process8.on === "function";
+var processOk = (process9) => !!process9 && typeof process9 === "object" && typeof process9.removeListener === "function" && typeof process9.emit === "function" && typeof process9.reallyExit === "function" && typeof process9.listeners === "function" && typeof process9.kill === "function" && typeof process9.pid === "number" && typeof process9.on === "function";
 var kExitEmitter = Symbol.for("signal-exit emitter");
 var global2 = globalThis;
 var ObjectDefineProperty = Object.defineProperty.bind(Object);
@@ -25736,15 +25741,15 @@ var SignalExit = class extends SignalExitBase {
   #originalProcessReallyExit;
   #sigListeners = {};
   #loaded = false;
-  constructor(process8) {
+  constructor(process9) {
     super();
-    this.#process = process8;
+    this.#process = process9;
     this.#sigListeners = {};
     for (const sig of signals) {
       this.#sigListeners[sig] = () => {
         const listeners = this.#process.listeners(sig);
         let { count } = this.#emitter;
-        const p4 = process8;
+        const p4 = process9;
         if (typeof p4.__signal_exit_emitter__ === "object" && typeof p4.__signal_exit_emitter__.count === "number") {
           count += p4.__signal_exit_emitter__.count;
         }
@@ -25753,12 +25758,12 @@ var SignalExit = class extends SignalExitBase {
           const ret = this.#emitter.emit("exit", null, sig);
           const s2 = sig === "SIGHUP" ? this.#hupSig : sig;
           if (!ret)
-            process8.kill(process8.pid, s2);
+            process9.kill(process9.pid, s2);
         }
       };
     }
-    this.#originalProcessReallyExit = process8.reallyExit;
-    this.#originalProcessEmit = process8.emit;
+    this.#originalProcessReallyExit = process9.reallyExit;
+    this.#originalProcessEmit = process9.emit;
   }
   onExit(cb, opts) {
     if (!processOk(this.#process)) {
@@ -26268,8 +26273,8 @@ var getSpawnedResult = async ({ stdout, stderr, all: all3 }, { encoding, buffer,
 };
 
 // node_modules/execa/lib/promise.js
-var nativePromisePrototype = (/* @__PURE__ */ (async () => {
-})()).constructor.prototype;
+var nativePromisePrototype = (async () => {
+})().constructor.prototype;
 var descriptors = ["then", "catch", "finally"].map((property) => [
   property,
   Reflect.getOwnPropertyDescriptor(nativePromisePrototype, property)
@@ -26596,7 +26601,7 @@ function bind(fn, thisArg) {
 // node_modules/axios/lib/utils.js
 var { toString } = Object.prototype;
 var { getPrototypeOf } = Object;
-var kindOf = ((cache) => (thing) => {
+var kindOf = /* @__PURE__ */ ((cache) => (thing) => {
   const str2 = toString.call(thing);
   return cache[str2] || (cache[str2] = str2.slice(8, -1).toLowerCase());
 })(/* @__PURE__ */ Object.create(null));
@@ -26775,7 +26780,7 @@ var toArray = (thing) => {
   }
   return arr;
 };
-var isTypedArray = ((TypedArray) => {
+var isTypedArray = /* @__PURE__ */ ((TypedArray) => {
   return (thing) => {
     return TypedArray && thing instanceof TypedArray;
   };
@@ -28774,7 +28779,7 @@ var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? (
   }()
 ) : (
   // Non standard browser envs (web workers, react-native) lack needed support.
-  function nonStandardBrowserEnv() {
+  /* @__PURE__ */ function nonStandardBrowserEnv() {
     return function isURLSameOrigin() {
       return true;
     };
@@ -29557,7 +29562,7 @@ var {
 } = axios_default;
 
 // node_modules/openai/version.mjs
-var VERSION3 = "4.19.0";
+var VERSION3 = "4.20.0";
 
 // node_modules/openai/_shims/registry.mjs
 var auto = false;
@@ -32919,6 +32924,33 @@ var openai_default = OpenAI;
 var dotenv = __toESM(require_main(), 1);
 var import_fs2 = require("fs");
 var import_ini = __toESM(require_ini(), 1);
+
+// node_modules/is-unicode-supported/index.js
+var import_node_process8 = __toESM(require("node:process"), 1);
+function isUnicodeSupported() {
+  if (import_node_process8.default.platform !== "win32") {
+    return import_node_process8.default.env.TERM !== "linux";
+  }
+  return Boolean(import_node_process8.default.env.CI) || Boolean(import_node_process8.default.env.WT_SESSION) || Boolean(import_node_process8.default.env.TERMINUS_SUBLIME) || import_node_process8.default.env.ConEmuTask === "{cmd::Cmder}" || import_node_process8.default.env.TERM_PROGRAM === "Terminus-Sublime" || import_node_process8.default.env.TERM_PROGRAM === "vscode" || import_node_process8.default.env.TERM === "xterm-256color" || import_node_process8.default.env.TERM === "alacritty" || import_node_process8.default.env.TERMINAL_EMULATOR === "JetBrains-JediTerm";
+}
+
+// node_modules/log-symbols/index.js
+var main = {
+  info: source_default.blue("\u2139"),
+  success: source_default.green("\u2714"),
+  warning: source_default.yellow("\u26A0"),
+  error: source_default.red("\u2716")
+};
+var fallback = {
+  info: source_default.blue("i"),
+  success: source_default.green("\u221A"),
+  warning: source_default.yellow("\u203C"),
+  error: source_default.red("\xD7")
+};
+var logSymbols = isUnicodeSupported() ? main : fallback;
+var log_symbols_default = logSymbols;
+
+// src/commands/config.ts
 var import_os = require("os");
 var import_path2 = require("path");
 
@@ -33132,52 +33164,52 @@ dotenv.config();
 var DEFAULT_MODEL_TOKEN_LIMIT = 4096;
 var validateConfig = (key, condition, validationMessage) => {
   if (!condition) {
-    $e(`${source_default.red("\u2716")} Unsupported config key ${key}: ${validationMessage}`);
+    $e(`${source_default.red(log_symbols_default.error)} Unsupported config key ${key}: ${validationMessage}`);
     process.exit(1);
   }
 };
 var configValidators = {
-  ["GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */](value, config8 = {}) {
-    validateConfig("GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */, value, "Cannot be empty");
-    validateConfig("GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */, value.startsWith("sk-"), 'Must start with "sk-"');
+  ["GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */](value, config8 = {}) {
+    validateConfig("GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */, value, "Cannot be empty");
+    validateConfig("GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */, value.startsWith("sk-"), 'Must start with "sk-"');
     validateConfig(
-      "GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */,
-      config8["GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */] || value.length === 51,
+      "GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */,
+      config8["GW_OPENAI_BASE_PATH" /* GW_OPENAI_BASE_PATH */] || value.length === 51,
       "Must be 51 characters long"
     );
     return value;
   },
-  ["GWZ_DESCRIPTION" /* GWZ_DESCRIPTION */](value) {
-    validateConfig("GWZ_DESCRIPTION" /* GWZ_DESCRIPTION */, typeof value === "boolean", "Must be true or false");
+  ["GW_DESCRIPTION" /* GW_DESCRIPTION */](value) {
+    validateConfig("GW_DESCRIPTION" /* GW_DESCRIPTION */, typeof value === "boolean", "Must be true or false");
     return value;
   },
-  ["GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */](value) {
+  ["GW_OPENAI_MAX_TOKENS" /* GW_OPENAI_MAX_TOKENS */](value) {
     if (typeof value === "string") {
       value = parseInt(value);
-      validateConfig("GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */, !isNaN(value), "Must be a number");
+      validateConfig("GW_OPENAI_MAX_TOKENS" /* GW_OPENAI_MAX_TOKENS */, !isNaN(value), "Must be a number");
     }
     validateConfig(
-      "GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */,
+      "GW_OPENAI_MAX_TOKENS" /* GW_OPENAI_MAX_TOKENS */,
       value ? typeof value === "number" : void 0,
       "Must be a number"
     );
     return value;
   },
-  ["GWZ_EMOJI" /* GWZ_EMOJI */](value) {
-    validateConfig("GWZ_EMOJI" /* GWZ_EMOJI */, typeof value === "boolean", "Must be true or false");
+  ["GW_EMOJI" /* GW_EMOJI */](value) {
+    validateConfig("GW_EMOJI" /* GW_EMOJI */, typeof value === "boolean", "Must be true or false");
     return value;
   },
-  ["GWZ_LANGUAGE" /* GWZ_LANGUAGE */](value) {
-    validateConfig("GWZ_LANGUAGE" /* GWZ_LANGUAGE */, getI18nLocal(value), `${value} is not supported yet`);
+  ["GW_LANGUAGE" /* GW_LANGUAGE */](value) {
+    validateConfig("GW_LANGUAGE" /* GW_LANGUAGE */, getI18nLocal(value), `${value} is not supported yet`);
     return getI18nLocal(value);
   },
-  ["GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */](value) {
-    validateConfig("GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */, typeof value === "string", "Must be string");
+  ["GW_OPENAI_BASE_PATH" /* GW_OPENAI_BASE_PATH */](value) {
+    validateConfig("GW_OPENAI_BASE_PATH" /* GW_OPENAI_BASE_PATH */, typeof value === "string", "Must be string");
     return value;
   },
-  ["GWZ_MODEL" /* GWZ_MODEL */](value) {
+  ["GW_MODEL" /* GW_MODEL */](value) {
     validateConfig(
-      "GWZ_MODEL" /* GWZ_MODEL */,
+      "GW_MODEL" /* GW_MODEL */,
       [
         "gpt-4-1106-preview",
         "gpt-4",
@@ -33192,17 +33224,17 @@ var configValidators = {
     );
     return value;
   },
-  ["GWZ_MESSAGE_TEMPLATE_PLACEHOLDER" /* GWZ_MESSAGE_TEMPLATE_PLACEHOLDER */](value) {
+  ["GW_MESSAGE_TEMPLATE_PLACEHOLDER" /* GW_MESSAGE_TEMPLATE_PLACEHOLDER */](value) {
     validateConfig(
-      "GWZ_MESSAGE_TEMPLATE_PLACEHOLDER" /* GWZ_MESSAGE_TEMPLATE_PLACEHOLDER */,
+      "GW_MESSAGE_TEMPLATE_PLACEHOLDER" /* GW_MESSAGE_TEMPLATE_PLACEHOLDER */,
       value.startsWith("$"),
       `${value} must start with $, for example: '$msg'`
     );
     return value;
   },
-  ["GWZ_PROMPT_MODULE" /* GWZ_PROMPT_MODULE */](value) {
+  ["GW_PROMPT_MODULE" /* GW_PROMPT_MODULE */](value) {
     validateConfig(
-      "GWZ_PROMPT_MODULE" /* GWZ_PROMPT_MODULE */,
+      "GW_PROMPT_MODULE" /* GW_PROMPT_MODULE */,
       ["conventional-commit", "@commitlint"].includes(value),
       `${value} is not supported yet, use '@commitlint' or 'conventional-commit' (default)`
     );
@@ -33212,15 +33244,15 @@ var configValidators = {
 var configPath = (0, import_path2.join)((0, import_os.homedir)(), ".gitwz");
 var getConfig = () => {
   const configFromEnv = {
-    GWZ_OPENAI_API_KEY: process.env.GWZ_OPENAI_API_KEY,
-    GWZ_OPENAI_MAX_TOKENS: process.env.GWZ_OPENAI_MAX_TOKENS ? Number(process.env.GWZ_OPENAI_MAX_TOKENS) : void 0,
-    GWZ_OPENAI_BASE_PATH: process.env.GWZ_OPENAI_BASE_PATH,
-    GWZ_DESCRIPTION: process.env.GWZ_DESCRIPTION === "true" ? true : false,
-    GWZ_EMOJI: process.env.GWZ_EMOJI === "true" ? true : false,
-    GWZ_MODEL: process.env.GWZ_MODEL || "gpt-3.5-turbo-1106",
-    GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || "en",
-    GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
-    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit"
+    GW_OPENAI_API_KEY: process.env.GW_OPENAI_API_KEY,
+    GW_OPENAI_MAX_TOKENS: process.env.GW_OPENAI_MAX_TOKENS ? Number(process.env.GW_OPENAI_MAX_TOKENS) : void 0,
+    GW_OPENAI_BASE_PATH: process.env.GW_OPENAI_BASE_PATH,
+    GW_DESCRIPTION: process.env.GW_DESCRIPTION === "true" ? true : false,
+    GW_EMOJI: process.env.GW_EMOJI === "true" ? true : false,
+    GW_MODEL: process.env.GW_MODEL || "gpt-3.5-turbo-1106",
+    GW_LANGUAGE: process.env.GW_LANGUAGE || "en",
+    GW_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GW_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
+    GW_PROMPT_MODULE: process.env.GW_PROMPT_MODULE || "conventional-commit"
   };
   const configExists = (0, import_fs2.existsSync)(configPath);
   if (!configExists)
@@ -33234,11 +33266,10 @@ var getConfig = () => {
     }
     try {
       const validator = configValidators[configKey];
-      const validValue = validator(config8[configKey] ?? configFromEnv[configKey], config8);
-      config8[configKey] = validValue;
+      config8[configKey] = validator(config8[configKey] ?? configFromEnv[configKey], config8);
     } catch (error) {
       $e(
-        `'${configKey}' name is invalid, it should be either 'GWZ_${configKey.toUpperCase()}' or it doesn't exist.`
+        `'${configKey}' name is invalid, it should be either 'GW_${configKey.toUpperCase()}' or it doesn't exist.`
       );
       $e(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
       process.exit(1);
@@ -33258,11 +33289,10 @@ var setConfig = (keyValues) => {
     } catch (error) {
       parsedConfigValue = configValue;
     }
-    const validValue = configValidators[configKey](parsedConfigValue);
-    config8[configKey] = validValue;
+    config8[configKey] = configValidators[configKey](parsedConfigValue);
   }
   (0, import_fs2.writeFileSync)(configPath, (0, import_ini.stringify)(config8), "utf8");
-  $e(`${source_default.green("\u2714")} Config successfully set`);
+  $e(`${source_default.green(log_symbols_default.success)} Config successfully set`);
 };
 var configCommand = G3(
   {
@@ -33284,7 +33314,7 @@ var configCommand = G3(
         throw new Error(`Unsupported mode: ${mode2}. Valid modes are: "set" and "get"`);
       }
     } catch (error) {
-      $e(`${source_default.red("\u2716")} ${error}`);
+      $e(`${source_default.red(log_symbols_default.error)} ${error}`);
       process.exit(1);
     }
   }
@@ -33304,16 +33334,16 @@ function tokenCount(content) {
 
 // src/api.ts
 var config2 = getConfig();
-var maxTokens = config2?.GWZ_OPENAI_MAX_TOKENS || 500;
-var apiKey = config2?.GWZ_OPENAI_API_KEY;
-var MODEL = config2?.GWZ_MODEL || "gpt-3.5-turbo-1106";
+var maxTokens = config2?.GW_OPENAI_MAX_TOKENS || 500;
+var apiKey = config2?.GW_OPENAI_API_KEY;
+var MODEL = config2?.GW_MODEL || "gpt-3.5-turbo-1106";
 var [command, mode] = process.argv.slice(2);
 if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   oe("gitwz");
   $e(
-    "GWZ_OPENAI_API_KEY is not set, please run `gwz config set GWZ_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`"
+    "GW_OPENAI_API_KEY is not set, please run `gw config set GW_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`"
   );
-  $e("For help look into README https://github.com/SHSharkar/gitwz#setup");
+  $e("For help look into README https://github.com/aiFdn/gitwz#setup");
   process.exit(1);
 }
 var openai = new openai_default({
@@ -33346,7 +33376,7 @@ var OpenAi = class {
         const openAiError = error.response.data.error;
         if (openAiError?.message)
           $e(openAiError.message);
-        $e("For help look into README https://github.com/SHSharkar/gitwz#setup");
+        $e("For help look into README https://github.com/aiFdn/gitwz#setup");
       }
       throw err;
     }
@@ -33382,7 +33412,7 @@ var computeHash = async (content, algorithm = "sha256") => {
 // src/modules/commitlint/prompts.ts
 var import_types = __toESM(require_lib3(), 1);
 var config3 = getConfig();
-var translation = i18n[config3?.GWZ_LANGUAGE || "en"];
+var translation = i18n[config3?.GW_LANGUAGE || "en"];
 var getTypeRuleExtraDescription = (type, prompt) => prompt?.questions?.type?.enum?.[type]?.description;
 var llmReadableRules = {
   blankline: (key, applicable) => `There should ${applicable} be a blank line at the beginning of the ${key}.`,
@@ -33499,8 +33529,8 @@ var INIT_MAIN_PROMPT = (language, prompts) => ({
   role: "system",
   // prettier-ignore
   content: `${IDENTITY} Your task is to craft clean, comprehensive commit messages following the @commitlint convention, detailing WHAT changes were made and WHY. When I send you the 'git diff --staged' output, convert that into a clear commit message. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability.
-${config3?.GWZ_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
-${config3?.GWZ_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
+${config3?.GW_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
+${config3?.GW_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
 Strictly adhere to the following conventions for your commit message content, using the present tense and responding in ${language}.
 - ${prompts.join("\n- ")}
 
@@ -33550,13 +33580,12 @@ var writeCommitlintLLMConfig = async (commitlintLLMConfig) => {
 };
 var getCommitlintLLMConfig = async () => {
   const content = await import_promises2.default.readFile(COMMITLINT_LLM_CONFIG_PATH);
-  const commitLintLLMConfig = JSON.parse(content.toString());
-  return commitLintLLMConfig;
+  return JSON.parse(content.toString());
 };
 
 // src/modules/commitlint/config.ts
 var config4 = getConfig();
-var translation2 = i18n[config4?.GWZ_LANGUAGE || "en"];
+var translation2 = i18n[config4?.GW_LANGUAGE || "en"];
 var configureCommitlintIntegration = async (force = false) => {
   const spin = de();
   spin.start("Loading @commitlint configuration");
@@ -33592,13 +33621,13 @@ var configureCommitlintIntegration = async (force = false) => {
 
 // src/prompts.ts
 var config5 = getConfig();
-var translation3 = i18n[config5?.GWZ_LANGUAGE || "en"];
+var translation3 = i18n[config5?.GW_LANGUAGE || "en"];
 var IDENTITY = "Focus solely on crafting a git commit message as the author, without deviating to other tasks.";
 var INIT_MAIN_PROMPT2 = (language) => ({
   role: "system",
   content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT and WHY) from the 'git diff --staged' output. Summarize these in present tense, keeping them under 50 characters. In your detailed descriptions, explain the reasons, impact, necessity, and context of the changes. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Write the commit message in ${language}, ensuring it's conversational and clear. Review the code and 'git diff' output for message accuracy, differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
-    ${config5?.GWZ_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
-    ${config5?.GWZ_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
+    ${config5?.GW_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
+    ${config5?.GW_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
   `
 });
 var INIT_DIFF_PROMPT = {
@@ -33630,15 +33659,15 @@ var INIT_DIFF_PROMPT = {
 };
 var INIT_CONSISTENCY_PROMPT = (translation4) => ({
   role: "assistant",
-  content: `${config5?.GWZ_EMOJI ? "\u{1F41B} " : ""}${translation4.commitFix}
-${config5?.GWZ_EMOJI ? "\u2728 " : ""}${translation4.commitFeat}
-${config5?.GWZ_DESCRIPTION ? translation4.commitDescription : ""}`
+  content: `${config5?.GW_EMOJI ? "\u{1F41B} " : ""}${translation4.commitFix}
+${config5?.GW_EMOJI ? "\u2728 " : ""}${translation4.commitFeat}
+${config5?.GW_DESCRIPTION ? translation4.commitDescription : ""}`
 });
 var getMainCommitPrompt = async () => {
-  switch (config5?.GWZ_PROMPT_MODULE) {
+  switch (config5?.GW_PROMPT_MODULE) {
     case "@commitlint":
       if (!await commitlintLLMConfigExists()) {
-        le(`GWZ_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`);
+        le(`GW_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`);
         await configureCommitlintIntegration();
       }
       const commitLintConfig = await getCommitlintLLMConfig();
@@ -33691,7 +33720,7 @@ var generateCommitMessageByDiff = async (diff) => {
       (a3, b7) => a3 + b7,
       0
     );
-    const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config6?.GWZ_OPENAI_MAX_TOKENS;
+    const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config6?.GW_OPENAI_MAX_TOKENS;
     if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
       const commitMessagePromises = await getCommitMsgsPromisesFromFileDiffs(diff, MAX_REQUEST_TOKENS);
       const commitMessages = [];
@@ -33857,7 +33886,7 @@ var getGitRemotes = async () => {
 };
 var checkMessageTemplate = (extraArgs2) => {
   for (const key in extraArgs2) {
-    if (extraArgs2[key].includes(config7?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER))
+    if (extraArgs2[key].includes(config7?.GW_MESSAGE_TEMPLATE_PLACEHOLDER))
       return extraArgs2[key];
   }
   return false;
@@ -33870,8 +33899,8 @@ var generateCommitMessageFromGitDiff = async (diff, extraArgs2) => {
   try {
     let commitMessage = await generateCommitMessageByDiff(diff);
     const messageTemplate = checkMessageTemplate(extraArgs2);
-    if (config7?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER && typeof messageTemplate === "string") {
-      commitMessage = messageTemplate.replace(config7?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER, commitMessage);
+    if (config7?.GW_MESSAGE_TEMPLATE_PLACEHOLDER && typeof messageTemplate === "string") {
+      commitMessage = messageTemplate.replace(config7?.GW_MESSAGE_TEMPLATE_PLACEHOLDER, commitMessage);
     }
     const endTime = /* @__PURE__ */ new Date();
     const timeTaken = (endTime - startTime) / 1e3;
@@ -34144,7 +34173,7 @@ var prepareCommitMessageHook = async (isStageAllFlag = false) => {
       return;
     oe("gitwz");
     const config8 = getConfig();
-    if (!config8?.GWZ_OPENAI_API_KEY) {
+    if (!config8?.GW_OPENAI_API_KEY) {
       throw new Error("No OPEN_AI_API exists. Set your OPEN_AI_API=<key> in ~/.gitwz");
     }
     const spin = de();

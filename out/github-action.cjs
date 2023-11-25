@@ -919,7 +919,8 @@ var require_symbols = __commonJS({
       kHTTP2BuildRequest: Symbol("http2 build request"),
       kHTTP1BuildRequest: Symbol("http1 build request"),
       kHTTP2CopyHeaders: Symbol("http2 copy headers"),
-      kHTTPConnVersion: Symbol("http connection version")
+      kHTTPConnVersion: Symbol("http connection version"),
+      kRetryHandlerDefaultRetry: Symbol("retry agent default retry")
     };
   }
 });
@@ -1102,6 +1103,18 @@ var require_errors = __commonJS({
         this.code = "UND_ERR_RES_EXCEEDED_MAX_SIZE";
       }
     };
+    var RequestRetryError = class _RequestRetryError extends UndiciError {
+      constructor(message, code, { headers, data }) {
+        super(message);
+        Error.captureStackTrace(this, _RequestRetryError);
+        this.name = "RequestRetryError";
+        this.message = message || "Request retry error";
+        this.code = "UND_ERR_REQ_RETRY";
+        this.statusCode = code;
+        this.data = data;
+        this.headers = headers;
+      }
+    };
     module2.exports = {
       HTTPParserError,
       UndiciError,
@@ -1121,7 +1134,8 @@ var require_errors = __commonJS({
       NotSupportedError,
       ResponseContentLengthMismatchError,
       BalancedPoolMissingUpstreamError,
-      ResponseExceededMaxSizeError
+      ResponseExceededMaxSizeError,
+      RequestRetryError
     };
   }
 });
@@ -1212,12 +1226,12 @@ var require_util = __commonJS({
       if (host[0] === "[") {
         const idx2 = host.indexOf("]");
         assert(idx2 !== -1);
-        return host.substr(1, idx2 - 1);
+        return host.substring(1, idx2);
       }
       const idx = host.indexOf(":");
       if (idx === -1)
         return host;
-      return host.substr(0, idx);
+      return host.substring(0, idx);
     }
     function getServerName(host) {
       if (!host) {
@@ -1290,7 +1304,7 @@ var require_util = __commonJS({
         let val = obj[key];
         if (!val) {
           if (Array.isArray(headers[i3 + 1])) {
-            obj[key] = headers[i3 + 1];
+            obj[key] = headers[i3 + 1].map((x4) => x4.toString("utf8"));
           } else {
             obj[key] = headers[i3 + 1].toString("utf8");
           }
@@ -1440,16 +1454,7 @@ var require_util = __commonJS({
         }
       }
     }
-    var events;
     function addAbortListener(signal, listener) {
-      if (typeof Symbol.dispose === "symbol") {
-        if (!events) {
-          events = require("events");
-        }
-        if (typeof events.addAbortListener === "function" && "aborted" in signal) {
-          return events.addAbortListener(signal, listener);
-        }
-      }
       if ("addEventListener" in signal) {
         signal.addEventListener("abort", listener, { once: true });
         return () => signal.removeEventListener("abort", listener);
@@ -1465,6 +1470,16 @@ var require_util = __commonJS({
         return nodeUtil.toUSVString(val);
       }
       return `${val}`;
+    }
+    function parseRangeHeader(range) {
+      if (range == null || range === "")
+        return { start: 0, end: null, size: null };
+      const m4 = range ? range.match(/^bytes (\d+)-(\d+)\/(\d+)?$/) : null;
+      return m4 ? {
+        start: parseInt(m4[1]),
+        end: m4[2] ? parseInt(m4[2]) : null,
+        size: m4[3] ? parseInt(m4[3]) : null
+      } : null;
     }
     var kEnumerableProperty = /* @__PURE__ */ Object.create(null);
     kEnumerableProperty.enumerable = true;
@@ -1498,9 +1513,11 @@ var require_util = __commonJS({
       buildURL: buildURL2,
       throwIfAborted,
       addAbortListener,
+      parseRangeHeader,
       nodeMajor,
       nodeMinor,
-      nodeHasAutoSelectFamily: nodeMajor > 18 || nodeMajor === 18 && nodeMinor >= 13
+      nodeHasAutoSelectFamily: nodeMajor > 18 || nodeMajor === 18 && nodeMinor >= 13,
+      safeHTTPMethods: ["GET", "HEAD", "OPTIONS", "TRACE"]
     };
   }
 });
@@ -3868,25 +3885,42 @@ var require_util2 = __commonJS({
       }
       return true;
     }
-    function isTokenChar(c2) {
-      return !(c2 >= 127 || c2 <= 32 || c2 === "(" || c2 === ")" || c2 === "<" || c2 === ">" || c2 === "@" || c2 === "," || c2 === ";" || c2 === ":" || c2 === "\\" || c2 === '"' || c2 === "/" || c2 === "[" || c2 === "]" || c2 === "?" || c2 === "=" || c2 === "{" || c2 === "}");
+    function isTokenCharCode(c2) {
+      switch (c2) {
+        case 34:
+        case 40:
+        case 41:
+        case 44:
+        case 47:
+        case 58:
+        case 59:
+        case 60:
+        case 61:
+        case 62:
+        case 63:
+        case 64:
+        case 91:
+        case 92:
+        case 93:
+        case 123:
+        case 125:
+          return false;
+        default:
+          return c2 >= 33 && c2 <= 126;
+      }
     }
     function isValidHTTPToken(characters) {
-      if (!characters || typeof characters !== "string") {
+      if (characters.length === 0) {
         return false;
       }
       for (let i3 = 0; i3 < characters.length; ++i3) {
-        const c2 = characters.charCodeAt(i3);
-        if (c2 > 127 || !isTokenChar(c2)) {
+        if (!isTokenCharCode(characters.charCodeAt(i3))) {
           return false;
         }
       }
       return true;
     }
     function isValidHeaderName2(potentialValue) {
-      if (potentialValue.length === 0) {
-        return false;
-      }
       return isValidHTTPToken(potentialValue);
     }
     function isValidHeaderValue(potentialValue) {
@@ -4618,10 +4652,9 @@ var require_webidl = __commonJS({
     webidl.converters.ByteString = function(V3) {
       const x4 = webidl.converters.DOMString(V3);
       for (let index = 0; index < x4.length; index++) {
-        const charCode = x4.charCodeAt(index);
-        if (charCode > 255) {
+        if (x4.charCodeAt(index) > 255) {
           throw new TypeError(
-            `Cannot convert argument to a ByteString because the character at index ${index} has a value of ${charCode} which is greater than 255.`
+            `Cannot convert argument to a ByteString because the character at index ${index} has a value of ${x4.charCodeAt(index)} which is greater than 255.`
           );
         }
       }
@@ -5903,11 +5936,7 @@ var require_request = __commonJS({
       }
       onBodySent(chunk) {
         if (this[kHandler].onBodySent) {
-          try {
-            this[kHandler].onBodySent(chunk);
-          } catch (err) {
-            this.onError(err);
-          }
+          return this[kHandler].onBodySent(chunk);
         }
       }
       onRequestSent() {
@@ -5915,11 +5944,7 @@ var require_request = __commonJS({
           channels.bodySent.publish({ request: this });
         }
         if (this[kHandler].onRequestSent) {
-          try {
-            this[kHandler].onRequestSent();
-          } catch (err) {
-            this.onError(err);
-          }
+          return this[kHandler].onRequestSent();
         }
       }
       onConnect(abort) {
@@ -7854,7 +7879,7 @@ var require_client = __commonJS({
       if (hostname[0] === "[") {
         const idx = hostname.indexOf("]");
         assert(idx !== -1);
-        const ip = hostname.substr(1, idx - 1);
+        const ip = hostname.substring(1, idx);
         assert(net.isIP(ip));
         hostname = ip;
       }
@@ -8294,7 +8319,8 @@ upgrade: ${upgrade}\r
       }
       ++h2State.openStreams;
       stream4.once("response", (headers2) => {
-        if (request.onHeaders(Number(headers2[HTTP2_HEADER_STATUS]), headers2, stream4.resume.bind(stream4), "") === false) {
+        const { [HTTP2_HEADER_STATUS]: statusCode, ...realHeaders } = headers2;
+        if (request.onHeaders(Number(statusCode), realHeaders, stream4.resume.bind(stream4), "") === false) {
           stream4.pause();
         }
       });
@@ -8435,7 +8461,11 @@ upgrade: ${upgrade}\r
         }
       };
       const onAbort = function() {
-        onFinished(new RequestAbortedError());
+        if (finished) {
+          return;
+        }
+        const err = new RequestAbortedError();
+        queueMicrotask(() => onFinished(err));
       };
       const onFinished = function(err) {
         if (finished) {
@@ -9308,6 +9338,8 @@ var require_readable = __commonJS({
     var kBody = Symbol("kBody");
     var kAbort = Symbol("abort");
     var kContentType = Symbol("kContentType");
+    var noop3 = () => {
+    };
     module2.exports = class BodyReadable extends Readable3 {
       constructor({
         resume,
@@ -9409,37 +9441,40 @@ var require_readable = __commonJS({
         }
         return this[kBody];
       }
-      async dump(opts) {
+      dump(opts) {
         let limit = opts && Number.isFinite(opts.limit) ? opts.limit : 262144;
         const signal = opts && opts.signal;
-        const abortFn = () => {
-          this.destroy();
-        };
-        let signalListenerCleanup;
         if (signal) {
-          if (typeof signal !== "object" || !("aborted" in signal)) {
-            throw new InvalidArgumentError("signal must be an AbortSignal");
-          }
-          util2.throwIfAborted(signal);
-          signalListenerCleanup = util2.addAbortListener(signal, abortFn);
-        }
-        try {
-          for await (const chunk of this) {
-            util2.throwIfAborted(signal);
-            limit -= Buffer.byteLength(chunk);
-            if (limit < 0) {
-              return;
+          try {
+            if (typeof signal !== "object" || !("aborted" in signal)) {
+              throw new InvalidArgumentError("signal must be an AbortSignal");
             }
-          }
-        } catch {
-          util2.throwIfAborted(signal);
-        } finally {
-          if (typeof signalListenerCleanup === "function") {
-            signalListenerCleanup();
-          } else if (signalListenerCleanup) {
-            signalListenerCleanup[Symbol.dispose]();
+            util2.throwIfAborted(signal);
+          } catch (err) {
+            return Promise.reject(err);
           }
         }
+        if (this.closed) {
+          return Promise.resolve(null);
+        }
+        return new Promise((resolve, reject) => {
+          const signalListenerCleanup = signal ? util2.addAbortListener(signal, () => {
+            this.destroy();
+          }) : noop3;
+          this.on("close", function() {
+            signalListenerCleanup();
+            if (signal?.aborted) {
+              reject(signal.reason || Object.assign(new Error("The operation was aborted"), { name: "AbortError" }));
+            } else {
+              resolve(null);
+            }
+          }).on("error", noop3).on("data", function(chunk) {
+            limit -= chunk.length;
+            if (limit <= 0) {
+              this.destroy();
+            }
+          }).resume();
+        });
       }
     };
     function isLocked(self2) {
@@ -11300,6 +11335,273 @@ var require_proxy_agent = __commonJS({
   }
 });
 
+// node_modules/undici/lib/handler/RetryHandler.js
+var require_RetryHandler = __commonJS({
+  "node_modules/undici/lib/handler/RetryHandler.js"(exports, module2) {
+    var assert = require("node:assert");
+    var { kRetryHandlerDefaultRetry } = require_symbols();
+    var { RequestRetryError } = require_errors();
+    var { isDisturbed, parseHeaders, parseRangeHeader } = require_util();
+    function calculateRetryAfterHeader(retryAfter) {
+      const current = Date.now();
+      const diff = new Date(retryAfter).getTime() - current;
+      return diff;
+    }
+    var RetryHandler = class _RetryHandler {
+      constructor(opts, handlers) {
+        const { retryOptions, ...dispatchOpts } = opts;
+        const {
+          // Retry scoped
+          retry: retryFn,
+          maxRetries,
+          maxTimeout,
+          minTimeout,
+          timeoutFactor,
+          // Response scoped
+          methods,
+          errorCodes,
+          retryAfter,
+          statusCodes
+        } = retryOptions ?? {};
+        this.dispatch = handlers.dispatch;
+        this.handler = handlers.handler;
+        this.opts = dispatchOpts;
+        this.abort = null;
+        this.aborted = false;
+        this.retryOpts = {
+          retry: retryFn ?? _RetryHandler[kRetryHandlerDefaultRetry],
+          retryAfter: retryAfter ?? true,
+          maxTimeout: maxTimeout ?? 30 * 1e3,
+          // 30s,
+          timeout: minTimeout ?? 500,
+          // .5s
+          timeoutFactor: timeoutFactor ?? 2,
+          maxRetries: maxRetries ?? 5,
+          // What errors we should retry
+          methods: methods ?? ["GET", "HEAD", "OPTIONS", "PUT", "DELETE", "TRACE"],
+          // Indicates which errors to retry
+          statusCodes: statusCodes ?? [500, 502, 503, 504, 429],
+          // List of errors to retry
+          errorCodes: errorCodes ?? [
+            "ECONNRESET",
+            "ECONNREFUSED",
+            "ENOTFOUND",
+            "ENETDOWN",
+            "ENETUNREACH",
+            "EHOSTDOWN",
+            "EHOSTUNREACH",
+            "EPIPE"
+          ]
+        };
+        this.retryCount = 0;
+        this.start = 0;
+        this.end = null;
+        this.etag = null;
+        this.resume = null;
+        this.handler.onConnect((reason) => {
+          this.aborted = true;
+          if (this.abort) {
+            this.abort(reason);
+          } else {
+            this.reason = reason;
+          }
+        });
+      }
+      onRequestSent() {
+        if (this.handler.onRequestSent) {
+          this.handler.onRequestSent();
+        }
+      }
+      onUpgrade(statusCode, headers, socket) {
+        if (this.handler.onUpgrade) {
+          this.handler.onUpgrade(statusCode, headers, socket);
+        }
+      }
+      onConnect(abort) {
+        if (this.aborted) {
+          abort(this.reason);
+        } else {
+          this.abort = abort;
+        }
+      }
+      onBodySent(chunk) {
+        return this.handler.onBodySent(chunk);
+      }
+      static [kRetryHandlerDefaultRetry](err, { state, opts }, cb) {
+        const { statusCode, code, headers } = err;
+        const { method, retryOptions } = opts;
+        const {
+          maxRetries,
+          timeout,
+          maxTimeout,
+          timeoutFactor,
+          statusCodes,
+          errorCodes,
+          methods
+        } = retryOptions;
+        let { counter, currentTimeout } = state;
+        currentTimeout = currentTimeout != null && currentTimeout > 0 ? currentTimeout : timeout;
+        if (code && code !== "UND_ERR_REQ_RETRY" && code !== "UND_ERR_SOCKET" && !errorCodes.includes(code)) {
+          cb(err);
+          return;
+        }
+        if (Array.isArray(methods) && !methods.includes(method)) {
+          cb(err);
+          return;
+        }
+        if (statusCode != null && Array.isArray(statusCodes) && !statusCodes.includes(statusCode)) {
+          cb(err);
+          return;
+        }
+        if (counter > maxRetries) {
+          cb(err);
+          return;
+        }
+        let retryAfterHeader = headers != null && headers["retry-after"];
+        if (retryAfterHeader) {
+          retryAfterHeader = Number(retryAfterHeader);
+          retryAfterHeader = isNaN(retryAfterHeader) ? calculateRetryAfterHeader(retryAfterHeader) : retryAfterHeader * 1e3;
+        }
+        const retryTimeout = retryAfterHeader > 0 ? Math.min(retryAfterHeader, maxTimeout) : Math.min(currentTimeout * timeoutFactor ** counter, maxTimeout);
+        state.currentTimeout = retryTimeout;
+        setTimeout(() => cb(null), retryTimeout);
+      }
+      onHeaders(statusCode, rawHeaders, resume, statusMessage) {
+        const headers = parseHeaders(rawHeaders);
+        this.retryCount += 1;
+        if (statusCode >= 300) {
+          this.abort(
+            new RequestRetryError("Request failed", statusCode, {
+              headers,
+              count: this.retryCount
+            })
+          );
+          return false;
+        }
+        if (this.resume != null) {
+          this.resume = null;
+          if (statusCode !== 206) {
+            return true;
+          }
+          const contentRange = parseRangeHeader(headers["content-range"]);
+          if (!contentRange) {
+            this.abort(
+              new RequestRetryError("Content-Range mismatch", statusCode, {
+                headers,
+                count: this.retryCount
+              })
+            );
+            return false;
+          }
+          if (this.etag != null && this.etag !== headers.etag) {
+            this.abort(
+              new RequestRetryError("ETag mismatch", statusCode, {
+                headers,
+                count: this.retryCount
+              })
+            );
+            return false;
+          }
+          const { start, size, end = size } = contentRange;
+          assert(this.start === start, "content-range mismatch");
+          assert(this.end == null || this.end === end, "content-range mismatch");
+          this.resume = resume;
+          return true;
+        }
+        if (this.end == null) {
+          if (statusCode === 206) {
+            const range = parseRangeHeader(headers["content-range"]);
+            if (range == null) {
+              return this.handler.onHeaders(
+                statusCode,
+                rawHeaders,
+                resume,
+                statusMessage
+              );
+            }
+            const { start, size, end = size } = range;
+            assert(
+              start != null && Number.isFinite(start) && this.start !== start,
+              "content-range mismatch"
+            );
+            assert(Number.isFinite(start));
+            assert(
+              end != null && Number.isFinite(end) && this.end !== end,
+              "invalid content-length"
+            );
+            this.start = start;
+            this.end = end;
+          }
+          if (this.end == null) {
+            const contentLength = headers["content-length"];
+            this.end = contentLength != null ? Number(contentLength) : null;
+          }
+          assert(Number.isFinite(this.start));
+          assert(
+            this.end == null || Number.isFinite(this.end),
+            "invalid content-length"
+          );
+          this.resume = resume;
+          this.etag = headers.etag != null ? headers.etag : null;
+          return this.handler.onHeaders(
+            statusCode,
+            rawHeaders,
+            resume,
+            statusMessage
+          );
+        }
+        const err = new RequestRetryError("Request failed", statusCode, {
+          headers,
+          count: this.retryCount
+        });
+        this.abort(err);
+        return false;
+      }
+      onData(chunk) {
+        this.start += chunk.length;
+        return this.handler.onData(chunk);
+      }
+      onComplete(rawTrailers) {
+        this.retryCount = 0;
+        return this.handler.onComplete(rawTrailers);
+      }
+      onError(err) {
+        if (this.aborted || isDisturbed(this.opts.body)) {
+          return this.handler.onError(err);
+        }
+        this.retryOpts.retry(
+          err,
+          {
+            state: { counter: this.retryCount++, currentTimeout: this.retryAfter },
+            opts: { retryOptions: this.retryOpts, ...this.opts }
+          },
+          onRetry.bind(this)
+        );
+        function onRetry(err2) {
+          if (err2 != null || this.aborted || isDisturbed(this.opts.body)) {
+            return this.handler.onError(err2);
+          }
+          if (this.start !== 0) {
+            this.opts = {
+              ...this.opts,
+              headers: {
+                ...this.opts.headers,
+                range: `bytes=${this.start}-${this.end ?? ""}`
+              }
+            };
+          }
+          try {
+            this.dispatch(this.opts, this);
+          } catch (err3) {
+            this.handler.onError(err3);
+          }
+        }
+      }
+    };
+    module2.exports = RetryHandler;
+  }
+});
+
 // node_modules/undici/lib/global.js
 var require_global2 = __commonJS({
   "node_modules/undici/lib/global.js"(exports, module2) {
@@ -11380,26 +11682,34 @@ var require_headers = __commonJS({
     var assert = require("assert");
     var kHeadersMap = Symbol("headers map");
     var kHeadersSortedMap = Symbol("headers map sorted");
+    function isHTTPWhiteSpaceCharCode(code) {
+      return code === 10 || code === 13 || code === 9 || code === 32;
+    }
     function headerValueNormalize(potentialValue) {
-      let i3 = potentialValue.length;
-      while (/[\r\n\t ]/.test(potentialValue.charAt(--i3)))
-        ;
-      return potentialValue.slice(0, i3 + 1).replace(/^[\r\n\t ]+/, "");
+      let i3 = 0;
+      let j3 = potentialValue.length;
+      while (j3 > i3 && isHTTPWhiteSpaceCharCode(potentialValue.charCodeAt(j3 - 1)))
+        --j3;
+      while (j3 > i3 && isHTTPWhiteSpaceCharCode(potentialValue.charCodeAt(i3)))
+        ++i3;
+      return i3 === 0 && j3 === potentialValue.length ? potentialValue : potentialValue.substring(i3, j3);
     }
     function fill(headers, object) {
       if (Array.isArray(object)) {
-        for (const header of object) {
+        for (let i3 = 0; i3 < object.length; ++i3) {
+          const header = object[i3];
           if (header.length !== 2) {
             throw webidl.errors.exception({
               header: "Headers constructor",
               message: `expected name/value pair to be length 2, found ${header.length}.`
             });
           }
-          headers.append(header[0], header[1]);
+          appendHeader(headers, header[0], header[1]);
         }
       } else if (typeof object === "object" && object !== null) {
-        for (const [key, value] of Object.entries(object)) {
-          headers.append(key, value);
+        const keys = Object.keys(object);
+        for (let i3 = 0; i3 < keys.length; ++i3) {
+          appendHeader(headers, keys[i3], object[keys[i3]]);
         }
       } else {
         throw webidl.errors.conversionFailed({
@@ -11409,6 +11719,27 @@ var require_headers = __commonJS({
         });
       }
     }
+    function appendHeader(headers, name, value) {
+      value = headerValueNormalize(value);
+      if (!isValidHeaderName2(name)) {
+        throw webidl.errors.invalidArgument({
+          prefix: "Headers.append",
+          value: name,
+          type: "header name"
+        });
+      } else if (!isValidHeaderValue(value)) {
+        throw webidl.errors.invalidArgument({
+          prefix: "Headers.append",
+          value,
+          type: "header value"
+        });
+      }
+      if (headers[kGuard] === "immutable") {
+        throw new TypeError("immutable");
+      } else if (headers[kGuard] === "request-no-cors") {
+      }
+      return headers[kHeadersList].append(name, value);
+    }
     var HeadersList = class _HeadersList {
       /** @type {[string, string][]|null} */
       cookies = null;
@@ -11416,7 +11747,7 @@ var require_headers = __commonJS({
         if (init instanceof _HeadersList) {
           this[kHeadersMap] = new Map(init[kHeadersMap]);
           this[kHeadersSortedMap] = init[kHeadersSortedMap];
-          this.cookies = init.cookies;
+          this.cookies = init.cookies === null ? null : [...init.cookies];
         } else {
           this[kHeadersMap] = new Map(init);
           this[kHeadersSortedMap] = null;
@@ -11458,7 +11789,7 @@ var require_headers = __commonJS({
         if (lowercaseName === "set-cookie") {
           this.cookies = [value];
         }
-        return this[kHeadersMap].set(lowercaseName, { name, value });
+        this[kHeadersMap].set(lowercaseName, { name, value });
       }
       // https://fetch.spec.whatwg.org/#concept-header-list-delete
       delete(name) {
@@ -11467,14 +11798,12 @@ var require_headers = __commonJS({
         if (name === "set-cookie") {
           this.cookies = null;
         }
-        return this[kHeadersMap].delete(name);
+        this[kHeadersMap].delete(name);
       }
       // https://fetch.spec.whatwg.org/#concept-header-list-get
       get(name) {
-        if (!this.contains(name)) {
-          return null;
-        }
-        return this[kHeadersMap].get(name.toLowerCase())?.value ?? null;
+        const value = this[kHeadersMap].get(name.toLowerCase());
+        return value === void 0 ? null : value.value;
       }
       *[Symbol.iterator]() {
         for (const [name, { value }] of this[kHeadersMap]) {
@@ -11506,25 +11835,7 @@ var require_headers = __commonJS({
         webidl.argumentLengthCheck(arguments, 2, { header: "Headers.append" });
         name = webidl.converters.ByteString(name);
         value = webidl.converters.ByteString(value);
-        value = headerValueNormalize(value);
-        if (!isValidHeaderName2(name)) {
-          throw webidl.errors.invalidArgument({
-            prefix: "Headers.append",
-            value: name,
-            type: "header name"
-          });
-        } else if (!isValidHeaderValue(value)) {
-          throw webidl.errors.invalidArgument({
-            prefix: "Headers.append",
-            value,
-            type: "header value"
-          });
-        }
-        if (this[kGuard] === "immutable") {
-          throw new TypeError("immutable");
-        } else if (this[kGuard] === "request-no-cors") {
-        }
-        return this[kHeadersList].append(name, value);
+        return appendHeader(this, name, value);
       }
       // https://fetch.spec.whatwg.org/#dom-headers-delete
       delete(name) {
@@ -11545,7 +11856,7 @@ var require_headers = __commonJS({
         if (!this[kHeadersList].contains(name)) {
           return;
         }
-        return this[kHeadersList].delete(name);
+        this[kHeadersList].delete(name);
       }
       // https://fetch.spec.whatwg.org/#dom-headers-get
       get(name) {
@@ -11599,7 +11910,7 @@ var require_headers = __commonJS({
           throw new TypeError("immutable");
         } else if (this[kGuard] === "request-no-cors") {
         }
-        return this[kHeadersList].set(name, value);
+        this[kHeadersList].set(name, value);
       }
       // https://fetch.spec.whatwg.org/#dom-headers-getsetcookie
       getSetCookie() {
@@ -11618,10 +11929,11 @@ var require_headers = __commonJS({
         const headers = [];
         const names = [...this[kHeadersList]].sort((a3, b3) => a3[0] < b3[0] ? -1 : 1);
         const cookies = this[kHeadersList].cookies;
-        for (const [name, value] of names) {
+        for (let i3 = 0; i3 < names.length; ++i3) {
+          const [name, value] = names[i3];
           if (name === "set-cookie") {
-            for (const value2 of cookies) {
-              headers.push([name, value2]);
+            for (let j3 = 0; j3 < cookies.length; ++j3) {
+              headers.push([name, cookies[j3]]);
             }
           } else {
             assert(value !== null);
@@ -11633,6 +11945,14 @@ var require_headers = __commonJS({
       }
       keys() {
         webidl.brandCheck(this, _Headers);
+        if (this[kGuard] === "immutable") {
+          const value = this[kHeadersSortedMap];
+          return makeIterator(
+            () => value,
+            "Headers",
+            "key"
+          );
+        }
         return makeIterator(
           () => [...this[kHeadersSortedMap].values()],
           "Headers",
@@ -11641,6 +11961,14 @@ var require_headers = __commonJS({
       }
       values() {
         webidl.brandCheck(this, _Headers);
+        if (this[kGuard] === "immutable") {
+          const value = this[kHeadersSortedMap];
+          return makeIterator(
+            () => value,
+            "Headers",
+            "value"
+          );
+        }
         return makeIterator(
           () => [...this[kHeadersSortedMap].values()],
           "Headers",
@@ -11649,6 +11977,14 @@ var require_headers = __commonJS({
       }
       entries() {
         webidl.brandCheck(this, _Headers);
+        if (this[kGuard] === "immutable") {
+          const value = this[kHeadersSortedMap];
+          return makeIterator(
+            () => value,
+            "Headers",
+            "key+value"
+          );
+        }
         return makeIterator(
           () => [...this[kHeadersSortedMap].values()],
           "Headers",
@@ -12298,10 +12634,10 @@ var require_request2 = __commonJS({
         if (init.method !== void 0) {
           let method = init.method;
           if (!isValidHTTPToken(init.method)) {
-            throw TypeError(`'${init.method}' is not a valid HTTP method.`);
+            throw new TypeError(`'${init.method}' is not a valid HTTP method.`);
           }
           if (forbiddenMethodsSet.has(method.toUpperCase())) {
-            throw TypeError(`'${init.method}' HTTP method is unsupported.`);
+            throw new TypeError(`'${init.method}' HTTP method is unsupported.`);
           }
           method = normalizeMethod(init.method);
           request.method = method;
@@ -13633,7 +13969,7 @@ var require_fetch = __commonJS({
             path: url3.pathname + url3.search,
             origin: url3.origin,
             method: request.method,
-            body: fetchParams.controller.dispatcher.isMockActive ? request.body && request.body.source : body,
+            body: fetchParams.controller.dispatcher.isMockActive ? request.body && (request.body.source || request.body.stream) : body,
             headers: request.headersList.entries,
             maxRedirections: 0,
             upgrade: request.mode === "websocket" ? "websocket" : void 0
@@ -13666,7 +14002,7 @@ var require_fetch = __commonJS({
                   } else if (key.toLowerCase() === "location") {
                     location = val;
                   }
-                  headers.append(key, val);
+                  headers[kHeadersList].append(key, val);
                 }
               } else {
                 const keys = Object.keys(headersList);
@@ -13677,7 +14013,7 @@ var require_fetch = __commonJS({
                   } else if (key.toLowerCase() === "location") {
                     location = val;
                   }
-                  headers.append(key, val);
+                  headers[kHeadersList].append(key, val);
                 }
               }
               this.body = new Readable3({ read: resume });
@@ -13745,7 +14081,7 @@ var require_fetch = __commonJS({
               for (let n2 = 0; n2 < headersList.length; n2 += 2) {
                 const key = headersList[n2 + 0].toString("latin1");
                 const val = headersList[n2 + 1].toString("latin1");
-                headers.append(key, val);
+                headers[kHeadersList].append(key, val);
               }
               resolve({
                 status,
@@ -16964,6 +17300,7 @@ var require_undici = __commonJS({
     var MockPool = require_mock_pool();
     var mockErrors = require_mock_errors();
     var ProxyAgent = require_proxy_agent();
+    var RetryHandler = require_RetryHandler();
     var { getGlobalDispatcher, setGlobalDispatcher } = require_global2();
     var DecoratorHandler = require_DecoratorHandler();
     var RedirectHandler = require_RedirectHandler();
@@ -16982,6 +17319,7 @@ var require_undici = __commonJS({
     module2.exports.BalancedPool = BalancedPool;
     module2.exports.Agent = Agent;
     module2.exports.ProxyAgent = ProxyAgent;
+    module2.exports.RetryHandler = RetryHandler;
     module2.exports.DecoratorHandler = DecoratorHandler;
     module2.exports.RedirectHandler = RedirectHandler;
     module2.exports.createRedirectInterceptor = createRedirectInterceptor;
@@ -19836,33 +20174,6 @@ var require_before_after_hook = __commonJS({
   }
 });
 
-// node_modules/is-plain-object/dist/is-plain-object.js
-var require_is_plain_object = __commonJS({
-  "node_modules/is-plain-object/dist/is-plain-object.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    function isObject2(o3) {
-      return Object.prototype.toString.call(o3) === "[object Object]";
-    }
-    function isPlainObject4(o3) {
-      var ctor, prot;
-      if (isObject2(o3) === false)
-        return false;
-      ctor = o3.constructor;
-      if (ctor === void 0)
-        return true;
-      prot = ctor.prototype;
-      if (isObject2(prot) === false)
-        return false;
-      if (prot.hasOwnProperty("isPrototypeOf") === false) {
-        return false;
-      }
-      return true;
-    }
-    exports.isPlainObject = isPlainObject4;
-  }
-});
-
 // node_modules/@octokit/endpoint/dist-node/index.js
 var require_dist_node2 = __commonJS({
   "node_modules/@octokit/endpoint/dist-node/index.js"(exports, module2) {
@@ -19890,7 +20201,7 @@ var require_dist_node2 = __commonJS({
     });
     module2.exports = __toCommonJS2(dist_src_exports);
     var import_universal_user_agent = require_dist_node();
-    var VERSION4 = "9.0.2";
+    var VERSION4 = "9.0.3";
     var userAgent = `octokit-endpoint.js/${VERSION4} ${(0, import_universal_user_agent.getUserAgent)()}`;
     var DEFAULTS = {
       method: "GET",
@@ -19912,11 +20223,21 @@ var require_dist_node2 = __commonJS({
         return newObj;
       }, {});
     }
-    var import_is_plain_object = require_is_plain_object();
+    function isPlainObject4(value) {
+      if (typeof value !== "object" || value === null)
+        return false;
+      if (Object.prototype.toString.call(value) !== "[object Object]")
+        return false;
+      const proto2 = Object.getPrototypeOf(value);
+      if (proto2 === null)
+        return true;
+      const Ctor = Object.prototype.hasOwnProperty.call(proto2, "constructor") && proto2.constructor;
+      return typeof Ctor === "function" && Ctor instanceof Ctor && Function.prototype.call(Ctor) === Function.prototype.call(value);
+    }
     function mergeDeep(defaults2, options) {
       const result = Object.assign({}, defaults2);
       Object.keys(options).forEach((key) => {
-        if ((0, import_is_plain_object.isPlainObject)(options[key])) {
+        if (isPlainObject4(options[key])) {
           if (!(key in defaults2))
             Object.assign(result, { [key]: options[key] });
           else
@@ -20410,8 +20731,18 @@ var require_dist_node5 = __commonJS({
     module2.exports = __toCommonJS2(dist_src_exports);
     var import_endpoint = require_dist_node2();
     var import_universal_user_agent = require_dist_node();
-    var VERSION4 = "8.1.5";
-    var import_is_plain_object = require_is_plain_object();
+    var VERSION4 = "8.1.6";
+    function isPlainObject4(value) {
+      if (typeof value !== "object" || value === null)
+        return false;
+      if (Object.prototype.toString.call(value) !== "[object Object]")
+        return false;
+      const proto2 = Object.getPrototypeOf(value);
+      if (proto2 === null)
+        return true;
+      const Ctor = Object.prototype.hasOwnProperty.call(proto2, "constructor") && proto2.constructor;
+      return typeof Ctor === "function" && Ctor instanceof Ctor && Function.prototype.call(Ctor) === Function.prototype.call(value);
+    }
     var import_request_error = require_dist_node4();
     function getBufferResponse(response) {
       return response.arrayBuffer();
@@ -20420,7 +20751,7 @@ var require_dist_node5 = __commonJS({
       var _a2, _b, _c;
       const log = requestOptions.request && requestOptions.request.log ? requestOptions.request.log : console;
       const parseSuccessResponseBody = ((_a2 = requestOptions.request) == null ? void 0 : _a2.parseSuccessResponseBody) !== false;
-      if ((0, import_is_plain_object.isPlainObject)(requestOptions.body) || Array.isArray(requestOptions.body)) {
+      if (isPlainObject4(requestOptions.body) || Array.isArray(requestOptions.body)) {
         requestOptions.body = JSON.stringify(requestOptions.body);
       }
       let headers = {};
@@ -20815,7 +21146,12 @@ var require_dist_node8 = __commonJS({
     var import_request = require_dist_node5();
     var import_graphql = require_dist_node6();
     var import_auth_token = require_dist_node7();
-    var VERSION4 = "5.0.1";
+    var VERSION4 = "5.0.2";
+    var noop3 = () => {
+    };
+    var consoleWarn = console.warn.bind(console);
+    var consoleError = console.error.bind(console);
+    var userAgentTrail = `octokit-core.js/${VERSION4} ${(0, import_universal_user_agent.getUserAgent)()}`;
     var Octokit = class {
       static {
         this.VERSION = VERSION4;
@@ -20876,10 +21212,7 @@ var require_dist_node8 = __commonJS({
             format: ""
           }
         };
-        requestDefaults.headers["user-agent"] = [
-          options.userAgent,
-          `octokit-core.js/${VERSION4} ${(0, import_universal_user_agent.getUserAgent)()}`
-        ].filter(Boolean).join(" ");
+        requestDefaults.headers["user-agent"] = options.userAgent ? `${options.userAgent} ${userAgentTrail}` : userAgentTrail;
         if (options.baseUrl) {
           requestDefaults.baseUrl = options.baseUrl;
         }
@@ -20893,12 +21226,10 @@ var require_dist_node8 = __commonJS({
         this.graphql = (0, import_graphql.withCustomRequest)(this.request).defaults(requestDefaults);
         this.log = Object.assign(
           {
-            debug: () => {
-            },
-            info: () => {
-            },
-            warn: console.warn.bind(console),
-            error: console.error.bind(console)
+            debug: noop3,
+            info: noop3,
+            warn: consoleWarn,
+            error: consoleError
           },
           options.log
         );
@@ -20935,9 +21266,9 @@ var require_dist_node8 = __commonJS({
           this.auth = auth;
         }
         const classConstructor = this.constructor;
-        classConstructor.plugins.forEach((plugin) => {
-          Object.assign(this, plugin(this, options));
-        });
+        for (let i3 = 0; i3 < classConstructor.plugins.length; ++i3) {
+          Object.assign(this, classConstructor.plugins[i3](this, options));
+        }
       }
     };
   }
@@ -33419,7 +33750,7 @@ var require_browser = __commonJS({
     exports.load = load2;
     exports.useColors = useColors;
     exports.storage = localstorage();
-    exports.destroy = (() => {
+    exports.destroy = /* @__PURE__ */ (() => {
       let warned = false;
       return () => {
         if (!warned) {
@@ -38009,7 +38340,7 @@ function I2(e3, t2) {
     throw new TypeError(`${t2} is not a function.`);
 }
 function D(e3, t2) {
-  if (!function(e4) {
+  if (!/* @__PURE__ */ function(e4) {
     return "object" == typeof e4 && null !== e4 || "function" == typeof e4;
   }(e3))
     throw new TypeError(`${t2} is not an object.`);
@@ -46430,7 +46761,7 @@ function bind(fn, thisArg) {
 // node_modules/axios/lib/utils.js
 var { toString } = Object.prototype;
 var { getPrototypeOf } = Object;
-var kindOf = ((cache) => (thing) => {
+var kindOf = /* @__PURE__ */ ((cache) => (thing) => {
   const str2 = toString.call(thing);
   return cache[str2] || (cache[str2] = str2.slice(8, -1).toLowerCase());
 })(/* @__PURE__ */ Object.create(null));
@@ -46609,7 +46940,7 @@ var toArray = (thing) => {
   }
   return arr;
 };
-var isTypedArray = ((TypedArray) => {
+var isTypedArray = /* @__PURE__ */ ((TypedArray) => {
   return (thing) => {
     return TypedArray && thing instanceof TypedArray;
   };
@@ -48608,7 +48939,7 @@ var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? (
   }()
 ) : (
   // Non standard browser envs (web workers, react-native) lack needed support.
-  function nonStandardBrowserEnv() {
+  /* @__PURE__ */ function nonStandardBrowserEnv() {
     return function isURLSameOrigin() {
       return true;
     };
@@ -50512,7 +50843,7 @@ if (process.platform === "linux") {
 }
 
 // node_modules/signal-exit/dist/mjs/index.js
-var processOk = (process8) => !!process8 && typeof process8 === "object" && typeof process8.removeListener === "function" && typeof process8.emit === "function" && typeof process8.reallyExit === "function" && typeof process8.listeners === "function" && typeof process8.kill === "function" && typeof process8.pid === "number" && typeof process8.on === "function";
+var processOk = (process9) => !!process9 && typeof process9 === "object" && typeof process9.removeListener === "function" && typeof process9.emit === "function" && typeof process9.reallyExit === "function" && typeof process9.listeners === "function" && typeof process9.kill === "function" && typeof process9.pid === "number" && typeof process9.on === "function";
 var kExitEmitter = Symbol.for("signal-exit emitter");
 var global2 = globalThis;
 var ObjectDefineProperty = Object.defineProperty.bind(Object);
@@ -50605,15 +50936,15 @@ var SignalExit = class extends SignalExitBase {
   #originalProcessReallyExit;
   #sigListeners = {};
   #loaded = false;
-  constructor(process8) {
+  constructor(process9) {
     super();
-    this.#process = process8;
+    this.#process = process9;
     this.#sigListeners = {};
     for (const sig of signals) {
       this.#sigListeners[sig] = () => {
         const listeners = this.#process.listeners(sig);
         let { count } = this.#emitter;
-        const p2 = process8;
+        const p2 = process9;
         if (typeof p2.__signal_exit_emitter__ === "object" && typeof p2.__signal_exit_emitter__.count === "number") {
           count += p2.__signal_exit_emitter__.count;
         }
@@ -50622,12 +50953,12 @@ var SignalExit = class extends SignalExitBase {
           const ret = this.#emitter.emit("exit", null, sig);
           const s2 = sig === "SIGHUP" ? this.#hupSig : sig;
           if (!ret)
-            process8.kill(process8.pid, s2);
+            process9.kill(process9.pid, s2);
         }
       };
     }
-    this.#originalProcessReallyExit = process8.reallyExit;
-    this.#originalProcessEmit = process8.emit;
+    this.#originalProcessReallyExit = process9.reallyExit;
+    this.#originalProcessEmit = process9.emit;
   }
   onExit(cb, opts) {
     if (!processOk(this.#process)) {
@@ -51137,8 +51468,8 @@ var getSpawnedResult = async ({ stdout, stderr, all: all3 }, { encoding, buffer,
 };
 
 // node_modules/execa/lib/promise.js
-var nativePromisePrototype = (/* @__PURE__ */ (async () => {
-})()).constructor.prototype;
+var nativePromisePrototype = (async () => {
+})().constructor.prototype;
 var descriptors2 = ["then", "catch", "finally"].map((property) => [
   property,
   Reflect.getOwnPropertyDescriptor(nativePromisePrototype, property)
@@ -51456,7 +51787,7 @@ function create$(options) {
 var $ = create$();
 
 // node_modules/openai/version.mjs
-var VERSION3 = "4.19.0";
+var VERSION3 = "4.20.0";
 
 // node_modules/openai/_shims/registry.mjs
 var auto = false;
@@ -54925,6 +55256,33 @@ function G3(t2, e3) {
 var dotenv = __toESM(require_main2(), 1);
 var import_fs2 = require("fs");
 var import_ini = __toESM(require_ini(), 1);
+
+// node_modules/is-unicode-supported/index.js
+var import_node_process8 = __toESM(require("node:process"), 1);
+function isUnicodeSupported() {
+  if (import_node_process8.default.platform !== "win32") {
+    return import_node_process8.default.env.TERM !== "linux";
+  }
+  return Boolean(import_node_process8.default.env.CI) || Boolean(import_node_process8.default.env.WT_SESSION) || Boolean(import_node_process8.default.env.TERMINUS_SUBLIME) || import_node_process8.default.env.ConEmuTask === "{cmd::Cmder}" || import_node_process8.default.env.TERM_PROGRAM === "Terminus-Sublime" || import_node_process8.default.env.TERM_PROGRAM === "vscode" || import_node_process8.default.env.TERM === "xterm-256color" || import_node_process8.default.env.TERM === "alacritty" || import_node_process8.default.env.TERMINAL_EMULATOR === "JetBrains-JediTerm";
+}
+
+// node_modules/log-symbols/index.js
+var main = {
+  info: source_default.blue("\u2139"),
+  success: source_default.green("\u2714"),
+  warning: source_default.yellow("\u26A0"),
+  error: source_default.red("\u2716")
+};
+var fallback = {
+  info: source_default.blue("i"),
+  success: source_default.green("\u221A"),
+  warning: source_default.yellow("\u203C"),
+  error: source_default.red("\xD7")
+};
+var logSymbols = isUnicodeSupported() ? main : fallback;
+var log_symbols_default = logSymbols;
+
+// src/commands/config.ts
 var import_os = require("os");
 var import_path2 = require("path");
 
@@ -55138,52 +55496,52 @@ dotenv.config();
 var DEFAULT_MODEL_TOKEN_LIMIT = 4096;
 var validateConfig = (key, condition, validationMessage) => {
   if (!condition) {
-    $e(`${source_default.red("\u2716")} Unsupported config key ${key}: ${validationMessage}`);
+    $e(`${source_default.red(log_symbols_default.error)} Unsupported config key ${key}: ${validationMessage}`);
     process.exit(1);
   }
 };
 var configValidators = {
-  ["GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */](value, config7 = {}) {
-    validateConfig("GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */, value, "Cannot be empty");
-    validateConfig("GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */, value.startsWith("sk-"), 'Must start with "sk-"');
+  ["GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */](value, config7 = {}) {
+    validateConfig("GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */, value, "Cannot be empty");
+    validateConfig("GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */, value.startsWith("sk-"), 'Must start with "sk-"');
     validateConfig(
-      "GWZ_OPENAI_API_KEY" /* GWZ_OPENAI_API_KEY */,
-      config7["GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */] || value.length === 51,
+      "GW_OPENAI_API_KEY" /* GW_OPENAI_API_KEY */,
+      config7["GW_OPENAI_BASE_PATH" /* GW_OPENAI_BASE_PATH */] || value.length === 51,
       "Must be 51 characters long"
     );
     return value;
   },
-  ["GWZ_DESCRIPTION" /* GWZ_DESCRIPTION */](value) {
-    validateConfig("GWZ_DESCRIPTION" /* GWZ_DESCRIPTION */, typeof value === "boolean", "Must be true or false");
+  ["GW_DESCRIPTION" /* GW_DESCRIPTION */](value) {
+    validateConfig("GW_DESCRIPTION" /* GW_DESCRIPTION */, typeof value === "boolean", "Must be true or false");
     return value;
   },
-  ["GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */](value) {
+  ["GW_OPENAI_MAX_TOKENS" /* GW_OPENAI_MAX_TOKENS */](value) {
     if (typeof value === "string") {
       value = parseInt(value);
-      validateConfig("GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */, !isNaN(value), "Must be a number");
+      validateConfig("GW_OPENAI_MAX_TOKENS" /* GW_OPENAI_MAX_TOKENS */, !isNaN(value), "Must be a number");
     }
     validateConfig(
-      "GWZ_OPENAI_MAX_TOKENS" /* GWZ_OPENAI_MAX_TOKENS */,
+      "GW_OPENAI_MAX_TOKENS" /* GW_OPENAI_MAX_TOKENS */,
       value ? typeof value === "number" : void 0,
       "Must be a number"
     );
     return value;
   },
-  ["GWZ_EMOJI" /* GWZ_EMOJI */](value) {
-    validateConfig("GWZ_EMOJI" /* GWZ_EMOJI */, typeof value === "boolean", "Must be true or false");
+  ["GW_EMOJI" /* GW_EMOJI */](value) {
+    validateConfig("GW_EMOJI" /* GW_EMOJI */, typeof value === "boolean", "Must be true or false");
     return value;
   },
-  ["GWZ_LANGUAGE" /* GWZ_LANGUAGE */](value) {
-    validateConfig("GWZ_LANGUAGE" /* GWZ_LANGUAGE */, getI18nLocal(value), `${value} is not supported yet`);
+  ["GW_LANGUAGE" /* GW_LANGUAGE */](value) {
+    validateConfig("GW_LANGUAGE" /* GW_LANGUAGE */, getI18nLocal(value), `${value} is not supported yet`);
     return getI18nLocal(value);
   },
-  ["GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */](value) {
-    validateConfig("GWZ_OPENAI_BASE_PATH" /* GWZ_OPENAI_BASE_PATH */, typeof value === "string", "Must be string");
+  ["GW_OPENAI_BASE_PATH" /* GW_OPENAI_BASE_PATH */](value) {
+    validateConfig("GW_OPENAI_BASE_PATH" /* GW_OPENAI_BASE_PATH */, typeof value === "string", "Must be string");
     return value;
   },
-  ["GWZ_MODEL" /* GWZ_MODEL */](value) {
+  ["GW_MODEL" /* GW_MODEL */](value) {
     validateConfig(
-      "GWZ_MODEL" /* GWZ_MODEL */,
+      "GW_MODEL" /* GW_MODEL */,
       [
         "gpt-4-1106-preview",
         "gpt-4",
@@ -55198,17 +55556,17 @@ var configValidators = {
     );
     return value;
   },
-  ["GWZ_MESSAGE_TEMPLATE_PLACEHOLDER" /* GWZ_MESSAGE_TEMPLATE_PLACEHOLDER */](value) {
+  ["GW_MESSAGE_TEMPLATE_PLACEHOLDER" /* GW_MESSAGE_TEMPLATE_PLACEHOLDER */](value) {
     validateConfig(
-      "GWZ_MESSAGE_TEMPLATE_PLACEHOLDER" /* GWZ_MESSAGE_TEMPLATE_PLACEHOLDER */,
+      "GW_MESSAGE_TEMPLATE_PLACEHOLDER" /* GW_MESSAGE_TEMPLATE_PLACEHOLDER */,
       value.startsWith("$"),
       `${value} must start with $, for example: '$msg'`
     );
     return value;
   },
-  ["GWZ_PROMPT_MODULE" /* GWZ_PROMPT_MODULE */](value) {
+  ["GW_PROMPT_MODULE" /* GW_PROMPT_MODULE */](value) {
     validateConfig(
-      "GWZ_PROMPT_MODULE" /* GWZ_PROMPT_MODULE */,
+      "GW_PROMPT_MODULE" /* GW_PROMPT_MODULE */,
       ["conventional-commit", "@commitlint"].includes(value),
       `${value} is not supported yet, use '@commitlint' or 'conventional-commit' (default)`
     );
@@ -55218,15 +55576,15 @@ var configValidators = {
 var configPath = (0, import_path2.join)((0, import_os.homedir)(), ".gitwz");
 var getConfig = () => {
   const configFromEnv = {
-    GWZ_OPENAI_API_KEY: process.env.GWZ_OPENAI_API_KEY,
-    GWZ_OPENAI_MAX_TOKENS: process.env.GWZ_OPENAI_MAX_TOKENS ? Number(process.env.GWZ_OPENAI_MAX_TOKENS) : void 0,
-    GWZ_OPENAI_BASE_PATH: process.env.GWZ_OPENAI_BASE_PATH,
-    GWZ_DESCRIPTION: process.env.GWZ_DESCRIPTION === "true" ? true : false,
-    GWZ_EMOJI: process.env.GWZ_EMOJI === "true" ? true : false,
-    GWZ_MODEL: process.env.GWZ_MODEL || "gpt-3.5-turbo-1106",
-    GWZ_LANGUAGE: process.env.GWZ_LANGUAGE || "en",
-    GWZ_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
-    GWZ_PROMPT_MODULE: process.env.GWZ_PROMPT_MODULE || "conventional-commit"
+    GW_OPENAI_API_KEY: process.env.GW_OPENAI_API_KEY,
+    GW_OPENAI_MAX_TOKENS: process.env.GW_OPENAI_MAX_TOKENS ? Number(process.env.GW_OPENAI_MAX_TOKENS) : void 0,
+    GW_OPENAI_BASE_PATH: process.env.GW_OPENAI_BASE_PATH,
+    GW_DESCRIPTION: process.env.GW_DESCRIPTION === "true" ? true : false,
+    GW_EMOJI: process.env.GW_EMOJI === "true" ? true : false,
+    GW_MODEL: process.env.GW_MODEL || "gpt-3.5-turbo-1106",
+    GW_LANGUAGE: process.env.GW_LANGUAGE || "en",
+    GW_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GW_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
+    GW_PROMPT_MODULE: process.env.GW_PROMPT_MODULE || "conventional-commit"
   };
   const configExists = (0, import_fs2.existsSync)(configPath);
   if (!configExists)
@@ -55240,11 +55598,10 @@ var getConfig = () => {
     }
     try {
       const validator = configValidators[configKey];
-      const validValue = validator(config7[configKey] ?? configFromEnv[configKey], config7);
-      config7[configKey] = validValue;
+      config7[configKey] = validator(config7[configKey] ?? configFromEnv[configKey], config7);
     } catch (error) {
       $e(
-        `'${configKey}' name is invalid, it should be either 'GWZ_${configKey.toUpperCase()}' or it doesn't exist.`
+        `'${configKey}' name is invalid, it should be either 'GW_${configKey.toUpperCase()}' or it doesn't exist.`
       );
       $e(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
       process.exit(1);
@@ -55264,11 +55621,10 @@ var setConfig = (keyValues) => {
     } catch (error) {
       parsedConfigValue = configValue;
     }
-    const validValue = configValidators[configKey](parsedConfigValue);
-    config7[configKey] = validValue;
+    config7[configKey] = configValidators[configKey](parsedConfigValue);
   }
   (0, import_fs2.writeFileSync)(configPath, (0, import_ini.stringify)(config7), "utf8");
-  $e(`${source_default.green("\u2714")} Config successfully set`);
+  $e(`${source_default.green(log_symbols_default.success)} Config successfully set`);
 };
 var configCommand = G3(
   {
@@ -55290,7 +55646,7 @@ var configCommand = G3(
         throw new Error(`Unsupported mode: ${mode2}. Valid modes are: "set" and "get"`);
       }
     } catch (error) {
-      $e(`${source_default.red("\u2716")} ${error}`);
+      $e(`${source_default.red(log_symbols_default.error)} ${error}`);
       process.exit(1);
     }
   }
@@ -55310,16 +55666,16 @@ function tokenCount(content) {
 
 // src/api.ts
 var config2 = getConfig();
-var maxTokens = config2?.GWZ_OPENAI_MAX_TOKENS || 500;
-var apiKey = config2?.GWZ_OPENAI_API_KEY;
-var MODEL = config2?.GWZ_MODEL || "gpt-3.5-turbo-1106";
+var maxTokens = config2?.GW_OPENAI_MAX_TOKENS || 500;
+var apiKey = config2?.GW_OPENAI_API_KEY;
+var MODEL = config2?.GW_MODEL || "gpt-3.5-turbo-1106";
 var [command, mode] = process.argv.slice(2);
 if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   oe("gitwz");
   $e(
-    "GWZ_OPENAI_API_KEY is not set, please run `gwz config set GWZ_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`"
+    "GW_OPENAI_API_KEY is not set, please run `gw config set GW_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`"
   );
-  $e("For help look into README https://github.com/SHSharkar/gitwz#setup");
+  $e("For help look into README https://github.com/aiFdn/gitwz#setup");
   process.exit(1);
 }
 var openai = new openai_default({
@@ -55352,7 +55708,7 @@ var OpenAi = class {
         const openAiError = error.response.data.error;
         if (openAiError?.message)
           $e(openAiError.message);
-        $e("For help look into README https://github.com/SHSharkar/gitwz#setup");
+        $e("For help look into README https://github.com/aiFdn/gitwz#setup");
       }
       throw err;
     }
@@ -55379,7 +55735,7 @@ var computeHash = async (content, algorithm = "sha256") => {
 // src/modules/commitlint/prompts.ts
 var import_types = __toESM(require_lib4(), 1);
 var config3 = getConfig();
-var translation = i18n[config3?.GWZ_LANGUAGE || "en"];
+var translation = i18n[config3?.GW_LANGUAGE || "en"];
 var getTypeRuleExtraDescription = (type, prompt) => prompt?.questions?.type?.enum?.[type]?.description;
 var llmReadableRules = {
   blankline: (key, applicable) => `There should ${applicable} be a blank line at the beginning of the ${key}.`,
@@ -55496,8 +55852,8 @@ var INIT_MAIN_PROMPT = (language, prompts) => ({
   role: "system",
   // prettier-ignore
   content: `${IDENTITY} Your task is to craft clean, comprehensive commit messages following the @commitlint convention, detailing WHAT changes were made and WHY. When I send you the 'git diff --staged' output, convert that into a clear commit message. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability.
-${config3?.GWZ_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
-${config3?.GWZ_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
+${config3?.GW_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
+${config3?.GW_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
 Strictly adhere to the following conventions for your commit message content, using the present tense and responding in ${language}.
 - ${prompts.join("\n- ")}
 
@@ -55547,13 +55903,12 @@ var writeCommitlintLLMConfig = async (commitlintLLMConfig) => {
 };
 var getCommitlintLLMConfig = async () => {
   const content = await import_promises2.default.readFile(COMMITLINT_LLM_CONFIG_PATH);
-  const commitLintLLMConfig = JSON.parse(content.toString());
-  return commitLintLLMConfig;
+  return JSON.parse(content.toString());
 };
 
 // src/modules/commitlint/config.ts
 var config4 = getConfig();
-var translation2 = i18n[config4?.GWZ_LANGUAGE || "en"];
+var translation2 = i18n[config4?.GW_LANGUAGE || "en"];
 var configureCommitlintIntegration = async (force = false) => {
   const spin = de();
   spin.start("Loading @commitlint configuration");
@@ -55589,13 +55944,13 @@ var configureCommitlintIntegration = async (force = false) => {
 
 // src/prompts.ts
 var config5 = getConfig();
-var translation3 = i18n[config5?.GWZ_LANGUAGE || "en"];
+var translation3 = i18n[config5?.GW_LANGUAGE || "en"];
 var IDENTITY = "Focus solely on crafting a git commit message as the author, without deviating to other tasks.";
 var INIT_MAIN_PROMPT2 = (language) => ({
   role: "system",
   content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT and WHY) from the 'git diff --staged' output. Summarize these in present tense, keeping them under 50 characters. In your detailed descriptions, explain the reasons, impact, necessity, and context of the changes. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Write the commit message in ${language}, ensuring it's conversational and clear. Review the code and 'git diff' output for message accuracy, differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
-    ${config5?.GWZ_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
-    ${config5?.GWZ_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
+    ${config5?.GW_EMOJI ? "Use the GitMoji convention for your commit message." : "Don't start the commit with any preface."}
+    ${config5?.GW_DESCRIPTION ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'." : "Only include the commit message, no descriptions needed."}
   `
 });
 var INIT_DIFF_PROMPT = {
@@ -55627,15 +55982,15 @@ var INIT_DIFF_PROMPT = {
 };
 var INIT_CONSISTENCY_PROMPT = (translation4) => ({
   role: "assistant",
-  content: `${config5?.GWZ_EMOJI ? "\u{1F41B} " : ""}${translation4.commitFix}
-${config5?.GWZ_EMOJI ? "\u2728 " : ""}${translation4.commitFeat}
-${config5?.GWZ_DESCRIPTION ? translation4.commitDescription : ""}`
+  content: `${config5?.GW_EMOJI ? "\u{1F41B} " : ""}${translation4.commitFix}
+${config5?.GW_EMOJI ? "\u2728 " : ""}${translation4.commitFeat}
+${config5?.GW_DESCRIPTION ? translation4.commitDescription : ""}`
 });
 var getMainCommitPrompt = async () => {
-  switch (config5?.GWZ_PROMPT_MODULE) {
+  switch (config5?.GW_PROMPT_MODULE) {
     case "@commitlint":
       if (!await commitlintLLMConfigExists()) {
-        le(`GWZ_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`);
+        le(`GW_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`);
         await configureCommitlintIntegration();
       }
       const commitLintConfig = await getCommitlintLLMConfig();
@@ -55688,7 +56043,7 @@ var generateCommitMessageByDiff = async (diff) => {
       (a3, b3) => a3 + b3,
       0
     );
-    const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config6?.GWZ_OPENAI_MAX_TOKENS;
+    const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config6?.GW_OPENAI_MAX_TOKENS;
     if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
       const commitMessagePromises = await getCommitMsgsPromisesFromFileDiffs(diff, MAX_REQUEST_TOKENS);
       const commitMessages = [];
@@ -55916,14 +56271,6 @@ undici/lib/fetch/body.js:
 
 undici/lib/websocket/frame.js:
   (*! ws. MIT License. Einar Otto Stangvik <einaros@gmail.com> *)
-
-is-plain-object/dist/is-plain-object.js:
-  (*!
-   * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
-   *
-   * Copyright (c) 2014-2017, Jon Schlinkert.
-   * Released under the MIT License.
-   *)
 
 mime-db/index.js:
   (*!
