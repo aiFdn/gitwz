@@ -1,8 +1,9 @@
 {
     "name": "gitwz",
     "version": "5.2.1",
-    "packageManager": "^npm@18.0.0",
     "description": "Make your git commits stand out! With AI (OpenAI GPT), transform plain git commits into eye-catching ones in just a few seconds.",
+    "type": "module",
+    "license": "MIT",
     "keywords": [
         "ai",
         "ai-commits",
@@ -32,14 +33,18 @@
     "main": "cli.js",
     "bin": {
         "gitwz": "out/cli.cjs",
-        "gwz": "out/cli.cjs"
+        "gwz": "out/cli.cjs",
+        "gw": "out/cli.cjs"
     },
     "repository": {
-        "url": "git+https://github.com/SHSharkar/gitwz.git"
+        "url": "git+https://github.com/aiFdn/gitwz.git"
     },
-    "type": "module",
-    "author": "https://github.com/SHSharkar",
-    "license": "MIT",
+    "author": "Md. Sazzad Hossain Sharkar <md@szd.sh> (https://github.com/SHSharkar/)",
+    "homepage": "https://github.com/aiFdn/gitwz#readme",
+    "bugs": {
+        "url": "https://github.com/aiFdn/gitwz/issues",
+        "email": "md@szd.sh"
+    },
     "files": [
         "out/cli.cjs",
         "out/tiktoken_bg.wasm"
@@ -59,26 +64,27 @@
         "build": "rimraf out && node esbuild.config.js",
         "build:push": "npm run build && git add . && git commit -m 'build' && git push",
         "deploy": "npm version patch && npm run build:push && git push --tags && npm publish --tag latest",
-        "lint": "eslint src --ext ts --fix && tsc --noEmit",
+        "lint": "eslint src && tsc --noEmit",
+        "lint:fix": "eslint src --ext ts --fix && prettier --write src",
         "format": "prettier --write src"
     },
     "devDependencies": {
-        "@commitlint/types": "^18.4.0",
+        "@commitlint/types": "^18.4.3",
         "@types/ini": "^1.3.33",
         "@types/inquirer": "^9.0.7",
-        "@types/node": "^20.9.0",
-        "@typescript-eslint/eslint-plugin": "^6.11.0",
-        "@typescript-eslint/parser": "^6.11.0",
+        "@types/node": "^20.10.0",
+        "@typescript-eslint/eslint-plugin": "^6.12.0",
+        "@typescript-eslint/parser": "^6.12.0",
         "dotenv": "^16.3.1",
-        "esbuild": "^0.19.5",
-        "eslint": "^8.53.0",
+        "esbuild": "^0.19.7",
+        "eslint": "^8.54.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-import": "^2.29.0",
         "eslint-plugin-prettier": "^5.0.1",
         "eslint-plugin-simple-import-sort": "^10.0.0",
         "prettier": "^3.1.0",
-        "tsx": "^4.1.2",
-        "typescript": "^5.2.2"
+        "tsx": "^4.5.0",
+        "typescript": "^5.3.2"
     },
     "dependencies": {
         "@actions/core": "^1.10.1",
@@ -91,12 +97,11 @@
         "axios": "^1.6.2",
         "chalk": "^5.3.0",
         "cleye": "^1.3.2",
-        "eslint-plugin-jsdoc": "^46.9.0",
-        "eslint-plugin-security": "^1.7.1",
         "execa": "^8.0.1",
         "ignore": "^5.3.0",
         "ini": "^4.1.1",
         "inquirer": "^9.2.12",
-        "openai": "^4.19.0"
+        "log-symbols": "^6.0.0",
+        "openai": "^4.20.0"
     }
 }
