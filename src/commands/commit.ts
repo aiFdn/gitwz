@@ -27,7 +27,7 @@ const checkMessageTemplate = (extraArgs: string[]): string | false => {
 const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[]): Promise<void> => {
     await assertGitRepo();
     const commitSpinner = spinner();
-    commitSpinner.start(`${chalk.black.bold.bgBlue(` INFO `)} Generating the commit message...`);
+    commitSpinner.start(`${chalk.hex('#ffffff').bold.bgHex('#1640D6')(` INFO `)} Generating the commit message...`);
 
     const startTime = new Date();
 
@@ -66,7 +66,7 @@ ${chalk.grey('——————————————————————
         if (isCommitConfirmedByUser && !isCancel(isCommitConfirmedByUser)) {
             const { stdout } = await execa('git', ['commit', '-m', commitMessage, ...extraArgs]);
 
-            outro(`${chalk.bold.hex('#ffffff').bgGreen(` SUCCESS `)} Successfully committed changes.`);
+            outro(`${chalk.bold.hex('#ffffff').bgHex('#3EC70B')(` SUCCESS `)} Successfully committed changes.`);
 
             outro(stdout);
 
@@ -87,7 +87,7 @@ ${chalk.grey('——————————————————————
                     const pushSpinner = spinner();
 
                     pushSpinner.start(
-                        `${chalk.black.bold.bgBlue(` INFO `)} Running ${chalk.black.bold.bgBlue(
+                        `${chalk.hex('#ffffff').bold.bgHex('#1640D6')(` INFO `)} Running ${chalk.black.bold.bgBlue(
                             ` git push ${remotes[0]} `,
                         )}`,
                     );
@@ -95,18 +95,18 @@ ${chalk.grey('——————————————————————
                     const { stdout } = await execa('git', ['push', '--verbose', remotes[0]]);
 
                     pushSpinner.stop(
-                        `${chalk
-                            .hex('#ffffff')
-                            .bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${chalk.bold
-                            .hex('#ffffff')
-                            .bgGreen(` ${remotes[0]} `)}.`,
+                        `${chalk.hex('#ffffff').bold.bgHex('#3EC70B')(
+                            ` SUCCESS `,
+                        )} Successfully pushed all commits to ${chalk.bold.hex('#ffffff').bgHex('#3EC70B')(
+                            ` ${remotes[0]} `,
+                        )}.`,
                     );
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
                 } else {
                     outro(
-                        `${chalk.bold.inverse.hex('#FFA500')(` WARNING `)} 'git push' aborted - Operation cancelled.`,
+                        `${chalk.bold.inverse.hex('#FF6000')(` WARNING `)} 'git push' aborted - Operation cancelled.`,
                     );
                     process.exit(0);
                 }
@@ -120,7 +120,7 @@ ${chalk.grey('——————————————————————
                     const pushSpinner = spinner();
 
                     pushSpinner.start(
-                        `${chalk.black.bold.bgBlue(` INFO `)} Running ${chalk.black.bold.bgBlue(
+                        `${chalk.hex('#ffffff').bold.bgHex('#1640D6')(` INFO `)} Running ${chalk.black.bold.bgBlue(
                             ` git push ${selectedRemote} `,
                         )}`,
                     );
@@ -128,30 +128,30 @@ ${chalk.grey('——————————————————————
                     const { stdout } = await execa('git', ['push', selectedRemote]);
 
                     pushSpinner.stop(
-                        `${chalk
-                            .hex('#ffffff')
-                            .bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${chalk.bold
-                            .hex('#ffffff')
-                            .bgGreen(` ${selectedRemote} `)}.`,
+                        `${chalk.hex('#ffffff').bold.bgHex('#3EC70B')(
+                            ` SUCCESS `,
+                        )} Successfully pushed all commits to ${chalk.bold.hex('#ffffff').bgHex('#3EC70B')(
+                            ` ${selectedRemote} `,
+                        )}.`,
                     );
 
                     // eslint-disable-next-line max-depth
                     if (stdout) outro(stdout);
-                } else outro(`${chalk.bold.inverse.hex('#FFA500')(` WARNING `)} process cancelled`);
+                } else outro(`${chalk.bold.inverse.hex('#FF6000')(` WARNING `)} process cancelled`);
             }
         } else {
             outro(
-                `${chalk.bold.inverse.hex('#FFA500')(
+                `${chalk.bold.inverse.hex('#FF6000')(
                     ` WARNING `,
                 )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`,
             );
             process.exit(0);
         }
     } catch (error) {
-        commitSpinner.stop(`${chalk.black.bold.bgBlue(` INFO `)} Commit message generated.`);
+        commitSpinner.stop(`${chalk.hex('#ffffff').bold.bgHex('#1640D6')(` INFO `)} Commit message generated.`);
 
         const err = error as Error;
-        outro(`${chalk.hex('#ffffff').bold.bgRed(` ERROR `)} ${err?.message || err}`);
+        outro(`${chalk.hex('#ffffff').bold.bgHex('#FF0303')(` ERROR `)} ${err?.message || err}`);
         process.exit(1);
     }
 };
@@ -164,8 +164,8 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
         if (changedFiles) await gitAdd({ files: changedFiles });
         else {
             outro(
-                chalk.hex('#FFA500')(
-                    `${chalk.bold.inverse.hex('#FFA500')(
+                chalk.hex('#FF6000')(
+                    `${chalk.bold.inverse.hex('#FF6000')(
                         ` WARNING `,
                     )} No changes detected, write some code and run 'gw' again`,
                 ),
@@ -179,8 +179,8 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
 
     if (!changedFiles?.length && !stagedFiles?.length) {
         outro(
-            chalk.hex('#FFA500')(
-                `${chalk.bold.inverse.hex('#FFA500')(
+            chalk.hex('#FF6000')(
+                `${chalk.bold.inverse.hex('#FF6000')(
                     ` WARNING `,
                 )} No changes detected, write some code and run 'gw' again`,
             ),
@@ -189,17 +189,18 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
     }
 
     intro(`
-${chalk.bold.inverse.hex('#FFA500')(` GitWiz ${pkgJson.version} `)}${chalk.italic.dim(
+${chalk.bold.inverse.hex('#FF6000')(` GitWiz ${pkgJson.version} `)}${chalk.italic.dim(
         ` Use AI to Enhance Your Git Commits `,
     )}
-${chalk.inverse.bold.hex('#45CFDD')(` Developed By `)} ${chalk.bold('Md. Sazzad Hossain Sharkar')} (${chalk.underline(
-        'https://github.com/SHSharkar',
-    )})
+    
+${chalk.hex('#ffffff').bold.bgHex('#12486B')(` Developed By `)} ${chalk.bold(
+        'Md. Sazzad Hossain Sharkar',
+    )} (${chalk.underline('https://github.com/SHSharkar')})
     
 ${chalk.yellow('Preparing to commit changes...')}`);
 
     if (errorChangedFiles ?? errorStagedFiles) {
-        outro(`${chalk.hex('#ffffff').bold.bgRed(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
+        outro(`${chalk.hex('#ffffff').bold.bgHex('#FF0303')(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
         process.exit(1);
     }
 
@@ -208,7 +209,7 @@ ${chalk.yellow('Preparing to commit changes...')}`);
     stagedFilesSpinner.start('Counting staged files...');
 
     if (!stagedFiles.length) {
-        stagedFilesSpinner.stop(`${chalk.bold.black.bgBlue(` INFO `)} No staged files found.`);
+        stagedFilesSpinner.stop(`${chalk.bold.hex('#ffffff').bgHex('#1640D6')(` INFO `)} No staged files found.`);
         const isStageAllAndCommitConfirmedByUser = await confirm({
             message: 'Do you want to stage all files and generate commit message?',
         });
@@ -249,7 +250,7 @@ ${chalk.yellow('Preparing to commit changes...')}`);
     );
 
     if (generateCommitError) {
-        outro(`${chalk.hex('#ffffff').bold.bgRed(` ERROR `)} ${generateCommitError}`);
+        outro(`${chalk.hex('#ffffff').bold.bgHex('#FF0303')(` ERROR `)} ${generateCommitError}`);
         process.exit(1);
     }
 
