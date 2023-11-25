@@ -17,7 +17,7 @@ const getGitRemotes = async () => {
 // Check for the presence of message templates
 const checkMessageTemplate = (extraArgs: string[]): string | false => {
     for (const key in extraArgs) {
-        if (extraArgs[key].includes(config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER)) return extraArgs[key];
+        if (extraArgs[key].includes(config?.GW_MESSAGE_TEMPLATE_PLACEHOLDER)) return extraArgs[key];
     }
     return false;
 };
@@ -35,8 +35,8 @@ const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[
 
         const messageTemplate = checkMessageTemplate(extraArgs);
 
-        if (config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER && typeof messageTemplate === 'string') {
-            commitMessage = messageTemplate.replace(config?.GWZ_MESSAGE_TEMPLATE_PLACEHOLDER, commitMessage);
+        if (config?.GW_MESSAGE_TEMPLATE_PLACEHOLDER && typeof messageTemplate === 'string') {
+            commitMessage = messageTemplate.replace(config?.GW_MESSAGE_TEMPLATE_PLACEHOLDER, commitMessage);
         }
 
         const endTime = new Date();

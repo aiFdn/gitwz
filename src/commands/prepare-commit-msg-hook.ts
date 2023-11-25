@@ -36,7 +36,7 @@ export const prepareCommitMessageHook = async (isStageAllFlag: boolean = false) 
 
         const config = getConfig();
 
-        if (!config?.GWZ_OPENAI_API_KEY) {
+        if (!config?.GW_OPENAI_API_KEY) {
             throw new Error('No OPEN_AI_API exists. Set your OPEN_AI_API=<key> in ~/.gitwz');
         }
 

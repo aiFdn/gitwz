@@ -10,18 +10,18 @@ import { tokenCount } from './utils/tokenCount';
 
 const config = getConfig();
 
-const maxTokens = config?.GWZ_OPENAI_MAX_TOKENS || 500;
-const apiKey = config?.GWZ_OPENAI_API_KEY;
-const MODEL = config?.GWZ_MODEL || 'gpt-3.5-turbo-1106';
+const maxTokens = config?.GW_OPENAI_MAX_TOKENS || 500;
+const apiKey = config?.GW_OPENAI_API_KEY;
+const MODEL = config?.GW_MODEL || 'gpt-3.5-turbo-1106';
 
 const [command, mode] = process.argv.slice(2);
 
 if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
     intro('gitwz');
     outro(
-        'GWZ_OPENAI_API_KEY is not set, please run `gwz config set GWZ_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`',
+        'GW_OPENAI_API_KEY is not set, please run `gw config set GW_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`',
     );
-    outro('For help look into README https://github.com/SHSharkar/gitwz#setup');
+    outro('For help look into README https://github.com/aiFdn/gitwz#setup');
     process.exit(1);
 }
 
@@ -56,6 +56,8 @@ class OpenAi {
         };
 
         try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             const REQUEST_TOKENS = messages.map((msg) => tokenCount(msg.content) + 4).reduce((a, b) => a + b, 0);
 
             if (REQUEST_TOKENS > DEFAULT_MODEL_TOKEN_LIMIT - maxTokens) {
@@ -79,7 +81,7 @@ class OpenAi {
                 const openAiError = error.response.data.error;
 
                 if (openAiError?.message) outro(openAiError.message);
-                outro('For help look into README https://github.com/SHSharkar/gitwz#setup');
+                outro('For help look into README https://github.com/aiFdn/gitwz#setup');
             }
 
             throw err;
