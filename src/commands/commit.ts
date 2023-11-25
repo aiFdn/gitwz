@@ -95,7 +95,9 @@ ${chalk.grey('——————————————————————
                     const { stdout } = await execa('git', ['push', '--verbose', remotes[0]]);
 
                     pushSpinner.stop(
-                        `${chalk.black.bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${remotes[0]}.`,
+                        `${chalk.black.bold.bgGreen(
+                            ` SUCCESS `,
+                        )} Successfully pushed all commits to ${chalk.bold.blue.bgGreen(` ${remotes[0]} `)}.`,
                     );
 
                     // eslint-disable-next-line max-depth
@@ -124,7 +126,7 @@ ${chalk.grey('——————————————————————
                     pushSpinner.stop(
                         `${chalk.black.bold.bgGreen(
                             ` SUCCESS `,
-                        )} Successfully pushed all commits to ${selectedRemote}.`,
+                        )} Successfully pushed all commits to ${chalk.bold.black.bgGreen(` ${selectedRemote} `)}.`,
                     );
 
                     // eslint-disable-next-line max-depth

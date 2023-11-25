@@ -33935,10 +33935,16 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         });
         if (isPushConfirmedByUser && !eD2(isPushConfirmedByUser)) {
           const pushSpinner = de();
-          pushSpinner.start(`${source_default.black.bold.bgBlue(` INFO `)} Running 'git push ${remotes[0]}...'`);
+          pushSpinner.start(
+            `${source_default.black.bold.bgBlue(` INFO `)} Running git push ${source_default.black.bold.bgBlue(
+              ` ${remotes[0]} `
+            )}`
+          );
           const { stdout: stdout2 } = await execa("git", ["push", "--verbose", remotes[0]]);
           pushSpinner.stop(
-            `${source_default.black.bold.bgGreen(` SUCCESS `)} Successfully pushed all commits to ${remotes[0]}.`
+            `${source_default.black.bold.bgGreen(
+              ` SUCCESS `
+            )} Successfully pushed all commits to ${source_default.bold.blue.bgGreen(` ${remotes[0]} `)}.`
           );
           if (stdout2)
             $e(stdout2);
@@ -33953,12 +33959,16 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         });
         if (!eD2(selectedRemote)) {
           const pushSpinner = de();
-          pushSpinner.start(`${source_default.black.bold.bgBlue(` INFO `)} Running 'git push ${selectedRemote}...'`);
+          pushSpinner.start(
+            `${source_default.black.bold.bgBlue(` INFO `)} Running git push ${source_default.black.bold.bgBlue(
+              ` ${selectedRemote} `
+            )}`
+          );
           const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
           pushSpinner.stop(
             `${source_default.black.bold.bgGreen(
               ` SUCCESS `
-            )} Successfully pushed all commits to ${selectedRemote}.`
+            )} Successfully pushed all commits to ${source_default.bold.black.bgGreen(` ${selectedRemote} `)}.`
           );
           if (stdout2)
             $e(stdout2);
