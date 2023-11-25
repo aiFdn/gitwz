@@ -9,7 +9,7 @@ import { ConsistencyPrompt } from './modules/commitlint/types';
 import * as utils from './modules/commitlint/utils';
 
 const config = getConfig();
-const translation = i18n[(config?.GWZ_LANGUAGE as I18nLocals) || 'en'];
+const translation = i18n[(config?.GW_LANGUAGE as I18nLocals) || 'en'];
 
 export const IDENTITY =
     'Focus solely on crafting a git commit message as the author, without deviating to other tasks.';
@@ -17,12 +17,12 @@ const INIT_MAIN_PROMPT = (language: string): { role: string; content: string } =
     role: 'system',
     content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT and WHY) from the 'git diff --staged' output. Summarize these in present tense, keeping them under 50 characters. In your detailed descriptions, explain the reasons, impact, necessity, and context of the changes. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Write the commit message in ${language}, ensuring it's conversational and clear. Review the code and 'git diff' output for message accuracy, differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
     ${
-        config?.GWZ_EMOJI
+        config?.GW_EMOJI
             ? 'Use the GitMoji convention for your commit message.'
             : "Don't start the commit with any preface."
     }
     ${
-        config?.GWZ_DESCRIPTION
+        config?.GW_DESCRIPTION
             ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'."
             : 'Only include the commit message, no descriptions needed.'
     }
@@ -59,9 +59,9 @@ export const INIT_DIFF_PROMPT: OpenAI.Chat.ChatCompletionUserMessageParam = {
 
 const INIT_CONSISTENCY_PROMPT = (translation: ConsistencyPrompt): { role: string; content: string } => ({
     role: 'assistant',
-    content: `${config?.GWZ_EMOJI ? '🐛 ' : ''}${translation.commitFix}
-${config?.GWZ_EMOJI ? '✨ ' : ''}${translation.commitFeat}
-${config?.GWZ_DESCRIPTION ? translation.commitDescription : ''}`,
+    content: `${config?.GW_EMOJI ? '🐛 ' : ''}${translation.commitFix}
+${config?.GW_EMOJI ? '✨ ' : ''}${translation.commitFeat}
+${config?.GW_DESCRIPTION ? translation.commitDescription : ''}`,
 });
 
 export const getMainCommitPrompt = async (): Promise<
@@ -79,10 +79,10 @@ export const getMainCommitPrompt = async (): Promise<
           }
     )[]
 > => {
-    switch (config?.GWZ_PROMPT_MODULE) {
+    switch (config?.GW_PROMPT_MODULE) {
         case '@commitlint':
             if (!(await utils.commitlintLLMConfigExists())) {
-                note(`GWZ_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`);
+                note(`GW_PROMPT_MODULE is @commitlint but you haven't generated consistency for this project yet.`);
                 await configureCommitlintIntegration();
             }
 
