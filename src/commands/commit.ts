@@ -87,8 +87,8 @@ ${chalk.grey('——————————————————————
                     const pushSpinner = spinner();
 
                     pushSpinner.start(
-                        `${chalk.black.bold.bgBlue(` INFO `)} Running git push ${chalk.black.bold.bgBlue(
-                            ` ${remotes[0]} `,
+                        `${chalk.black.bold.bgBlue(` INFO `)} Running ${chalk.black.bold.bgBlue(
+                            ` git push ${remotes[0]} `,
                         )}`,
                     );
 
@@ -97,7 +97,7 @@ ${chalk.grey('——————————————————————
                     pushSpinner.stop(
                         `${chalk.black.bold.bgGreen(
                             ` SUCCESS `,
-                        )} Successfully pushed all commits to ${chalk.bold.blue.bgGreen(` ${remotes[0]} `)}.`,
+                        )} Successfully pushed all commits to ${chalk.bold.black.bgGreen(` ${remotes[0]} `)}.`,
                     );
 
                     // eslint-disable-next-line max-depth
@@ -116,8 +116,8 @@ ${chalk.grey('——————————————————————
                     const pushSpinner = spinner();
 
                     pushSpinner.start(
-                        `${chalk.black.bold.bgBlue(` INFO `)} Running git push ${chalk.black.bold.bgBlue(
-                            ` ${selectedRemote} `,
+                        `${chalk.black.bold.bgBlue(` INFO `)} Running ${chalk.black.bold.bgBlue(
+                            ` git push ${selectedRemote} `,
                         )}`,
                     );
 
