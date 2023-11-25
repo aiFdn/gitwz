@@ -22,7 +22,7 @@ Welcome and thank you for considering contributing to our project! Your expertis
 
 3. **Run the Project:** Launch the project locally using `npm run dev`. This allows you to see your changes in action and test them in a live environment.
 
-4. **Find Your Focus:** Check out [issues](https://github.com/SHSharkar/gitwz/issues) or [TODO.md](../TODO.md) for areas where the project needs help. Your contributions here are especially valuable.
+4. **Find Your Focus:** Check out [issues](https://github.com/aiFdn/gitwz/issues) or [TODO.md](../TODO.md) for areas where the project needs help. Your contributions here are especially valuable.
 
 ## Writing Meaningful Commit Messages
 
@@ -30,11 +30,11 @@ Welcome and thank you for considering contributing to our project! Your expertis
 
 ## Effective Issue Reporting
 
-Encountered a hitch? Report it on our [GitHub issue tracker](https://github.com/SHSharkar/gitwz/issues). Please include detailed steps to reproduce the issue, what you expected to happen, and what actually occurred. Your detailed reports help us improve rapidly.
+Encountered a hitch? Report it on our [GitHub issue tracker](https://github.com/aiFdn/gitwz/issues). Please include detailed steps to reproduce the issue, what you expected to happen, and what actually occurred. Your detailed reports help us improve rapidly.
 
 ## Questions and Queries
 
-Got questions? We're here to help! Feel free to [create an issue](https://github.com/SHSharkar/gitwz/issues) on our GitHub issue tracker for any queries regarding contributions.
+Got questions? We're here to help! Feel free to [create an issue](https://github.com/aiFdn/gitwz/issues) on our GitHub issue tracker for any queries regarding contributions.
 
 ## Licensing Your Contributions
 
