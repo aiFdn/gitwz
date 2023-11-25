@@ -86,7 +86,11 @@ ${chalk.grey('——————————————————————
                 if (isPushConfirmedByUser && !isCancel(isPushConfirmedByUser)) {
                     const pushSpinner = spinner();
 
-                    pushSpinner.start(`${chalk.black.bold.bgBlue(` INFO `)} Running 'git push ${remotes[0]}...'`);
+                    pushSpinner.start(
+                        `${chalk.black.bold.bgBlue(` INFO `)} Running git push ${chalk.black.bold.bgBlue(
+                            ` ${remotes[0]} `,
+                        )}`,
+                    );
 
                     const { stdout } = await execa('git', ['push', '--verbose', remotes[0]]);
 
@@ -109,7 +113,11 @@ ${chalk.grey('——————————————————————
                 if (!isCancel(selectedRemote)) {
                     const pushSpinner = spinner();
 
-                    pushSpinner.start(`${chalk.black.bold.bgBlue(` INFO `)} Running 'git push ${selectedRemote}...'`);
+                    pushSpinner.start(
+                        `${chalk.black.bold.bgBlue(` INFO `)} Running git push ${chalk.black.bold.bgBlue(
+                            ` ${selectedRemote} `,
+                        )}`,
+                    );
 
                     const { stdout } = await execa('git', ['push', selectedRemote]);
 
