@@ -23837,8 +23837,8 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "5.2.1",
-  description: "Make your git commits stand out! With AI (OpenAI GPT), transform plain git commits into eye-catching ones in just a few seconds.",
+  version: "6.0.0",
+  description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
   keywords: [
@@ -33936,15 +33936,15 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         if (isPushConfirmedByUser && !eD2(isPushConfirmedByUser)) {
           const pushSpinner = de();
           pushSpinner.start(
-            `${source_default.black.bold.bgBlue(` INFO `)} Running git push ${source_default.black.bold.bgBlue(
-              ` ${remotes[0]} `
+            `${source_default.black.bold.bgBlue(` INFO `)} Running ${source_default.black.bold.bgBlue(
+              ` git push ${remotes[0]} `
             )}`
           );
           const { stdout: stdout2 } = await execa("git", ["push", "--verbose", remotes[0]]);
           pushSpinner.stop(
             `${source_default.black.bold.bgGreen(
               ` SUCCESS `
-            )} Successfully pushed all commits to ${source_default.bold.blue.bgGreen(` ${remotes[0]} `)}.`
+            )} Successfully pushed all commits to ${source_default.bold.black.bgGreen(` ${remotes[0]} `)}.`
           );
           if (stdout2)
             $e(stdout2);
@@ -33960,8 +33960,8 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         if (!eD2(selectedRemote)) {
           const pushSpinner = de();
           pushSpinner.start(
-            `${source_default.black.bold.bgBlue(` INFO `)} Running git push ${source_default.black.bold.bgBlue(
-              ` ${selectedRemote} `
+            `${source_default.black.bold.bgBlue(` INFO `)} Running ${source_default.black.bold.bgBlue(
+              ` git push ${selectedRemote} `
             )}`
           );
           const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
