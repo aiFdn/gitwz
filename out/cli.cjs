@@ -23837,7 +23837,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "6.2.1",
+  version: "6.2.2",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
@@ -33914,9 +33914,7 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         if (isPushConfirmedByUser && !eD2(isPushConfirmedByUser)) {
           const pushSpinner = de();
           pushSpinner.start(
-            `${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Running ${source_default.black.bold.bgBlue(
-              ` git push ${remotes[0]} `
-            )}`
+            `${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Running ${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` git push ${remotes[0]} `)}`
           );
           const { stdout: stdout2 } = await execa("git", ["push", "--verbose", remotes[0]]);
           pushSpinner.stop(
@@ -33930,7 +33928,9 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
             $e(stdout2);
         } else {
           $e(
-            `${source_default.bold.inverse.hex("#FF6000")(` WARNING `)} 'git push' aborted - Operation cancelled.`
+            `${source_default.bold.hex("#ffffff").bgHex("#FF6000")(
+              ` WARNING `
+            )} 'git push' aborted - Operation cancelled.`
           );
           process.exit(0);
         }
@@ -33942,9 +33942,7 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
         if (!eD2(selectedRemote)) {
           const pushSpinner = de();
           pushSpinner.start(
-            `${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Running ${source_default.black.bold.bgBlue(
-              ` git push ${selectedRemote} `
-            )}`
+            `${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` INFO `)} Running ${source_default.hex("#ffffff").bold.bgHex("#1640D6")(` git push ${selectedRemote} `)}`
           );
           const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
           pushSpinner.stop(
@@ -33957,11 +33955,11 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
           if (stdout2)
             $e(stdout2);
         } else
-          $e(`${source_default.bold.inverse.hex("#FF6000")(` WARNING `)} process cancelled`);
+          $e(`${source_default.bold.hex("#ffffff").bgHex("#FF6000")(` WARNING `)} process cancelled`);
       }
     } else {
       $e(
-        `${source_default.bold.inverse.hex("#FF6000")(
+        `${source_default.bold.hex("#ffffff").bgHex("#FF6000")(
           ` WARNING `
         )} Commit Aborted - The commit message was not confirmed. Operation cancelled.`
       );
@@ -33982,7 +33980,7 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
     else {
       $e(
         source_default.hex("#FF6000")(
-          `${source_default.bold.inverse.hex("#FF6000")(
+          `${source_default.bold.hex("#ffffff").bgHex("#FF6000")(
             ` WARNING `
           )} No changes detected, write some code and run 'gw' again`
         )
@@ -33995,7 +33993,7 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
   if (!changedFiles?.length && !stagedFiles?.length) {
     $e(
       source_default.hex("#FF6000")(
-        `${source_default.bold.inverse.hex("#FF6000")(
+        `${source_default.bold.hex("#ffffff").bgHex("#FF6000")(
           ` WARNING `
         )} No changes detected, write some code and run 'gw' again`
       )
@@ -34003,7 +34001,7 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
     process.exit(1);
   }
   oe(`
-${source_default.bold.inverse.hex("#FF6000")(` GitWiz ${package_default.version} `)}${source_default.italic.dim(
+${source_default.bold.hex("#ffffff").bgHex("#FF6000")(` GitWiz ${package_default.version} `)}${source_default.italic.dim(
     ` Use AI to Enhance Your Git Commits `
   )}
     
