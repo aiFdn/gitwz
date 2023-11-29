@@ -1,6 +1,6 @@
 {
     "name": "gitwz",
-    "version": "6.2.1",
+    "version": "6.2.2",
     "description": "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
     "type": "module",
     "license": "MIT",
