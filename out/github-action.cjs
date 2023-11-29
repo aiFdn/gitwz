@@ -50843,7 +50843,7 @@ if (process.platform === "linux") {
 }
 
 // node_modules/signal-exit/dist/mjs/index.js
-var processOk = (process9) => !!process9 && typeof process9 === "object" && typeof process9.removeListener === "function" && typeof process9.emit === "function" && typeof process9.reallyExit === "function" && typeof process9.listeners === "function" && typeof process9.kill === "function" && typeof process9.pid === "number" && typeof process9.on === "function";
+var processOk = (process8) => !!process8 && typeof process8 === "object" && typeof process8.removeListener === "function" && typeof process8.emit === "function" && typeof process8.reallyExit === "function" && typeof process8.listeners === "function" && typeof process8.kill === "function" && typeof process8.pid === "number" && typeof process8.on === "function";
 var kExitEmitter = Symbol.for("signal-exit emitter");
 var global2 = globalThis;
 var ObjectDefineProperty = Object.defineProperty.bind(Object);
@@ -50936,15 +50936,15 @@ var SignalExit = class extends SignalExitBase {
   #originalProcessReallyExit;
   #sigListeners = {};
   #loaded = false;
-  constructor(process9) {
+  constructor(process8) {
     super();
-    this.#process = process9;
+    this.#process = process8;
     this.#sigListeners = {};
     for (const sig of signals) {
       this.#sigListeners[sig] = () => {
         const listeners = this.#process.listeners(sig);
         let { count } = this.#emitter;
-        const p2 = process9;
+        const p2 = process8;
         if (typeof p2.__signal_exit_emitter__ === "object" && typeof p2.__signal_exit_emitter__.count === "number") {
           count += p2.__signal_exit_emitter__.count;
         }
@@ -50953,12 +50953,12 @@ var SignalExit = class extends SignalExitBase {
           const ret = this.#emitter.emit("exit", null, sig);
           const s2 = sig === "SIGHUP" ? this.#hupSig : sig;
           if (!ret)
-            process9.kill(process9.pid, s2);
+            process8.kill(process8.pid, s2);
         }
       };
     }
-    this.#originalProcessReallyExit = process9.reallyExit;
-    this.#originalProcessEmit = process9.emit;
+    this.#originalProcessReallyExit = process8.reallyExit;
+    this.#originalProcessEmit = process8.emit;
   }
   onExit(cb, opts) {
     if (!processOk(this.#process)) {
@@ -55256,33 +55256,6 @@ function G3(t2, e3) {
 var dotenv = __toESM(require_main2(), 1);
 var import_fs2 = require("fs");
 var import_ini = __toESM(require_ini(), 1);
-
-// node_modules/is-unicode-supported/index.js
-var import_node_process8 = __toESM(require("node:process"), 1);
-function isUnicodeSupported() {
-  if (import_node_process8.default.platform !== "win32") {
-    return import_node_process8.default.env.TERM !== "linux";
-  }
-  return Boolean(import_node_process8.default.env.CI) || Boolean(import_node_process8.default.env.WT_SESSION) || Boolean(import_node_process8.default.env.TERMINUS_SUBLIME) || import_node_process8.default.env.ConEmuTask === "{cmd::Cmder}" || import_node_process8.default.env.TERM_PROGRAM === "Terminus-Sublime" || import_node_process8.default.env.TERM_PROGRAM === "vscode" || import_node_process8.default.env.TERM === "xterm-256color" || import_node_process8.default.env.TERM === "alacritty" || import_node_process8.default.env.TERMINAL_EMULATOR === "JetBrains-JediTerm";
-}
-
-// node_modules/log-symbols/index.js
-var main = {
-  info: source_default.blue("\u2139"),
-  success: source_default.green("\u2714"),
-  warning: source_default.yellow("\u26A0"),
-  error: source_default.red("\u2716")
-};
-var fallback = {
-  info: source_default.blue("i"),
-  success: source_default.green("\u221A"),
-  warning: source_default.yellow("\u203C"),
-  error: source_default.red("\xD7")
-};
-var logSymbols = isUnicodeSupported() ? main : fallback;
-var log_symbols_default = logSymbols;
-
-// src/commands/config.ts
 var import_os = require("os");
 var import_path2 = require("path");
 
@@ -55496,7 +55469,11 @@ dotenv.config();
 var DEFAULT_MODEL_TOKEN_LIMIT = 4096;
 var validateConfig = (key, condition, validationMessage) => {
   if (!condition) {
-    $e(`${source_default.red(log_symbols_default.error)} Unsupported config key ${key}: ${validationMessage}`);
+    $e(
+      `${source_default.hex("#ffffff").bold.bgHex("#FF0303")(
+        ` ERROR `
+      )} Unsupported config key ${key}: ${validationMessage}`
+    );
     process.exit(1);
   }
 };
@@ -55624,7 +55601,7 @@ var setConfig = (keyValues) => {
     config7[configKey] = configValidators[configKey](parsedConfigValue);
   }
   (0, import_fs2.writeFileSync)(configPath, (0, import_ini.stringify)(config7), "utf8");
-  $e(`${source_default.green(log_symbols_default.success)} Config successfully set`);
+  $e(`${source_default.hex("#ffffff").bold.bgHex("#3EC70B")(` SUCCESS `)} Config successfully set`);
 };
 var configCommand = G3(
   {
@@ -55646,7 +55623,7 @@ var configCommand = G3(
         throw new Error(`Unsupported mode: ${mode2}. Valid modes are: "set" and "get"`);
       }
     } catch (error) {
-      $e(`${source_default.red(log_symbols_default.error)} ${error}`);
+      $e(`${source_default.hex("#ffffff").bold.bgHex("#FF0303")(` ERROR `)} ${error}`);
       process.exit(1);
     }
   }

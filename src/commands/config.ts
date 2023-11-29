@@ -4,7 +4,6 @@ import { command } from 'cleye';
 import * as dotenv from 'dotenv';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { parse as iniParse, stringify as iniStringify } from 'ini';
-import logSymbols from 'log-symbols';
 import { homedir } from 'os';
 import { join as pathJoin } from 'path';
 
@@ -34,7 +33,11 @@ export enum CONFIG_MODES {
 
 const validateConfig = (key: string, condition: any, validationMessage: string) => {
     if (!condition) {
-        outro(`${chalk.red(logSymbols.error)} Unsupported config key ${key}: ${validationMessage}`);
+        outro(
+            `${chalk.hex('#ffffff').bold.bgHex('#FF0303')(
+                ` ERROR `,
+            )} Unsupported config key ${key}: ${validationMessage}`,
+        );
 
         process.exit(1);
     }
@@ -195,7 +198,7 @@ export const setConfig = (keyValues: [key: string, value: string][]) => {
 
     writeFileSync(configPath, iniStringify(config), 'utf8');
 
-    outro(`${chalk.green(logSymbols.success)} Config successfully set`);
+    outro(`${chalk.hex('#ffffff').bold.bgHex('#3EC70B')(` SUCCESS `)} Config successfully set`);
 };
 
 export const configCommand = command(
@@ -219,7 +222,7 @@ export const configCommand = command(
                 throw new Error(`Unsupported mode: ${mode}. Valid modes are: "set" and "get"`);
             }
         } catch (error) {
-            outro(`${chalk.red(logSymbols.error)} ${error}`);
+            outro(`${chalk.hex('#ffffff').bold.bgHex('#FF0303')(` ERROR `)} ${error}`);
             process.exit(1);
         }
     },
