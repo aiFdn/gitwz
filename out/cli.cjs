@@ -23837,7 +23837,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "6.2.2",
+  version: "6.2.3",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
@@ -23909,21 +23909,21 @@ var package_default = {
   },
   devDependencies: {
     "@commitlint/types": "^18.4.3",
-    "@types/ini": "^1.3.33",
+    "@types/ini": "^1.3.34",
     "@types/inquirer": "^9.0.7",
-    "@types/node": "^20.10.0",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
-    "@typescript-eslint/parser": "^6.12.0",
+    "@types/node": "^20.10.4",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
     dotenv: "^16.3.1",
-    esbuild: "^0.19.7",
-    eslint: "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
+    esbuild: "^0.19.9",
+    eslint: "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    prettier: "^3.1.0",
-    tsx: "^4.5.0",
-    typescript: "^5.3.2"
+    prettier: "^3.1.1",
+    tsx: "^4.6.2",
+    typescript: "^5.3.3"
   },
   dependencies: {
     "@actions/core": "^1.10.1",
@@ -23940,7 +23940,7 @@ var package_default = {
     ignore: "^5.3.0",
     ini: "^4.1.1",
     inquirer: "^9.2.12",
-    openai: "^4.20.0"
+    openai: "^4.20.1"
   }
 };
 
@@ -29563,7 +29563,7 @@ var {
 } = axios_default;
 
 // node_modules/openai/version.mjs
-var VERSION3 = "4.20.0";
+var VERSION3 = "4.20.1";
 
 // node_modules/openai/_shims/registry.mjs
 var auto = false;
