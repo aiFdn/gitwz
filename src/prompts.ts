@@ -15,7 +15,7 @@ export const IDENTITY =
     'Focus solely on crafting a git commit message as the author, without deviating to other tasks.';
 const INIT_MAIN_PROMPT = (language: string): { role: string; content: string } => ({
     role: 'system',
-    content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT and WHY) from the 'git diff --staged' output. Summarize these in present tense, keeping them under 50 characters. In your detailed descriptions, explain the reasons, impact, necessity, and context of the changes. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Write the commit message in ${language}, ensuring it's conversational and clear. Review the code and 'git diff' output for message accuracy, differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
+    content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT, WHY, HOW) from the 'git diff --staged' output. Start your commit summary, capped at 50 characters, with a specific descriptor such as 'Removed', 'Bug Fixed', 'Modified', 'Refactored', 'Added', 'Updated', or 'Optimized', reflecting the overall change. Follow this with a detailed description in ${language}, concisely outlining the code modifications, file adjustments, and precise line numbers impacted, ensuring clarity and comprehensive detail. Use markdown formatting to enhance your commit descriptions. This includes Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where appropriate. For denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Review the code and 'git diff' output for message accuracy. Differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
     ${
         config?.GW_EMOJI
             ? 'Use the GitMoji convention for your commit message.'
@@ -23,7 +23,7 @@ const INIT_MAIN_PROMPT = (language: string): { role: string; content: string } =
     }
     ${
         config?.GW_DESCRIPTION
-            ? "When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with 'This commit' or 'That commit'."
+            ? 'After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with "This commit" or "That commit".'
             : 'Only include the commit message, no descriptions needed.'
     }
   `,
