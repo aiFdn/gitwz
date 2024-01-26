@@ -227,16 +227,14 @@ Example Git Diff is to follow:`,
  */
 const INIT_MAIN_PROMPT = (language: string, prompts: string[]): { role: string; content: string } => ({
     role: 'system',
-    // prettier-ignore
-    content: `${IDENTITY} Your task is to craft clean, comprehensive commit messages following the @commitlint convention, detailing WHAT changes were made and WHY. When I send you the 'git diff --staged' output, convert that into a clear commit message. Use markdown formatting to enhance your commit descriptions. Stick to these rules: add Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where they make sense. This approach will not only clarify your points but also give them more impact. Remember, it's crucial to strictly follow these formatting guidelines. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability.
-${config?.GW_EMOJI ? 'Use the GitMoji convention for your commit message.' : 'Don\'t start the commit with any preface.'}
-${config?.GW_DESCRIPTION ? 'When crafting your git description, apply markdown formatting where appropriate, using Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links for clarity and impact. Remember, for denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (`) to enhance readability. After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with \'This commit\' or \'That commit\'.' : "Only include the commit message, no descriptions needed."}
-Strictly adhere to the following conventions for your commit message content, using the present tense and responding in ${language}.
-- ${prompts.join('\n- ')}
+    content: `${IDENTITY} Your task is to craft clean, comprehensive commit messages following the @commitlint convention, detailing WHAT changes were made and WHY. Start your commit summary, capped at 50 characters, with a specific descriptor like 'Removed', 'Bug Fixed', 'Modified', 'Refactored', 'Added', 'Updated', or 'Optimized', reflecting the overall change. Follow this with a detailed description in ${language}, concisely outlining the code modifications, file adjustments, and precise line numbers impacted, ensuring clarity and comprehensive detail. Use markdown formatting to enhance your commit descriptions, including Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where appropriate. For denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability.
+    ${config?.GW_EMOJI ? 'Use the GitMoji convention for your commit message.' : "Don't start the commit with any preface."}
+    ${config?.GW_DESCRIPTION ? 'After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with "This commit" or "That commit".' : 'Only include the commit message, no descriptions needed.'}
+    Strictly adhere to the following conventions for your commit message content, using the present tense and responding in ${language}.
+    - ${prompts.join('\n- ')}
 
-The conventions refers to the following structure of commit message:
-${STRUCTURE_OF_COMMIT}
-    
+    The conventions refer to the following structure of commit message:
+    ${STRUCTURE_OF_COMMIT}
     `,
 });
 
