@@ -24380,7 +24380,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "6.3.0",
+  version: "6.4.0",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
