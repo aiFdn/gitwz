@@ -70,7 +70,7 @@ GW_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
 GW_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI API>
 GW_DESCRIPTION=<postface a message with ~3 sentences description of the changes>
 GW_EMOJI=<boolean, add GitMoji>
-GW_MODEL=<either 'gpt-4-1106-preview','gpt-4','gpt-4-0613','gpt-4-0314','gpt-3.5-turbo-1106','gpt-3.5-turbo','gpt-3.5-turbo-0613','gpt-3.5-turbo-0301'>
+GW_MODEL=<either 'gpt-4-0125-preview', 'gpt-4-turbo-preview', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-0613', 'gpt-4-0314', 'gpt-3.5-turbo-1106', 'gpt-3.5-turbo', 'gpt-3.5-turbo-0613', 'gpt-3.5-turbo-0301'>
 GW_LANGUAGE=<locale, scroll to the bottom to see options>
 GW_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
 GW_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
@@ -80,7 +80,7 @@ GW_PROMPT_MODULE=<either conventional-commit or @commitlint, default: convention
 
 Effortlessly apply settings across all repositories with GitWiz's global configuration options:
 
--   **API Key**:
+- **API Key**:
 
     ```sh
     gw config set GW_OPENAI_API_KEY=<your OpenAI API token>
@@ -88,7 +88,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Securely store your OpenAI API token for global access.
 
--   **Max Response Tokens**:
+- **Max Response Tokens**:
 
     ```sh
     gw config set GW_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
@@ -96,7 +96,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Control the maximum response tokens from the OpenAI API.
 
--   **OpenAI API Base Path**:
+- **OpenAI API Base Path**:
 
     ```sh
     gw config set GW_OPENAI_BASE_PATH=<proxy path to OpenAI API>
@@ -104,7 +104,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Optionally set a proxy path to the OpenAI API.
 
--   **Description Postface**:
+- **Description Postface**:
 
     ```sh
     gw config set GW_DESCRIPTION=<postface a message with ~3 sentences>
@@ -112,7 +112,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Append a brief description, up to 3 sentences, to your commit messages.
 
--   **GitMoji Integration**:
+- **GitMoji Integration**:
 
     ```sh
     gw config set GW_EMOJI=true
@@ -126,7 +126,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
     gw config set GW_EMOJI=false
     ```
 
--   **Model Selection**:
+- **Model Selection**:
 
     ```sh
     gw config set GW_MODEL=<model_name>
@@ -134,7 +134,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Choose from a variety of GPT models for different performance and cost options.
 
--   **Language Selection**:
+- **Language Selection**:
 
     ```sh
     gw config set GW_LANGUAGE=<locale>
@@ -142,7 +142,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Set your preferred language for commit messages. Check the [i18n folder](https://github.com/aiFdn/gitwz/tree/main/src/i18n) for available languages.
 
--   **Message Template Placeholder**:
+- **Message Template Placeholder**:
 
     ```sh
     gw config set GW_MESSAGE_TEMPLATE_PLACEHOLDER=<placeholder_format>
@@ -150,7 +150,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Customize the format of your commit message placeholders.
 
--   **Prompt Module**:
+- **Prompt Module**:
 
     ```sh
     gw config set GW_PROMPT_MODULE=<module_choice>
@@ -160,14 +160,14 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
 ### Switching Models: Flexibility at Your Fingertips
 
--   **Default Model**: GitWiz starts with `gpt-3.5-turbo-1106`.
--   **Upgrade to GPT-4**: For superior performance (note the higher cost):
+- **Default Model**: GitWiz starts with `gpt-3.5-turbo-1106`.
+- **Upgrade to GPT-4**: For superior performance (note the higher cost):
 
     ```sh
     gw config set GW_MODEL=gpt-4
     ```
 
--   **GPT-4 Turbo (Preview)**: A savvy blend of capability and economy:
+- **GPT-4 Turbo (Preview)**: A savvy blend of capability and economy:
 
     ```sh
     gw config set GW_MODEL=gpt-4-1106-preview
@@ -197,7 +197,7 @@ Explore the full list of supported languages and their respective codes in the [
 
 GitWiz offers the flexibility to choose your preferred style for generating commit messages. By default, it uses the `conventional-commit` format, but you can easily switch to `@commitlint` for a more structured and standardized approach.
 
-### Switching to `@commitlint`:
+### Switching to `@commitlint`
 
 1. **Set the Prompt Module**:  
    Change the prompt module to `@commitlint` using the following command:
@@ -215,26 +215,26 @@ GitWiz offers the flexibility to choose your preferred style for generating comm
     gw config set GW_PROMPT_MODULE=conventional-commit
     ```
 
-### Integrating `@commitlint` with GitWiz:
+### Integrating `@commitlint` with GitWiz
 
--   **Automatic Integration**:  
+- **Automatic Integration**:  
     The first time you run GitWiz with `GW_PROMPT_MODULE` set to `@commitlint`, the tool will automatically configure the integration.
 
--   **Manual Configuration**:  
+- **Manual Configuration**:  
     If you need to force reset or set the `@commitlint` configuration, use the command:
 
     ```sh
     gw commitlint force
     ```
 
--   **Viewing Current Configuration**:  
+- **Viewing Current Configuration**:  
     To check your current `@commitlint` configuration, utilize:
 
     ```sh
     gw commitlint get
     ```
 
--   **Customization with `.gitwz-commitlint`**:  
+- **Customization with `.gitwz-commitlint`**:  
     GitWiz creates a `.gitwz-commitlint` file in your project directory. This file contains the prompts used for the local `@commitlint` configuration, and you can edit it to fine-tune the generated commit messages according to your project's guidelines.
 
 ### Why Choose `@commitlint`?
@@ -247,7 +247,7 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
 
 ### Seamless Integration with Git Commit Flags
 
--   **Command Equivalence**:  
+- **Command Equivalence**:  
     When you use `gitwz` or `gwz`, it acts as a direct substitute for the `git commit -m` command, incorporating the generated message automatically.
 
     **Example**:  
@@ -267,7 +267,7 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
 
 ### Advanced Message Customization
 
--   **Template Functionality**:  
+- **Template Functionality**:  
     GitWiz provides a template feature, allowing you to enrich the AI-generated commit message with custom text. This is especially useful for adding contextual information such as issue numbers, tags, or descriptive prefixes.
 
     **Usage**:  
@@ -277,9 +277,9 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
     gw 'Issue #205: $msg'
     ```
 
-    Here, `Issue #205: ` is your custom addition, and `$msg` serves as a placeholder for the generated message.
+    Here, `Issue #205:` is your custom addition, and `$msg` serves as a placeholder for the generated message.
 
--   **Placeholder Configuration**:  
+- **Placeholder Configuration**:  
     GitWiz analyzes placeholders within command parameters, offering flexibility in how your custom text is incorporated. You can define your preferred placeholder format in the GitWiz configuration, which will be recognized and replaced in the commit message.
 
     **Example**:  
@@ -293,7 +293,7 @@ By utilizing these features, GitWiz not only maintains the core functionalities 
 
 The `Message Template Placeholder` feature in GitWiz allows you to seamlessly blend custom text with AI-generated commit messages. This functionality is particularly useful when you want to include specific tags, references, or any standardized text formats in your commits.
 
-#### How It Works:
+#### How It Works
 
 The underlying mechanism of this feature involves replacing a placeholder in your message template with the generated commit message. This process is handled by the following code snippet:
 
@@ -303,11 +303,11 @@ commitMessage = messageTemplate.replace(config?.GW_MESSAGE_TEMPLATE_PLACEHOLDER,
 
 In this implementation:
 
--   `messageTemplate` refers to the template you've set, containing the placeholder.
--   `GW_MESSAGE_TEMPLATE_PLACEHOLDER` is the configurable placeholder within your template. By default, it could be something like `$msg`.
--   The `replace` function swaps the placeholder with the actual commit message generated by GitWiz.
+- `messageTemplate` refers to the template you've set, containing the placeholder.
+- `GW_MESSAGE_TEMPLATE_PLACEHOLDER` is the configurable placeholder within your template. By default, it could be something like `$msg`.
+- The `replace` function swaps the placeholder with the actual commit message generated by GitWiz.
 
-#### Practical Example:
+#### Practical Example
 
 If you've set your `GW_MESSAGE_TEMPLATE_PLACEHOLDER` to `$msg` and your `messageTemplate` is something like `"Fixes issue #123: $msg"`, GitWiz will replace `$msg` with the AI-generated message. So, if GitWiz generates "Updated the README for clarity", your final commit message becomes "Fixes issue #123: Updated the README for clarity".
 
@@ -317,7 +317,7 @@ This feature adds a layer of customization to your automated commit messages, en
 
 GitWiz offers a smart way to exclude specific files or directories from being processed. This is particularly useful for preventing large, irrelevant, or sensitive files from being included in the AI analysis.
 
-### How to Set Up `.gitwzignore`:
+### How to Set Up `.gitwzignore`
 
 1. **Create a `.gitwzignore` File**:  
    Just like `.gitignore`, create a `.gitwzignore` file in your project's root directory.
@@ -336,13 +336,13 @@ GitWiz offers a smart way to exclude specific files or directories from being pr
 3. **GitWiz Respects Your Privacy**:  
    GitWiz will automatically exclude these files from processing, ensuring that only relevant and permitted content is analyzed for commit message generation.
 
-### Default Ignored Patterns:
+### Default Ignored Patterns
 
 By default, GitWiz is configured to ignore certain types of files to optimize performance and security. These include:
 
--   Lockfiles typically generated by package managers (like `*-lock.*` and `*.lock`).
+- Lockfiles typically generated by package managers (like `*-lock.*` and `*.lock`).
 
-### Customizing for Your Needs:
+### Customizing for Your Needs
 
 You have the flexibility to tailor the `.gitwzignore` file to suit your project's specific requirements. This ensures that GitWiz focuses only on the files that contribute meaningfully to your commit messages, while maintaining the integrity and efficiency of your repository.
 
@@ -418,15 +418,15 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
 
 ### Important Notes for Using GitWiz GitHub Action
 
--   **Automatic Enhancement**: GitWiz automatically improves all new commit messages when pushing to any branch not listed in `branches-ignore`.
--   **Branch Management**: Take care with branch exclusions, particularly in collaborative settings, to maintain commit history integrity.
--   **Workflow Adaptation**: Tailor the action to your workflow, including the GitWiz model, language preference, and other parameters.
+- **Automatic Enhancement**: GitWiz automatically improves all new commit messages when pushing to any branch not listed in `branches-ignore`.
+- **Branch Management**: Take care with branch exclusions, particularly in collaborative settings, to maintain commit history integrity.
+- **Workflow Adaptation**: Tailor the action to your workflow, including the GitWiz model, language preference, and other parameters.
 
 ## **💳 Payments: Transparent and Controlled**
 
--   GitWiz operates on your OpenAI API token, billed directly to you.
--   Default model: `gpt-3.5-turbo-1106`. Manage costs while enjoying enhanced capabilities.
--   Opt for `gpt-4-1106-preview` for a premium experience.
+- GitWiz operates on your OpenAI API token, billed directly to you.
+- Default model: `gpt-3.5-turbo-1106`. Manage costs while enjoying enhanced capabilities.
+- Opt for `gpt-4-0125-preview` for a premium experience.
 
 ## **Credits and Acknowledgements**
 
