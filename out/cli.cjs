@@ -17806,7 +17806,6 @@ var require_ponyfill_es2018 = __commonJS({
       typeof exports2 === "object" && typeof module2 !== "undefined" ? factory(exports2) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global3 = typeof globalThis !== "undefined" ? globalThis : global3 || self, factory(global3.WebStreamsPolyfill = {}));
     })(exports2, function(exports3) {
       "use strict";
-      const SymbolPolyfill = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? Symbol : (description) => `Symbol(${description})`;
       function noop3() {
         return void 0;
       }
@@ -17820,7 +17819,7 @@ var require_ponyfill_es2018 = __commonJS({
             value: name,
             configurable: true
           });
-        } catch (_a2) {
+        } catch (_a3) {
         }
       }
       const originalPromise = Promise;
@@ -17965,11 +17964,11 @@ var require_ponyfill_es2018 = __commonJS({
           return front._elements[cursor];
         }
       }
-      const AbortSteps = SymbolPolyfill("[[AbortSteps]]");
-      const ErrorSteps = SymbolPolyfill("[[ErrorSteps]]");
-      const CancelSteps = SymbolPolyfill("[[CancelSteps]]");
-      const PullSteps = SymbolPolyfill("[[PullSteps]]");
-      const ReleaseSteps = SymbolPolyfill("[[ReleaseSteps]]");
+      const AbortSteps = Symbol("[[AbortSteps]]");
+      const ErrorSteps = Symbol("[[ErrorSteps]]");
+      const CancelSteps = Symbol("[[CancelSteps]]");
+      const PullSteps = Symbol("[[PullSteps]]");
+      const ReleaseSteps = Symbol("[[ReleaseSteps]]");
       function ReadableStreamReaderGenericInitialize(reader, stream4) {
         reader._ownerReadableStream = stream4;
         stream4._reader = reader;
@@ -18215,8 +18214,8 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(ReadableStreamDefaultReader2.prototype.cancel, "cancel");
       setFunctionName(ReadableStreamDefaultReader2.prototype.read, "read");
       setFunctionName(ReadableStreamDefaultReader2.prototype.releaseLock, "releaseLock");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(ReadableStreamDefaultReader2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(ReadableStreamDefaultReader2.prototype, Symbol.toStringTag, {
           value: "ReadableStreamDefaultReader",
           configurable: true
         });
@@ -18335,9 +18334,7 @@ var require_ponyfill_es2018 = __commonJS({
           return this._asyncIteratorImpl.return(value);
         }
       };
-      if (AsyncIteratorPrototype !== void 0) {
-        Object.setPrototypeOf(ReadableStreamAsyncIteratorPrototype, AsyncIteratorPrototype);
-      }
+      Object.setPrototypeOf(ReadableStreamAsyncIteratorPrototype, AsyncIteratorPrototype);
       function AcquireReadableStreamAsyncIterator(stream4, preventCancel) {
         const reader = AcquireReadableStreamDefaultReader(stream4);
         const impl = new ReadableStreamAsyncIteratorImpl(reader, preventCancel);
@@ -18354,7 +18351,7 @@ var require_ponyfill_es2018 = __commonJS({
         }
         try {
           return x6._asyncIteratorImpl instanceof ReadableStreamAsyncIteratorImpl;
-        } catch (_a2) {
+        } catch (_a3) {
           return false;
         }
       }
@@ -18364,6 +18361,7 @@ var require_ponyfill_es2018 = __commonJS({
       const NumberIsNaN = Number.isNaN || function(x6) {
         return x6 !== x6;
       };
+      var _a2, _b, _c;
       function CreateArrayFromList(elements) {
         return elements.slice();
       }
@@ -18409,7 +18407,7 @@ var require_ponyfill_es2018 = __commonJS({
       }
       function CreateAsyncFromSyncIterator(syncIteratorRecord) {
         const syncIterable = {
-          [SymbolPolyfill.iterator]: () => syncIteratorRecord.iterator
+          [Symbol.iterator]: () => syncIteratorRecord.iterator
         };
         const asyncIterator2 = async function* () {
           return yield* syncIterable;
@@ -18417,17 +18415,18 @@ var require_ponyfill_es2018 = __commonJS({
         const nextMethod = asyncIterator2.next;
         return { iterator: asyncIterator2, nextMethod, done: false };
       }
+      const SymbolAsyncIterator = (_c = (_a2 = Symbol.asyncIterator) !== null && _a2 !== void 0 ? _a2 : (_b = Symbol.for) === null || _b === void 0 ? void 0 : _b.call(Symbol, "Symbol.asyncIterator")) !== null && _c !== void 0 ? _c : "@@asyncIterator";
       function GetIterator(obj, hint = "sync", method) {
         if (method === void 0) {
           if (hint === "async") {
-            method = GetMethod(obj, SymbolPolyfill.asyncIterator);
+            method = GetMethod(obj, SymbolAsyncIterator);
             if (method === void 0) {
-              const syncMethod = GetMethod(obj, SymbolPolyfill.iterator);
+              const syncMethod = GetMethod(obj, Symbol.iterator);
               const syncIteratorRecord = GetIterator(obj, "sync", syncMethod);
               return CreateAsyncFromSyncIterator(syncIteratorRecord);
             }
           } else {
-            method = GetMethod(obj, SymbolPolyfill.iterator);
+            method = GetMethod(obj, Symbol.iterator);
           }
         }
         if (method === void 0) {
@@ -18555,8 +18554,8 @@ var require_ponyfill_es2018 = __commonJS({
       });
       setFunctionName(ReadableStreamBYOBRequest2.prototype.respond, "respond");
       setFunctionName(ReadableStreamBYOBRequest2.prototype.respondWithNewView, "respondWithNewView");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(ReadableStreamBYOBRequest2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(ReadableStreamBYOBRequest2.prototype, Symbol.toStringTag, {
           value: "ReadableStreamBYOBRequest",
           configurable: true
         });
@@ -18693,8 +18692,8 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(ReadableByteStreamController2.prototype.close, "close");
       setFunctionName(ReadableByteStreamController2.prototype.enqueue, "enqueue");
       setFunctionName(ReadableByteStreamController2.prototype.error, "error");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(ReadableByteStreamController2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(ReadableByteStreamController2.prototype, Symbol.toStringTag, {
           value: "ReadableByteStreamController",
           configurable: true
         });
@@ -19193,9 +19192,9 @@ var require_ponyfill_es2018 = __commonJS({
         return mode2;
       }
       function convertByobReadOptions(options, context) {
-        var _a2;
+        var _a3;
         assertDictionary(options, context);
-        const min = (_a2 = options === null || options === void 0 ? void 0 : options.min) !== null && _a2 !== void 0 ? _a2 : 1;
+        const min = (_a3 = options === null || options === void 0 ? void 0 : options.min) !== null && _a3 !== void 0 ? _a3 : 1;
         return {
           min: convertUnsignedLongLongWithEnforceRange(min, `${context} has member 'min' that`)
         };
@@ -19341,8 +19340,8 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(ReadableStreamBYOBReader2.prototype.cancel, "cancel");
       setFunctionName(ReadableStreamBYOBReader2.prototype.read, "read");
       setFunctionName(ReadableStreamBYOBReader2.prototype.releaseLock, "releaseLock");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(ReadableStreamBYOBReader2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(ReadableStreamBYOBReader2.prototype, Symbol.toStringTag, {
           value: "ReadableStreamBYOBReader",
           configurable: true
         });
@@ -19452,7 +19451,7 @@ var require_ponyfill_es2018 = __commonJS({
         }
         try {
           return typeof value.aborted === "boolean";
-        } catch (_a2) {
+        } catch (_a3) {
           return false;
         }
       }
@@ -19552,8 +19551,8 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(WritableStream2.prototype.abort, "abort");
       setFunctionName(WritableStream2.prototype.close, "close");
       setFunctionName(WritableStream2.prototype.getWriter, "getWriter");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(WritableStream2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(WritableStream2.prototype, Symbol.toStringTag, {
           value: "WritableStream",
           configurable: true
         });
@@ -19596,12 +19595,12 @@ var require_ponyfill_es2018 = __commonJS({
         return true;
       }
       function WritableStreamAbort(stream4, reason) {
-        var _a2;
+        var _a3;
         if (stream4._state === "closed" || stream4._state === "errored") {
           return promiseResolvedWith(void 0);
         }
         stream4._writableStreamController._abortReason = reason;
-        (_a2 = stream4._writableStreamController._abortController) === null || _a2 === void 0 ? void 0 : _a2.abort(reason);
+        (_a3 = stream4._writableStreamController._abortController) === null || _a3 === void 0 ? void 0 : _a3.abort(reason);
         const state = stream4._state;
         if (state === "closed" || state === "errored") {
           return promiseResolvedWith(void 0);
@@ -19924,8 +19923,8 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(WritableStreamDefaultWriter2.prototype.close, "close");
       setFunctionName(WritableStreamDefaultWriter2.prototype.releaseLock, "releaseLock");
       setFunctionName(WritableStreamDefaultWriter2.prototype.write, "write");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(WritableStreamDefaultWriter2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(WritableStreamDefaultWriter2.prototype, Symbol.toStringTag, {
           value: "WritableStreamDefaultWriter",
           configurable: true
         });
@@ -20075,8 +20074,8 @@ var require_ponyfill_es2018 = __commonJS({
         signal: { enumerable: true },
         error: { enumerable: true }
       });
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(WritableStreamDefaultController2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(WritableStreamDefaultController2.prototype, Symbol.toStringTag, {
           value: "WritableStreamDefaultController",
           configurable: true
         });
@@ -20364,7 +20363,7 @@ var require_ponyfill_es2018 = __commonJS({
         try {
           new ctor();
           return true;
-        } catch (_a2) {
+        } catch (_a3) {
           return false;
         }
       }
@@ -20625,8 +20624,8 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(ReadableStreamDefaultController2.prototype.close, "close");
       setFunctionName(ReadableStreamDefaultController2.prototype.enqueue, "enqueue");
       setFunctionName(ReadableStreamDefaultController2.prototype.error, "error");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(ReadableStreamDefaultController2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(ReadableStreamDefaultController2.prototype, Symbol.toStringTag, {
           value: "ReadableStreamDefaultController",
           configurable: true
         });
@@ -21398,6 +21397,9 @@ var require_ponyfill_es2018 = __commonJS({
           const options = convertIteratorOptions(rawOptions, "First parameter");
           return AcquireReadableStreamAsyncIterator(this, options.preventCancel);
         }
+        [SymbolAsyncIterator](options) {
+          return this.values(options);
+        }
         /**
          * Creates a new ReadableStream wrapping the provided iterable or async iterable.
          *
@@ -21427,19 +21429,17 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(ReadableStream4.prototype.pipeTo, "pipeTo");
       setFunctionName(ReadableStream4.prototype.tee, "tee");
       setFunctionName(ReadableStream4.prototype.values, "values");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(ReadableStream4.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(ReadableStream4.prototype, Symbol.toStringTag, {
           value: "ReadableStream",
           configurable: true
         });
       }
-      if (typeof SymbolPolyfill.asyncIterator === "symbol") {
-        Object.defineProperty(ReadableStream4.prototype, SymbolPolyfill.asyncIterator, {
-          value: ReadableStream4.prototype.values,
-          writable: true,
-          configurable: true
-        });
-      }
+      Object.defineProperty(ReadableStream4.prototype, SymbolAsyncIterator, {
+        value: ReadableStream4.prototype.values,
+        writable: true,
+        configurable: true
+      });
       function CreateReadableStream(startAlgorithm, pullAlgorithm, cancelAlgorithm, highWaterMark = 1, sizeAlgorithm = () => 1) {
         const stream4 = Object.create(ReadableStream4.prototype);
         InitializeReadableStream(stream4);
@@ -21568,8 +21568,8 @@ var require_ponyfill_es2018 = __commonJS({
         highWaterMark: { enumerable: true },
         size: { enumerable: true }
       });
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(ByteLengthQueuingStrategy2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(ByteLengthQueuingStrategy2.prototype, Symbol.toStringTag, {
           value: "ByteLengthQueuingStrategy",
           configurable: true
         });
@@ -21620,8 +21620,8 @@ var require_ponyfill_es2018 = __commonJS({
         highWaterMark: { enumerable: true },
         size: { enumerable: true }
       });
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(CountQueuingStrategy2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(CountQueuingStrategy2.prototype, Symbol.toStringTag, {
           value: "CountQueuingStrategy",
           configurable: true
         });
@@ -21724,8 +21724,8 @@ var require_ponyfill_es2018 = __commonJS({
         readable: { enumerable: true },
         writable: { enumerable: true }
       });
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(TransformStream2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(TransformStream2.prototype, Symbol.toStringTag, {
           value: "TransformStream",
           configurable: true
         });
@@ -21839,8 +21839,8 @@ var require_ponyfill_es2018 = __commonJS({
       setFunctionName(TransformStreamDefaultController2.prototype.enqueue, "enqueue");
       setFunctionName(TransformStreamDefaultController2.prototype.error, "error");
       setFunctionName(TransformStreamDefaultController2.prototype.terminate, "terminate");
-      if (typeof SymbolPolyfill.toStringTag === "symbol") {
-        Object.defineProperty(TransformStreamDefaultController2.prototype, SymbolPolyfill.toStringTag, {
+      if (typeof Symbol.toStringTag === "symbol") {
+        Object.defineProperty(TransformStreamDefaultController2.prototype, Symbol.toStringTag, {
           value: "TransformStreamDefaultController",
           configurable: true
         });
@@ -22208,7 +22208,7 @@ var require_package = __commonJS({
   "node_modules/dotenv/package.json"(exports2, module2) {
     module2.exports = {
       name: "dotenv",
-      version: "16.4.1",
+      version: "16.4.4",
       description: "Loads environment variables from .env file",
       main: "lib/main.js",
       types: "lib/main.d.ts",
@@ -22232,6 +22232,7 @@ var require_package = __commonJS({
         "lint-readme": "standard-markdown",
         pretest: "npm run lint && npm run dts-check",
         test: "tap tests/*.js --100 -Rspec",
+        "test:coverage": "tap --coverage-report=lcov",
         prerelease: "npm test",
         release: "standard-version"
       },
@@ -22239,7 +22240,7 @@ var require_package = __commonJS({
         type: "git",
         url: "git://github.com/motdotla/dotenv.git"
       },
-      funding: "https://github.com/motdotla/dotenv?sponsor=1",
+      funding: "https://dotenvx.com",
       keywords: [
         "dotenv",
         "env",
@@ -22351,7 +22352,7 @@ var require_main = __commonJS({
         uri = new URL(dotenvKey);
       } catch (error) {
         if (error.code === "ERR_INVALID_URL") {
-          const err = new Error("INVALID_DOTENV_KEY: Wrong format. Must be in valid uri format like dotenv://:key_1234@dotenv.org/vault/.env.vault?environment=development");
+          const err = new Error("INVALID_DOTENV_KEY: Wrong format. Must be in valid uri format like dotenv://:key_1234@dotenvx.com/vault/.env.vault?environment=development");
           err.code = "INVALID_DOTENV_KEY";
           throw err;
         }
@@ -22412,44 +22413,52 @@ var require_main = __commonJS({
       return { parsed };
     }
     function configDotenv(options) {
-      let dotenvPath = path5.resolve(process.cwd(), ".env");
+      const dotenvPath = path5.resolve(process.cwd(), ".env");
       let encoding = "utf8";
       const debug2 = Boolean(options && options.debug);
-      if (options) {
-        if (options.path != null) {
-          let envPath = options.path;
-          if (Array.isArray(envPath)) {
-            for (const filepath of options.path) {
-              if (fs5.existsSync(filepath)) {
-                envPath = filepath;
-                break;
-              }
-            }
-          }
-          dotenvPath = _resolveHome(envPath);
-        }
-        if (options.encoding != null) {
-          encoding = options.encoding;
-        } else {
-          if (debug2) {
-            _debug("No encoding is specified. UTF-8 is used by default");
-          }
+      if (options && options.encoding) {
+        encoding = options.encoding;
+      } else {
+        if (debug2) {
+          _debug("No encoding is specified. UTF-8 is used by default");
         }
       }
+      let optionPathsThatExist = [];
+      if (options && options.path) {
+        if (!Array.isArray(options.path)) {
+          if (fs5.existsSync(options.path)) {
+            optionPathsThatExist = [_resolveHome(options.path)];
+          }
+        } else {
+          for (const filepath of options.path) {
+            if (fs5.existsSync(filepath)) {
+              optionPathsThatExist.push(_resolveHome(filepath));
+            }
+          }
+        }
+        if (!optionPathsThatExist.length) {
+          optionPathsThatExist = [dotenvPath];
+        }
+      }
+      const pathsToProcess = optionPathsThatExist.length ? optionPathsThatExist : [dotenvPath];
+      const parsed = {};
       try {
-        const parsed = DotenvModule.parse(fs5.readFileSync(dotenvPath, { encoding }));
+        for (const path6 of pathsToProcess) {
+          const singleFileParsed = DotenvModule.parse(fs5.readFileSync(path6, { encoding }));
+          DotenvModule.populate(parsed, singleFileParsed, options);
+        }
         let processEnv = process.env;
         if (options && options.processEnv != null) {
           processEnv = options.processEnv;
         }
         DotenvModule.populate(processEnv, parsed, options);
-        return { parsed };
       } catch (e3) {
         if (debug2) {
-          _debug(`Failed to load ${dotenvPath} ${e3.message}`);
+          _debug(`Failed to load ${pathsToProcess} ${e3.message}`);
         }
         return { error: e3 };
       }
+      return { parsed };
     }
     function config8(options) {
       if (_dotenvKey(options).length === 0) {
@@ -22793,13 +22802,13 @@ var require_tiktoken_bg = __commonJS({
     function passStringToWasm0(arg, malloc, realloc) {
       if (realloc === void 0) {
         const buf = cachedTextEncoder.encode(arg);
-        const ptr2 = malloc(buf.length);
+        const ptr2 = malloc(buf.length, 1) >>> 0;
         getUint8Memory0().subarray(ptr2, ptr2 + buf.length).set(buf);
         WASM_VECTOR_LEN = buf.length;
         return ptr2;
       }
       let len = arg.length;
-      let ptr = malloc(len);
+      let ptr = malloc(len, 1) >>> 0;
       const mem = getUint8Memory0();
       let offset = 0;
       for (; offset < len; offset++) {
@@ -22812,7 +22821,7 @@ var require_tiktoken_bg = __commonJS({
         if (offset !== 0) {
           arg = arg.slice(offset);
         }
-        ptr = realloc(ptr, len, len = offset + arg.length * 3);
+        ptr = realloc(ptr, len, len = offset + arg.length * 3, 1) >>> 0;
         const view = getUint8Memory0().subarray(ptr + offset, ptr + len);
         const ret = encodeString(arg, view);
         offset += ret.written;
@@ -22834,6 +22843,7 @@ var require_tiktoken_bg = __commonJS({
     var cachedTextDecoder = new lTextDecoder("utf-8", { ignoreBOM: true, fatal: true });
     cachedTextDecoder.decode();
     function getStringFromWasm0(ptr, len) {
+      ptr = ptr >>> 0;
       return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
     }
     function addHeapObject(obj) {
@@ -22852,21 +22862,23 @@ var require_tiktoken_bg = __commonJS({
       return cachedUint32Memory0;
     }
     function getArrayU32FromWasm0(ptr, len) {
+      ptr = ptr >>> 0;
       return getUint32Memory0().subarray(ptr / 4, ptr / 4 + len);
     }
     function passArray8ToWasm0(arg, malloc) {
-      const ptr = malloc(arg.length * 1);
+      const ptr = malloc(arg.length * 1, 1) >>> 0;
       getUint8Memory0().set(arg, ptr / 1);
       WASM_VECTOR_LEN = arg.length;
       return ptr;
     }
     function passArray32ToWasm0(arg, malloc) {
-      const ptr = malloc(arg.length * 4);
+      const ptr = malloc(arg.length * 4, 4) >>> 0;
       getUint32Memory0().set(arg, ptr / 4);
       WASM_VECTOR_LEN = arg.length;
       return ptr;
     }
     function getArrayU8FromWasm0(ptr, len) {
+      ptr = ptr >>> 0;
       return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
     }
     function handleError(f3, args) {
@@ -22876,7 +22888,8 @@ var require_tiktoken_bg = __commonJS({
         wasm.__wbindgen_export_3(addHeapObject(e3));
       }
     }
-    var Tiktoken2 = class _Tiktoken {
+    var TiktokenFinalization = new FinalizationRegistry((ptr) => wasm.__wbg_tiktoken_free(ptr >>> 0));
+    var Tiktoken2 = class {
       /**
        * @param {string} tiktoken_bfe
        * @param {any} special_tokens
@@ -22884,44 +22897,41 @@ var require_tiktoken_bg = __commonJS({
        */
       constructor(tiktoken_bfe, special_tokens, pat_str) {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         const ptr0 = passStringToWasm0(tiktoken_bfe, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
         const len0 = WASM_VECTOR_LEN;
         const ptr1 = passStringToWasm0(pat_str, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
         const len1 = WASM_VECTOR_LEN;
         const ret = wasm.tiktoken_new(ptr0, len0, addHeapObject(special_tokens), ptr1, len1);
-        return _Tiktoken.__wrap(ret);
+        this.__wbg_ptr = ret >>> 0;
+        return this;
       }
       /** @returns {string | undefined} */
       get name() {
         try {
           const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-          wasm.tiktoken_name(retptr, this.ptr);
+          wasm.tiktoken_name(retptr, this.__wbg_ptr);
           var r0 = getInt32Memory0()[retptr / 4 + 0];
           var r1 = getInt32Memory0()[retptr / 4 + 1];
-          let v0;
+          let v1;
           if (r0 !== 0) {
-            v0 = getStringFromWasm0(r0, r1).slice();
-            wasm.__wbindgen_export_2(r0, r1 * 1);
+            v1 = getStringFromWasm0(r0, r1).slice();
+            wasm.__wbindgen_export_2(r0, r1 * 1, 1);
           }
-          return v0;
+          return v1;
         } finally {
           wasm.__wbindgen_add_to_stack_pointer(16);
         }
       }
-      static __wrap(ptr) {
-        const obj = Object.create(_Tiktoken.prototype);
-        obj.ptr = ptr;
-        return obj;
-      }
       __destroy_into_raw() {
-        const ptr = this.ptr;
-        this.ptr = 0;
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        TiktokenFinalization.unregister(this);
         return ptr;
       }
       free() {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_tiktoken_free(ptr);
       }
@@ -22933,12 +22943,12 @@ var require_tiktoken_bg = __commonJS({
        */
       encode(text, allowed_special, disallowed_special) {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         try {
           const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
           const ptr0 = passStringToWasm0(text, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
           const len0 = WASM_VECTOR_LEN;
-          wasm.tiktoken_encode(retptr, this.ptr, ptr0, len0, addHeapObject(allowed_special), addHeapObject(disallowed_special));
+          wasm.tiktoken_encode(retptr, this.__wbg_ptr, ptr0, len0, addHeapObject(allowed_special), addHeapObject(disallowed_special));
           var r0 = getInt32Memory0()[retptr / 4 + 0];
           var r1 = getInt32Memory0()[retptr / 4 + 1];
           var r22 = getInt32Memory0()[retptr / 4 + 2];
@@ -22946,9 +22956,9 @@ var require_tiktoken_bg = __commonJS({
           if (r3) {
             throw takeObject(r22);
           }
-          var v1 = getArrayU32FromWasm0(r0, r1).slice();
-          wasm.__wbindgen_export_2(r0, r1 * 4);
-          return v1;
+          var v22 = getArrayU32FromWasm0(r0, r1).slice();
+          wasm.__wbindgen_export_2(r0, r1 * 4, 4);
+          return v22;
         } finally {
           wasm.__wbindgen_add_to_stack_pointer(16);
         }
@@ -22959,17 +22969,17 @@ var require_tiktoken_bg = __commonJS({
        */
       encode_ordinary(text) {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         try {
           const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
           const ptr0 = passStringToWasm0(text, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
           const len0 = WASM_VECTOR_LEN;
-          wasm.tiktoken_encode_ordinary(retptr, this.ptr, ptr0, len0);
+          wasm.tiktoken_encode_ordinary(retptr, this.__wbg_ptr, ptr0, len0);
           var r0 = getInt32Memory0()[retptr / 4 + 0];
           var r1 = getInt32Memory0()[retptr / 4 + 1];
-          var v1 = getArrayU32FromWasm0(r0, r1).slice();
-          wasm.__wbindgen_export_2(r0, r1 * 4);
-          return v1;
+          var v22 = getArrayU32FromWasm0(r0, r1).slice();
+          wasm.__wbindgen_export_2(r0, r1 * 4, 4);
+          return v22;
         } finally {
           wasm.__wbindgen_add_to_stack_pointer(16);
         }
@@ -22982,12 +22992,12 @@ var require_tiktoken_bg = __commonJS({
        */
       encode_with_unstable(text, allowed_special, disallowed_special) {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         try {
           const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
           const ptr0 = passStringToWasm0(text, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
           const len0 = WASM_VECTOR_LEN;
-          wasm.tiktoken_encode_with_unstable(retptr, this.ptr, ptr0, len0, addHeapObject(allowed_special), addHeapObject(disallowed_special));
+          wasm.tiktoken_encode_with_unstable(retptr, this.__wbg_ptr, ptr0, len0, addHeapObject(allowed_special), addHeapObject(disallowed_special));
           var r0 = getInt32Memory0()[retptr / 4 + 0];
           var r1 = getInt32Memory0()[retptr / 4 + 1];
           var r22 = getInt32Memory0()[retptr / 4 + 2];
@@ -23005,10 +23015,10 @@ var require_tiktoken_bg = __commonJS({
        */
       encode_single_token(bytes) {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_export_0);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.tiktoken_encode_single_token(this.ptr, ptr0, len0);
+        const ret = wasm.tiktoken_encode_single_token(this.__wbg_ptr, ptr0, len0);
         return ret >>> 0;
       }
       /**
@@ -23017,17 +23027,17 @@ var require_tiktoken_bg = __commonJS({
        */
       decode(tokens) {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         try {
           const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
           const ptr0 = passArray32ToWasm0(tokens, wasm.__wbindgen_export_0);
           const len0 = WASM_VECTOR_LEN;
-          wasm.tiktoken_decode(retptr, this.ptr, ptr0, len0);
+          wasm.tiktoken_decode(retptr, this.__wbg_ptr, ptr0, len0);
           var r0 = getInt32Memory0()[retptr / 4 + 0];
           var r1 = getInt32Memory0()[retptr / 4 + 1];
-          var v1 = getArrayU8FromWasm0(r0, r1).slice();
-          wasm.__wbindgen_export_2(r0, r1 * 1);
-          return v1;
+          var v22 = getArrayU8FromWasm0(r0, r1).slice();
+          wasm.__wbindgen_export_2(r0, r1 * 1, 1);
+          return v22;
         } finally {
           wasm.__wbindgen_add_to_stack_pointer(16);
         }
@@ -23038,15 +23048,15 @@ var require_tiktoken_bg = __commonJS({
        */
       decode_single_token_bytes(token) {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
         try {
           const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-          wasm.tiktoken_decode_single_token_bytes(retptr, this.ptr, token);
+          wasm.tiktoken_decode_single_token_bytes(retptr, this.__wbg_ptr, token);
           var r0 = getInt32Memory0()[retptr / 4 + 0];
           var r1 = getInt32Memory0()[retptr / 4 + 1];
-          var v0 = getArrayU8FromWasm0(r0, r1).slice();
-          wasm.__wbindgen_export_2(r0, r1 * 1);
-          return v0;
+          var v1 = getArrayU8FromWasm0(r0, r1).slice();
+          wasm.__wbindgen_export_2(r0, r1 * 1, 1);
+          return v1;
         } finally {
           wasm.__wbindgen_add_to_stack_pointer(16);
         }
@@ -23054,8 +23064,8 @@ var require_tiktoken_bg = __commonJS({
       /** @returns {any} */
       token_byte_values() {
         if (wasm == null)
-          throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
-        const ret = wasm.tiktoken_token_byte_values(this.ptr);
+          throw new Error("tiktoken: WASM binary has not been propery initialized.");
+        const ret = wasm.tiktoken_token_byte_values(this.__wbg_ptr);
         return takeObject(ret);
       }
     };
@@ -23064,7 +23074,7 @@ var require_tiktoken_bg = __commonJS({
       const ret = getObject(arg0) === void 0;
       return ret;
     };
-    module2.exports.__wbg_stringify_029a979dfb73aa17 = function() {
+    module2.exports.__wbg_stringify_daa6661e90c04140 = function() {
       return handleError(function(arg0) {
         const ret = JSON.stringify(getObject(arg0));
         return addHeapObject(ret);
@@ -23075,19 +23085,19 @@ var require_tiktoken_bg = __commonJS({
     };
     module2.exports.__wbindgen_string_get = function(arg0, arg1) {
       if (wasm == null)
-        throw new Error("@dqbd/tiktoken: WASM binary has not been propery initialized.");
+        throw new Error("tiktoken: WASM binary has not been propery initialized.");
       const obj = getObject(arg1);
       const ret = typeof obj === "string" ? obj : void 0;
-      var ptr0 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
-      var len0 = WASM_VECTOR_LEN;
-      getInt32Memory0()[arg0 / 4 + 1] = len0;
-      getInt32Memory0()[arg0 / 4 + 0] = ptr0;
+      var ptr1 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
+      var len1 = WASM_VECTOR_LEN;
+      getInt32Memory0()[arg0 / 4 + 1] = len1;
+      getInt32Memory0()[arg0 / 4 + 0] = ptr1;
     };
     module2.exports.__wbindgen_error_new = function(arg0, arg1) {
       const ret = new Error(getStringFromWasm0(arg0, arg1));
       return addHeapObject(ret);
     };
-    module2.exports.__wbg_parse_3ac95b51fc312db8 = function() {
+    module2.exports.__wbg_parse_06816e879d29d4df = function() {
       return handleError(function(arg0, arg1) {
         const ret = JSON.parse(getStringFromWasm0(arg0, arg1));
         return addHeapObject(ret);
@@ -23114,7 +23124,6 @@ var require_tiktoken = __commonJS({
           path5.join(
             prefix,
             "node_modules",
-            "@dqbd",
             "tiktoken",
             "lite",
             "./tiktoken_bg.wasm"
@@ -23286,6 +23295,13 @@ var require_ignore = __commonJS({
       return slashes.slice(0, length - length % 2);
     };
     var REPLACERS = [
+      [
+        // remove BOM
+        // TODO:
+        // Other similar zero-width characters?
+        /^\uFEFF/,
+        () => EMPTY
+      ],
       // > Trailing spaces are ignored unless they are quoted with backslash ("\")
       [
         // (a\ ) -> (a )
@@ -24435,21 +24451,21 @@ var package_default = {
     format: "prettier --write src"
   },
   devDependencies: {
-    "@commitlint/types": "^18.4.3",
-    "@types/ini": "^1.3.34",
+    "@commitlint/types": "^18.6.1",
+    "@types/ini": "^4.1.0",
     "@types/inquirer": "^9.0.7",
-    "@types/node": "^20.10.4",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    dotenv: "^16.3.1",
-    esbuild: "^0.19.9",
-    eslint: "^8.55.0",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    dotenv: "^16.4.4",
+    esbuild: "^0.20.1",
+    eslint: "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    prettier: "^3.1.1",
-    tsx: "^4.6.2",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    prettier: "^3.2.5",
+    tsx: "^4.7.1",
     typescript: "^5.3.3"
   },
   dependencies: {
@@ -24457,17 +24473,17 @@ var package_default = {
     "@actions/exec": "^1.1.1",
     "@actions/github": "^6.0.0",
     "@clack/prompts": "^0.7.0",
-    "@dqbd/tiktoken": "^1.0.7",
-    "@octokit/webhooks-schemas": "^7.3.1",
-    "@octokit/webhooks-types": "^7.3.1",
-    axios: "^1.6.2",
+    "@dqbd/tiktoken": "^1.0.13",
+    "@octokit/webhooks-schemas": "^7.3.2",
+    "@octokit/webhooks-types": "^7.3.2",
+    axios: "^1.6.7",
     chalk: "^5.3.0",
     cleye: "^1.3.2",
     execa: "^8.0.1",
-    ignore: "^5.3.0",
+    ignore: "^5.3.1",
     ini: "^4.1.1",
-    inquirer: "^9.2.12",
-    openai: "^4.20.1"
+    inquirer: "^9.2.14",
+    openai: "^4.28.0"
   }
 };
 
@@ -30110,7 +30126,7 @@ var {
 } = axios_default;
 
 // node_modules/openai/version.mjs
-var VERSION3 = "4.26.0";
+var VERSION3 = "4.28.0";
 
 // node_modules/openai/_shims/registry.mjs
 var auto = false;
@@ -31113,7 +31129,8 @@ async function defaultParseResponse(props) {
     return response;
   }
   const contentType = response.headers.get("content-type");
-  if (contentType?.includes("application/json")) {
+  const isJSON = contentType?.includes("application/json") || contentType?.includes("application/vnd.api+json");
+  if (isJSON) {
     const json = await response.json();
     debug("response", response.status, response.url, response.headers, json);
     return json;
@@ -33765,6 +33782,8 @@ var configValidators = {
     validateConfig(
       "GW_MODEL" /* GW_MODEL */,
       [
+        "gpt-4-0125-preview",
+        "gpt-4-turbo-preview",
         "gpt-4-1106-preview",
         "gpt-4",
         "gpt-4-0613",
@@ -33774,7 +33793,7 @@ var configValidators = {
         "gpt-3.5-turbo-0613",
         "gpt-3.5-turbo-0301"
       ].includes(value),
-      `${value} is not supported yet, use 'gpt-4-1106-preview','gpt-4','gpt-4-0613','gpt-4-0314','gpt-3.5-turbo-1106','gpt-3.5-turbo','gpt-3.5-turbo-0613','gpt-3.5-turbo-0301'`
+      `${value} is not supported yet, use 'gpt-4-0125-preview', 'gpt-4-turbo-preview', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-0613', 'gpt-4-0314', 'gpt-3.5-turbo-1106', 'gpt-3.5-turbo', 'gpt-3.5-turbo-0613', 'gpt-3.5-turbo-0301'`
     );
     return value;
   },
@@ -34867,7 +34886,7 @@ humanize-ms/index.js:
 web-streams-polyfill/dist/ponyfill.es2018.js:
   (**
    * @license
-   * web-streams-polyfill v3.3.2
+   * web-streams-polyfill v3.3.3
    * Copyright 2024 Mattias Buelens, Diwank Singh Tomer and other contributors.
    * This code is released under the MIT license.
    * SPDX-License-Identifier: MIT
