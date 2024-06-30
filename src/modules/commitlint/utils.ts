@@ -3,7 +3,6 @@ import fs from 'fs/promises';
 import { COMMITLINT_LLM_CONFIG_PATH } from './constants';
 import { CommitlintLLMConfig } from './types';
 
-// eslint-disable-next-line
 /**
  * Removes the "\n" only if occurring twice
  * @param input
