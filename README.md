@@ -70,7 +70,7 @@ GW_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
 GW_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI API>
 GW_DESCRIPTION=<postface a message with ~3 sentences description of the changes>
 GW_EMOJI=<boolean, add GitMoji>
-GW_MODEL=<either 'gpt-4-0125-preview', 'gpt-4-turbo-preview', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-0613', 'gpt-4-0314', 'gpt-3.5-turbo-1106', 'gpt-3.5-turbo', 'gpt-3.5-turbo-0613', 'gpt-3.5-turbo-0301'>
+GW_MODEL=<either 'gpt-4o','gpt-4-turbo','gpt-4-turbo-preview','gpt-4-0125-preview','gpt-4-1106-preview','gpt-4','gpt-3.5-turbo-0125','gpt-3.5-turbo','gpt-3.5-turbo-1106'>
 GW_LANGUAGE=<locale, scroll to the bottom to see options>
 GW_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
 GW_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
@@ -160,7 +160,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
 ### Switching Models: Flexibility at Your Fingertips
 
-- **Default Model**: GitWiz starts with `gpt-3.5-turbo-1106`.
+- **Default Model**: GitWiz starts with `gpt-4o`.
 - **Upgrade to GPT-4**: For superior performance (note the higher cost):
 
     ```sh
@@ -218,24 +218,24 @@ GitWiz offers the flexibility to choose your preferred style for generating comm
 ### Integrating `@commitlint` with GitWiz
 
 - **Automatic Integration**:  
-    The first time you run GitWiz with `GW_PROMPT_MODULE` set to `@commitlint`, the tool will automatically configure the integration.
+     The first time you run GitWiz with `GW_PROMPT_MODULE` set to `@commitlint`, the tool will automatically configure the integration.
 
 - **Manual Configuration**:  
-    If you need to force reset or set the `@commitlint` configuration, use the command:
+     If you need to force reset or set the `@commitlint` configuration, use the command:
 
     ```sh
     gw commitlint force
     ```
 
 - **Viewing Current Configuration**:  
-    To check your current `@commitlint` configuration, utilize:
+     To check your current `@commitlint` configuration, utilize:
 
     ```sh
     gw commitlint get
     ```
 
 - **Customization with `.gitwz-commitlint`**:  
-    GitWiz creates a `.gitwz-commitlint` file in your project directory. This file contains the prompts used for the local `@commitlint` configuration, and you can edit it to fine-tune the generated commit messages according to your project's guidelines.
+     GitWiz creates a `.gitwz-commitlint` file in your project directory. This file contains the prompts used for the local `@commitlint` configuration, and you can edit it to fine-tune the generated commit messages according to your project's guidelines.
 
 ### Why Choose `@commitlint`?
 
@@ -248,10 +248,10 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
 ### Seamless Integration with Git Commit Flags
 
 - **Command Equivalence**:  
-    When you use `gitwz` or `gwz`, it acts as a direct substitute for the `git commit -m` command, incorporating the generated message automatically.
+     When you use `gitwz` or `gwz`, it acts as a direct substitute for the `git commit -m` command, incorporating the generated message automatically.
 
     **Example**:  
-    The command:
+     The command:
 
     ```sh
     gw --no-verify
@@ -268,10 +268,10 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
 ### Advanced Message Customization
 
 - **Template Functionality**:  
-    GitWiz provides a template feature, allowing you to enrich the AI-generated commit message with custom text. This is especially useful for adding contextual information such as issue numbers, tags, or descriptive prefixes.
+     GitWiz provides a template feature, allowing you to enrich the AI-generated commit message with custom text. This is especially useful for adding contextual information such as issue numbers, tags, or descriptive prefixes.
 
     **Usage**:  
-    To prepend a custom string to your generated message, use the command:
+     To prepend a custom string to your generated message, use the command:
 
     ```sh
     gw 'Issue #205: $msg'
@@ -280,10 +280,10 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
     Here, `Issue #205:` is your custom addition, and `$msg` serves as a placeholder for the generated message.
 
 - **Placeholder Configuration**:  
-    GitWiz analyzes placeholders within command parameters, offering flexibility in how your custom text is incorporated. You can define your preferred placeholder format in the GitWiz configuration, which will be recognized and replaced in the commit message.
+     GitWiz analyzes placeholders within command parameters, offering flexibility in how your custom text is incorporated. You can define your preferred placeholder format in the GitWiz configuration, which will be recognized and replaced in the commit message.
 
     **Example**:  
-    If you set your `GW_MESSAGE_TEMPLATE_PLACEHOLDER` to a simpler form like `$m`, GitWiz will use this new placeholder in processing your commit messages.
+     If you set your `GW_MESSAGE_TEMPLATE_PLACEHOLDER` to a simpler form like `$m`, GitWiz will use this new placeholder in processing your commit messages.
 
 ### Enhancing Your Version Control Practices
 
@@ -408,7 +408,7 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
                       GW_OPENAI_BASE_PATH: ''
                       GW_DESCRIPTION: false
                       GW_EMOJI: false
-                      GW_MODEL: gpt-3.5-turbo-1106
+                      GW_MODEL: gpt-4o
                       GW_LANGUAGE: en
                       GW_PROMPT_MODULE: conventional-commit
     ```
@@ -425,8 +425,7 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
 ## **💳 Payments: Transparent and Controlled**
 
 - GitWiz operates on your OpenAI API token, billed directly to you.
-- Default model: `gpt-3.5-turbo-1106`. Manage costs while enjoying enhanced capabilities.
-- Opt for `gpt-4-0125-preview` for a premium experience.
+- Default model: `gpt-4o`. Manage costs while enjoying enhanced capabilities.
 
 ## **Credits and Acknowledgements**
 
