@@ -59,7 +59,7 @@
     },
     "scripts": {
         "watch": "npm run -S build -- --sourcemap --watch",
-        "start": "node ./out/cli.cjs",
+        "start": "node --no-deprecation ./out/cli.cjs",
         "dev": "tsx ./src/cli.ts",
         "build": "rm -rf out && node esbuild.config.js",
         "build:push": "npm run build && git add . && git commit -m \"Build: $(date '+%B %d, %Y, %I:%M:%S %p')\" && git push",

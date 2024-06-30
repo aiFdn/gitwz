@@ -27,5 +27,5 @@ inputs:
         required: true
 
 runs:
-    using: 'node18'
+    using: 'node20'
     main: 'out/github-action.cjs'
