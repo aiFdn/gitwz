@@ -67,11 +67,12 @@
         "deploy:minor": "npm version minor && npm run build:push && git push --tags && npm publish --tag latest",
         "deploy:patch": "npm version patch && npm run build:push && git push --tags && npm publish --tag latest",
         "lint": "eslint src && tsc --noEmit",
-        "lint:fix": "eslint src --ext ts --fix && prettier --write src",
+        "lint:fix": "eslint src --fix && prettier --write src",
         "format": "prettier --write src"
     },
     "devDependencies": {
         "@commitlint/types": "^19.0.3",
+        "@eslint/compat": "^1.1.0",
         "@types/ini": "^4.1.1",
         "@types/inquirer": "^9.0.7",
         "@types/node": "^20.14.9",
