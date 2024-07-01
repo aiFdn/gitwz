@@ -12,20 +12,12 @@ const config = getConfig();
 const translation = i18n[(config?.GW_LANGUAGE as I18nLocals) || 'en'];
 
 export const IDENTITY =
-    'Focus solely on crafting a git commit message as the author, without deviating to other tasks.';
+    'Focus only on writing a Git commit message as the author. Do not do any other tasks.';
 const INIT_MAIN_PROMPT = (language: string): { role: string; content: string } => ({
     role: 'system',
-    content: `${IDENTITY} Check the 'git diff --staged' results and write clear, concise commit messages by first understanding the changes (WHAT, WHY, HOW) from the 'git diff --staged' output. Start your commit summary, capped at 50 characters, with a specific descriptor such as 'Removed', 'Bug Fixed', 'Modified', 'Refactored', 'Added', 'Updated', or 'Optimized', reflecting the overall change. Follow this with a detailed description in ${language}, concisely outlining the code modifications, file adjustments, and precise line numbers impacted, ensuring clarity and comprehensive detail. Use markdown formatting to enhance your commit descriptions. This includes Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where appropriate. For denoting words, phrases, class names, function names, or file changes as code, enclose them in backticks (\`) to enhance readability. Review the code and 'git diff' output for message accuracy. Differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness against the code changes before finalizing.
-    ${
-        config?.GW_EMOJI
-            ? 'Use the GitMoji convention for your commit message.'
-            : "Don't start the commit with any preface."
-    }
-    ${
-        config?.GW_DESCRIPTION
-            ? 'After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with "This commit" or "That commit".'
-            : 'Only include the commit message, no descriptions needed.'
-    }
+    content: `${IDENTITY} Act as an expert in Git and writing professional Git commit messages, tailored for users aiming to elevate their commit message quality. Analyze the 'git diff --staged' output to write clear and concise commit messages by understanding the changes (WHAT, WHY, HOW). Start your commit summary with a clear, categorized tag such as 'Removed:', 'Bug Fixed:', 'Modified:', 'Refactored:', 'Added:', 'Updated:', or 'Optimized:', ensuring it is very short but descriptive and falls within the 50-72 character limit. Follow this with a detailed description in ${language}, outlining code modifications, file adjustments, and specific line numbers impacted. Ensure clarity and comprehensive detail without including full code snippets. Use markdown formatting to enhance commit descriptions, including Emphasis, Blockquotes, Lists, Code, Code Blocks, and Links where appropriate. Enclose words, phrases, class names, function names, or file changes in backticks (\`) to enhance readability. Differentiate between minor and major changes with detailed reasons, and confirm the message's accuracy and completeness before finalizing. Review the code and 'git diff' output for accuracy to facilitate better understanding and collaboration among both AI systems and humans, while adhering to standard Git practices.
+    ${config?.GW_EMOJI ? 'Use the GitMoji convention for your commit message.' : "Don't start the commit with any preface."}
+    ${config?.GW_DESCRIPTION ? 'After your commit message, add a concise explanation for the changes. Describe changes directly, without starting with "This commit" or "That commit".' : 'Only include the commit message, no descriptions needed.'}
   `,
 });
 
@@ -74,9 +66,9 @@ export const getMainCommitPrompt = async (): Promise<
         | OpenAI.Chat.ChatCompletionCreateParamsNonStreaming
         | OpenAI.Chat.ChatCompletionCreateParamsStreaming
         | {
-              role: string;
-              content: string;
-          }
+            role: string;
+            content: string;
+        }
     )[]
 > => {
     switch (config?.GW_PROMPT_MODULE) {

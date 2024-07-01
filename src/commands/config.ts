@@ -49,8 +49,8 @@ export const configValidators = {
         validateConfig(CONFIG_KEYS.GW_OPENAI_API_KEY, value.startsWith('sk-'), 'Must start with "sk-"');
         validateConfig(
             CONFIG_KEYS.GW_OPENAI_API_KEY,
-            config[CONFIG_KEYS.GW_OPENAI_BASE_PATH] || value.length === 51,
-            'Must be 51 characters long',
+            config[CONFIG_KEYS.GW_OPENAI_BASE_PATH] || value.length >= 51,
+            'Must be at least 51 characters long',
         );
 
         return value;
