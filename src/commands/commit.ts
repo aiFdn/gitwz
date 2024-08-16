@@ -23,6 +23,10 @@ const checkMessageTemplate = (extraArgs: string[]): string | false => {
     return false;
 };
 
+const getApiInfo = (): string => {
+    return config?.GW_USE_AZURE_OPENAI ? 'Azure OpenAI API' : 'OpenAI API';
+};
+
 // eslint-disable-next-line complexity
 const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[]): Promise<void> => {
     await assertGitRepo();
@@ -46,10 +50,11 @@ const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[
         // @ts-expect-error
         const timeTaken = (endTime - startTime) / 1000;
 
+        const apiInfo = getApiInfo();
         commitSpinner.stop(
             `${chalk.bold.hex('#ffffff').bgHex('#3EC70B')(` SUCCESS `)} ${chalk.hex('#ffffff').bgHex('#1640D6')(
                 ` Time Taken: ${timeTaken.toFixed(2)} seconds `,
-            )}`,
+            )} ${chalk.hex('#ffffff').bgHex('#1640D6')(` API Used: ${apiInfo} `)}`,
         );
 
         outro(
