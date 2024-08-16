@@ -204,9 +204,8 @@ export const getConfig = (): ConfigType | null => {
             const validator = configValidators[configKey as CONFIG_KEYS];
             config[configKey] = validator(config[configKey] ?? configFromEnv[configKey as CONFIG_KEYS], config);
         } catch (error) {
-            outro(
-                `'${configKey}' name is invalid, it should be either 'GW_${configKey.toUpperCase()}' or it doesn't exist.`,
-            );
+            const suggestedKey = configKey.startsWith('GW_') ? configKey : `GW_${configKey}`;
+            outro(`'${configKey}' name is invalid, it should be '${suggestedKey}' or it doesn't exist.`);
             outro(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
             process.exit(1);
         }
