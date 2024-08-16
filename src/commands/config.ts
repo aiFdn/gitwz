@@ -102,6 +102,7 @@ export const configValidators = {
             CONFIG_KEYS.GW_MODEL,
             [
                 'gpt-4o',
+                'gpt-4o-mini',
                 'gpt-4-turbo',
                 'gpt-4-turbo-preview',
                 'gpt-4-0125-preview',
@@ -111,7 +112,7 @@ export const configValidators = {
                 'gpt-3.5-turbo',
                 'gpt-3.5-turbo-1106',
             ].includes(value),
-            `${value} is not supported yet, use 'gpt-4o','gpt-4-turbo','gpt-4-turbo-preview','gpt-4-0125-preview','gpt-4-1106-preview','gpt-4','gpt-3.5-turbo-0125','gpt-3.5-turbo','gpt-3.5-turbo-1106'`,
+            `${value} is not supported yet, use 'gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-4-turbo-preview','gpt-4-0125-preview','gpt-4-1106-preview','gpt-4','gpt-3.5-turbo-0125','gpt-3.5-turbo','gpt-3.5-turbo-1106'`,
         );
         return value;
     },
@@ -178,7 +179,7 @@ export const getConfig = (): ConfigType | null => {
         GW_OPENAI_BASE_PATH: process.env.GW_OPENAI_BASE_PATH,
         GW_DESCRIPTION: process.env.GW_DESCRIPTION === 'true' ? true : false,
         GW_EMOJI: process.env.GW_EMOJI === 'true' ? true : false,
-        GW_MODEL: process.env.GW_MODEL || 'gpt-4o',
+        GW_MODEL: process.env.GW_MODEL || 'gpt-4o-mini',
         GW_LANGUAGE: process.env.GW_LANGUAGE || 'en',
         GW_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GW_MESSAGE_TEMPLATE_PLACEHOLDER || '$msg',
         GW_PROMPT_MODULE: process.env.GW_PROMPT_MODULE || 'conventional-commit',
