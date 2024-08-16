@@ -44639,7 +44639,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "8.0.0",
+  version: "8.1.0",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
@@ -61285,9 +61285,8 @@ var getConfig = () => {
       const validator = configValidators[configKey];
       config8[configKey] = validator(config8[configKey] ?? configFromEnv[configKey], config8);
     } catch (error) {
-      $e(
-        `'${configKey}' name is invalid, it should be either 'GW_${configKey.toUpperCase()}' or it doesn't exist.`
-      );
+      const suggestedKey = configKey.startsWith("GW_") ? configKey : `GW_${configKey}`;
+      $e(`'${configKey}' name is invalid, it should be '${suggestedKey}' or it doesn't exist.`);
       $e(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
       process.exit(1);
     }
