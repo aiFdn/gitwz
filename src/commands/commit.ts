@@ -1,11 +1,3 @@
-process.removeAllListeners('warning');
-process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
-        return;
-    }
-    console.warn(warning);
-});
-
 import { confirm, intro, isCancel, multiselect, outro, select, spinner } from '@clack/prompts';
 import chalk from 'chalk';
 import { execa } from 'execa';
@@ -15,6 +7,15 @@ import { generateCommitMessageByDiff } from '../generateCommitMessageFromGitDiff
 import { assertGitRepo, getChangedFiles, getDiff, getStagedFiles, gitAdd } from '../utils/git';
 import { trytm } from '../utils/trytm';
 import { getConfig } from './config';
+
+process.removeAllListeners('warning');
+process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
+        return;
+    }
+    // eslint-disable-next-line no-console
+    console.warn(warning);
+});
 
 const config = getConfig();
 
