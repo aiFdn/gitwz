@@ -1,8 +1,9 @@
+import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity';
 import { intro, outro } from '@clack/prompts';
 import axios from 'axios';
 import chalk from 'chalk';
 import { execa } from 'execa';
-import OpenAI from 'openai';
+import OpenAI, { AzureOpenAI } from 'openai';
 
 import { CONFIG_MODES, DEFAULT_MODEL_TOKEN_LIMIT, getConfig } from './commands/config';
 import { GenerateCommitMessageErrorEnum } from './generateCommitMessageFromGitDiff';
@@ -16,18 +17,28 @@ const MODEL = config?.GW_MODEL || 'gpt-4o';
 
 const [command, mode] = process.argv.slice(2);
 
-if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
+if (!apiKey && !config?.GW_AZURE_OPENAI_API_KEY && command !== 'config' && mode !== CONFIG_MODES.set) {
     intro('gitwz');
     outro(
-        'GW_OPENAI_API_KEY is not set, please run `gw config set GW_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`',
+        'Neither GW_OPENAI_API_KEY nor GW_AZURE_OPENAI_API_KEY is set. Please run `gw config set` to configure your API keys.',
     );
     outro('For help look into README https://github.com/aiFdn/gitwz#setup');
     process.exit(1);
 }
 
-const openai = new OpenAI({
-    apiKey: apiKey,
-});
+let openai: OpenAI | AzureOpenAI;
+
+if (config?.GW_USE_AZURE_OPENAI === 'true') {
+    const scope = 'https://cognitiveservices.azure.com/.default';
+    const azureADTokenProvider = getBearerTokenProvider(new DefaultAzureCredential(), scope);
+    const deployment = config.GW_AZURE_OPENAI_DEPLOYMENT_NAME as string;
+    const apiVersion = '2024-07-01-preview';
+    openai = new AzureOpenAI({ azureADTokenProvider, deployment, apiVersion });
+} else {
+    openai = new OpenAI({
+        apiKey: apiKey,
+    });
+}
 
 class OpenAi {
     constructor() {}
@@ -64,9 +75,14 @@ class OpenAi {
                 throw new Error(GenerateCommitMessageErrorEnum.tooMuchTokens);
             }
 
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            const response = await openai.chat.completions.create(params);
+            let response;
+            if (config?.GW_USE_AZURE_OPENAI === 'true') {
+                response = await (openai as AzureOpenAI).chat.completions.create(params);
+            } else {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                response = await (openai as OpenAI).chat.completions.create(params);
+            }
 
             const message = response.choices[0].message;
 
