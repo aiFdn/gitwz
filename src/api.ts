@@ -13,7 +13,7 @@ const config = getConfig();
 
 const maxTokens = config?.GW_OPENAI_MAX_TOKENS || 500;
 const apiKey = config?.GW_OPENAI_API_KEY;
-const MODEL = config?.GW_MODEL || 'gpt-4o';
+const MODEL = config?.GW_MODEL || 'gpt-4o-mini';
 
 const [command, mode] = process.argv.slice(2);
 
