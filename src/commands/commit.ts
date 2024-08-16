@@ -204,16 +204,11 @@ export async function commit(extraArgs: string[] = [], isStageAllFlag: boolean =
         process.exit(1);
     }
 
-    intro(`
-${chalk.bold.hex('#ffffff').bgHex('#FF6000')(` GitWiz ${pkgJson.version} `)}${chalk.italic.dim(
-        ` Use AI to Enhance Your Git Commits `,
-    )}
-    
-${chalk.hex('#ffffff').bold.bgHex('#12486B')(` Developed By `)} ${chalk.bold(
-        'Md. Sazzad Hossain Sharkar',
-    )} (${chalk.underline('https://github.com/SHSharkar')})
-    
-${chalk.yellow('Preparing to commit changes...')}`);
+    intro(
+        `${chalk.bold.hex('#ffffff').bgHex('#FF6000')(` GitWiz ${pkgJson.version} `)} ${chalk.italic.dim('Use AI to Enhance Your Git Commits')} | ${chalk.hex('#ffffff').bold.bgHex('#12486B')(` Developed By `)} ${chalk.bold('Md. Sazzad Hossain Sharkar')} (${chalk.underline('https://github.com/SHSharkar')})
+
+${chalk.yellow('Preparing to commit changes...')}`,
+    );
 
     if (errorChangedFiles ?? errorStagedFiles) {
         outro(`${chalk.hex('#ffffff').bold.bgHex('#FF0303')(` ERROR `)} ${errorChangedFiles ?? errorStagedFiles}`);
