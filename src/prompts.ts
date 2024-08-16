@@ -17,7 +17,7 @@ const INIT_MAIN_PROMPT = (language: string): { role: string; content: string } =
     content: `${IDENTITY} Act as an expert in Git and writing professional Git commit messages, tailored for users aiming to elevate their commit message quality. Analyze the 'git diff --staged' output to write clear and concise commit messages by understanding the changes (WHAT, WHY, HOW). Follow these guidelines:
 
 Commit Title (First Line):
-- Start with a clear, categorized tag such as 'Removed:', 'Bug Fixed:', 'Modified:', 'Refactored:', 'Added:', 'Updated:', or 'Optimized:'
+- Start with a clear, categorized tag such as 'Removed:', 'Bug Fixed:', 'Modified:', 'Refactored:', 'Added:', 'Updated:', or 'Optimized:'. You can use extended tags. These are just for example.
 - Ensure it is very short but descriptive and falls within the 50-72 character limit
 - Use backticks (\`) only for file names or specific code changes
 - Do not use any markdown heading syntax (no # symbols)
