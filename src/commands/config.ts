@@ -22,6 +22,10 @@ export enum CONFIG_KEYS {
     GW_LANGUAGE = 'GW_LANGUAGE',
     GW_MESSAGE_TEMPLATE_PLACEHOLDER = 'GW_MESSAGE_TEMPLATE_PLACEHOLDER',
     GW_PROMPT_MODULE = 'GW_PROMPT_MODULE',
+    GW_USE_AZURE_OPENAI = 'GW_USE_AZURE_OPENAI',
+    GW_AZURE_OPENAI_API_KEY = 'GW_AZURE_OPENAI_API_KEY',
+    GW_AZURE_OPENAI_ENDPOINT = 'GW_AZURE_OPENAI_ENDPOINT',
+    GW_AZURE_OPENAI_DEPLOYMENT_NAME = 'GW_AZURE_OPENAI_DEPLOYMENT_NAME',
 }
 
 export const DEFAULT_MODEL_TOKEN_LIMIT = 4096;
@@ -126,7 +130,36 @@ export const configValidators = {
             ['conventional-commit', '@commitlint'].includes(value),
             `${value} is not supported yet, use '@commitlint' or 'conventional-commit' (default)`,
         );
+        return value;
+    },
 
+    [CONFIG_KEYS.GW_USE_AZURE_OPENAI](value: any) {
+        if (typeof value === 'string') {
+            validateConfig(
+                CONFIG_KEYS.GW_USE_AZURE_OPENAI,
+                ['true', 'false'].includes(value.toLowerCase()),
+                'Must be "true" or "false"',
+            );
+            return value.toLowerCase() === 'true';
+        } else if (typeof value === 'boolean') {
+            return value;
+        } else {
+            throw new Error('Must be a boolean or a string "true" or "false"');
+        }
+    },
+
+    [CONFIG_KEYS.GW_AZURE_OPENAI_API_KEY](value: any) {
+        validateConfig(CONFIG_KEYS.GW_AZURE_OPENAI_API_KEY, value, 'Cannot be empty');
+        return value;
+    },
+
+    [CONFIG_KEYS.GW_AZURE_OPENAI_ENDPOINT](value: any) {
+        validateConfig(CONFIG_KEYS.GW_AZURE_OPENAI_ENDPOINT, value.startsWith('https://'), 'Must be a valid HTTPS URL');
+        return value;
+    },
+
+    [CONFIG_KEYS.GW_AZURE_OPENAI_DEPLOYMENT_NAME](value: any) {
+        validateConfig(CONFIG_KEYS.GW_AZURE_OPENAI_DEPLOYMENT_NAME, value, 'Cannot be empty');
         return value;
     },
 };
@@ -149,6 +182,10 @@ export const getConfig = (): ConfigType | null => {
         GW_LANGUAGE: process.env.GW_LANGUAGE || 'en',
         GW_MESSAGE_TEMPLATE_PLACEHOLDER: process.env.GW_MESSAGE_TEMPLATE_PLACEHOLDER || '$msg',
         GW_PROMPT_MODULE: process.env.GW_PROMPT_MODULE || 'conventional-commit',
+        GW_USE_AZURE_OPENAI: process.env.GW_USE_AZURE_OPENAI || 'false',
+        GW_AZURE_OPENAI_API_KEY: process.env.GW_AZURE_OPENAI_API_KEY,
+        GW_AZURE_OPENAI_ENDPOINT: process.env.GW_AZURE_OPENAI_ENDPOINT,
+        GW_AZURE_OPENAI_DEPLOYMENT_NAME: process.env.GW_AZURE_OPENAI_DEPLOYMENT_NAME,
     };
 
     const configExists = existsSync(configPath);
@@ -184,6 +221,11 @@ export const setConfig = (keyValues: [key: string, value: string][]) => {
         // eslint-disable-next-line no-prototype-builtins
         if (!configValidators.hasOwnProperty(configKey)) {
             throw new Error(`Unsupported config key: ${configKey}`);
+        }
+
+        if (config[configKey] !== undefined && config[configKey] !== null && config[configKey] !== '') {
+            outro(`${chalk.yellow('Warning:')} Skipping ${configKey} as it already has a value.`);
+            continue;
         }
 
         let parsedConfigValue;
