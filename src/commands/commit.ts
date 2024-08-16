@@ -54,7 +54,7 @@ const generateCommitMessageFromGitDiff = async (diff: string, extraArgs: string[
         commitSpinner.stop(
             `${chalk.bold.hex('#ffffff').bgHex('#3EC70B')(` SUCCESS `)} ${chalk.hex('#ffffff').bgHex('#1640D6')(
                 ` Time Taken: ${timeTaken.toFixed(2)} seconds `,
-            )} ${chalk.hex('#ffffff').bgHex('#1640D6')(` API Used: ${apiInfo} `)}`,
+            )} ${chalk.hex('#000000').bgHex('#FFA500')(` API Used: ${apiInfo} `)}`,
         );
 
         outro(
