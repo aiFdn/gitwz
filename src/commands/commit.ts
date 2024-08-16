@@ -1,3 +1,11 @@
+process.removeAllListeners('warning');
+process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
+        return;
+    }
+    console.warn(warning);
+});
+
 import { confirm, intro, isCancel, multiselect, outro, select, spinner } from '@clack/prompts';
 import chalk from 'chalk';
 import { execa } from 'execa';
