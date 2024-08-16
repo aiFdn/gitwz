@@ -200,18 +200,33 @@ export const getConfig = (): ConfigType | null => {
             config[configKey] = undefined;
             continue;
         }
-        try {
-            const validator = configValidators[configKey as CONFIG_KEYS];
-            config[configKey] = validator(config[configKey] ?? configFromEnv[configKey as CONFIG_KEYS], config);
-        } catch (error) {
-            const suggestedKey = configKey.startsWith('GW_') ? configKey : `GW_${configKey}`;
-            outro(`'${configKey}' name is invalid, it should be '${suggestedKey}' or it doesn't exist.`);
-            outro(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
+
+        const validConfigKey = configKey.startsWith('GW_') ? configKey : `GW_${configKey}`;
+
+        if (validConfigKey in configValidators) {
+            try {
+                const validator = configValidators[validConfigKey as CONFIG_KEYS];
+                config[validConfigKey] = validator(
+                    config[configKey] ?? configFromEnv[validConfigKey as keyof typeof configFromEnv],
+                    config,
+                );
+
+                if (validConfigKey !== configKey) {
+                    delete config[configKey];
+                }
+            } catch (error) {
+                outro(`'${configKey}' is invalid or doesn't exist. Valid keys start with 'GW_'.`);
+                outro(`Please manually fix the global '~/.gitwz' config file.`);
+                process.exit(1);
+            }
+        } else {
+            outro(`'${configKey}' is not a recognized configuration key.`);
+            outro(`Please manually fix the global '~/.gitwz' config file.`);
             process.exit(1);
         }
     }
 
-    return config;
+    return config as ConfigType;
 };
 
 export const setConfig = (keyValues: [key: string, value: string][]) => {
