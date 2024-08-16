@@ -74,13 +74,17 @@ GW_MODEL=<either 'gpt-4o','gpt-4-turbo','gpt-4-turbo-preview','gpt-4-0125-previe
 GW_LANGUAGE=<locale, scroll to the bottom to see options>
 GW_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
 GW_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
+GW_USE_AZURE_OPENAI=<boolean, set to true to use Azure OpenAI>
+GW_AZURE_API_KEY=<your Azure OpenAI API key>
+GW_AZURE_ENDPOINT=<your Azure OpenAI endpoint>
+GW_AZURE_DEPLOYMENT=<your Azure OpenAI deployment name>
 ```
 
 ## **⚙️ Global Configuration**
 
 Effortlessly apply settings across all repositories with GitWiz's global configuration options:
 
-- **API Key**:
+-   **API Key**:
 
     ```sh
     gw config set GW_OPENAI_API_KEY=<your OpenAI API token>
@@ -88,7 +92,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Securely store your OpenAI API token for global access.
 
-- **Max Response Tokens**:
+-   **Max Response Tokens**:
 
     ```sh
     gw config set GW_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
@@ -96,7 +100,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Control the maximum response tokens from the OpenAI API.
 
-- **OpenAI API Base Path**:
+-   **OpenAI API Base Path**:
 
     ```sh
     gw config set GW_OPENAI_BASE_PATH=<proxy path to OpenAI API>
@@ -104,7 +108,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Optionally set a proxy path to the OpenAI API.
 
-- **Description Postface**:
+-   **Description Postface**:
 
     ```sh
     gw config set GW_DESCRIPTION=<postface a message with ~3 sentences>
@@ -112,7 +116,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Append a brief description, up to 3 sentences, to your commit messages.
 
-- **GitMoji Integration**:
+-   **GitMoji Integration**:
 
     ```sh
     gw config set GW_EMOJI=true
@@ -126,7 +130,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
     gw config set GW_EMOJI=false
     ```
 
-- **Model Selection**:
+-   **Model Selection**:
 
     ```sh
     gw config set GW_MODEL=<model_name>
@@ -134,7 +138,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Choose from a variety of GPT models for different performance and cost options.
 
-- **Language Selection**:
+-   **Language Selection**:
 
     ```sh
     gw config set GW_LANGUAGE=<locale>
@@ -142,7 +146,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Set your preferred language for commit messages. Check the [i18n folder](https://github.com/aiFdn/gitwz/tree/main/src/i18n) for available languages.
 
-- **Message Template Placeholder**:
+-   **Message Template Placeholder**:
 
     ```sh
     gw config set GW_MESSAGE_TEMPLATE_PLACEHOLDER=<placeholder_format>
@@ -150,7 +154,7 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Customize the format of your commit message placeholders.
 
-- **Prompt Module**:
+-   **Prompt Module**:
 
     ```sh
     gw config set GW_PROMPT_MODULE=<module_choice>
@@ -158,20 +162,66 @@ Effortlessly apply settings across all repositories with GitWiz's global configu
 
     Choose between `conventional-commit` or `@commitlint` for generating commit messages.
 
+## **☁️ Azure OpenAI Configuration**
+
+GitWiz now supports Azure OpenAI. To configure GitWiz for use with Azure OpenAI, use the following global configuration options:
+
+-   **Enable Azure OpenAI**:
+
+    ```sh
+    gw config set GW_USE_AZURE_OPENAI=true
+    ```
+
+    Set this to `true` to use Azure OpenAI instead of the standard OpenAI API.
+
+-   **Azure API Key**:
+
+    ```sh
+    gw config set GW_AZURE_API_KEY=<your Azure OpenAI API key>
+    ```
+
+    Set your Azure OpenAI API key.
+
+-   **Azure Endpoint**:
+
+    ```sh
+    gw config set GW_AZURE_ENDPOINT=<your Azure OpenAI endpoint>
+    ```
+
+    Set the endpoint URL for your Azure OpenAI resource.
+
+-   **Azure Deployment**:
+
+    ```sh
+    gw config set GW_AZURE_DEPLOYMENT=<your Azure OpenAI deployment name>
+    ```
+
+    Specify the deployment name for your Azure OpenAI model.
+
+Remember to keep your API keys and sensitive information secure. When using Azure OpenAI, ensure that you have the necessary permissions and have set up your Azure resources correctly.
+
 ### Switching Models: Flexibility at Your Fingertips
 
-- **Default Model**: GitWiz starts with `gpt-4o`.
-- **Upgrade to GPT-4**: For superior performance (note the higher cost):
+-   **Default Model**: GitWiz starts with `gpt-4o`.
+-   **Upgrade to GPT-4**: For superior performance (note the higher cost):
 
     ```sh
     gw config set GW_MODEL=gpt-4
     ```
 
-- **GPT-4 Turbo (Preview)**: A savvy blend of capability and economy:
+-   **GPT-4 Turbo (Preview)**: A savvy blend of capability and economy:
 
     ```sh
     gw config set GW_MODEL=gpt-4-1106-preview
     ```
+
+-   **Azure OpenAI Models**: When using Azure OpenAI, specify the deployment name:
+
+    ```sh
+    gw config set GW_AZURE_DEPLOYMENT=<your Azure OpenAI deployment name>
+    ```
+
+    The model used will depend on the deployment you've set up in your Azure OpenAI resource.
 
 ## **🌍 Language Configuration**
 
@@ -217,24 +267,24 @@ GitWiz offers the flexibility to choose your preferred style for generating comm
 
 ### Integrating `@commitlint` with GitWiz
 
-- **Automatic Integration**:  
+-   **Automatic Integration**:  
      The first time you run GitWiz with `GW_PROMPT_MODULE` set to `@commitlint`, the tool will automatically configure the integration.
 
-- **Manual Configuration**:  
+-   **Manual Configuration**:  
      If you need to force reset or set the `@commitlint` configuration, use the command:
 
     ```sh
     gw commitlint force
     ```
 
-- **Viewing Current Configuration**:  
+-   **Viewing Current Configuration**:  
      To check your current `@commitlint` configuration, utilize:
 
     ```sh
     gw commitlint get
     ```
 
-- **Customization with `.gitwz-commitlint`**:  
+-   **Customization with `.gitwz-commitlint`**:  
      GitWiz creates a `.gitwz-commitlint` file in your project directory. This file contains the prompts used for the local `@commitlint` configuration, and you can edit it to fine-tune the generated commit messages according to your project's guidelines.
 
 ### Why Choose `@commitlint`?
@@ -247,7 +297,7 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
 
 ### Seamless Integration with Git Commit Flags
 
-- **Command Equivalence**:  
+-   **Command Equivalence**:  
      When you use `gitwz` or `gwz`, it acts as a direct substitute for the `git commit -m` command, incorporating the generated message automatically.
 
     **Example**:  
@@ -267,7 +317,7 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
 
 ### Advanced Message Customization
 
-- **Template Functionality**:  
+-   **Template Functionality**:  
      GitWiz provides a template feature, allowing you to enrich the AI-generated commit message with custom text. This is especially useful for adding contextual information such as issue numbers, tags, or descriptive prefixes.
 
     **Usage**:  
@@ -279,7 +329,7 @@ The `gitwz` or `gwz` commands are designed to seamlessly integrate with your exi
 
     Here, `Issue #205:` is your custom addition, and `$msg` serves as a placeholder for the generated message.
 
-- **Placeholder Configuration**:  
+-   **Placeholder Configuration**:  
      GitWiz analyzes placeholders within command parameters, offering flexibility in how your custom text is incorporated. You can define your preferred placeholder format in the GitWiz configuration, which will be recognized and replaced in the commit message.
 
     **Example**:  
@@ -303,9 +353,9 @@ commitMessage = messageTemplate.replace(config?.GW_MESSAGE_TEMPLATE_PLACEHOLDER,
 
 In this implementation:
 
-- `messageTemplate` refers to the template you've set, containing the placeholder.
-- `GW_MESSAGE_TEMPLATE_PLACEHOLDER` is the configurable placeholder within your template. By default, it could be something like `$msg`.
-- The `replace` function swaps the placeholder with the actual commit message generated by GitWiz.
+-   `messageTemplate` refers to the template you've set, containing the placeholder.
+-   `GW_MESSAGE_TEMPLATE_PLACEHOLDER` is the configurable placeholder within your template. By default, it could be something like `$msg`.
+-   The `replace` function swaps the placeholder with the actual commit message generated by GitWiz.
 
 #### Practical Example
 
@@ -340,7 +390,7 @@ GitWiz offers a smart way to exclude specific files or directories from being pr
 
 By default, GitWiz is configured to ignore certain types of files to optimize performance and security. These include:
 
-- Lockfiles typically generated by package managers (like `*-lock.*` and `*.lock`).
+-   Lockfiles typically generated by package managers (like `*-lock.*` and `*.lock`).
 
 ### Customizing for Your Needs
 
@@ -399,11 +449,12 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
                   with:
                       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-                  # Set up your OpenAI API key in the repository's action secrets
-                  # For obtaining OpenAI keys, visit: https://platform.openai.com/account/api-keys
-                  # To add to your repository's secrets, navigate to: <your_repo_url>/settings/secrets/actions
                   env:
                       GW_OPENAI_API_KEY: ${{ secrets.GW_OPENAI_API_KEY }}
+                      GW_USE_AZURE_OPENAI: ${{ secrets.GW_USE_AZURE_OPENAI }}
+                      GW_AZURE_API_KEY: ${{ secrets.GW_AZURE_API_KEY }}
+                      GW_AZURE_ENDPOINT: ${{ secrets.GW_AZURE_ENDPOINT }}
+                      GW_AZURE_DEPLOYMENT: ${{ secrets.GW_AZURE_DEPLOYMENT }}
                       GW_OPENAI_MAX_TOKENS: 500
                       GW_OPENAI_BASE_PATH: ''
                       GW_DESCRIPTION: false
@@ -418,14 +469,14 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
 
 ### Important Notes for Using GitWiz GitHub Action
 
-- **Automatic Enhancement**: GitWiz automatically improves all new commit messages when pushing to any branch not listed in `branches-ignore`.
-- **Branch Management**: Take care with branch exclusions, particularly in collaborative settings, to maintain commit history integrity.
-- **Workflow Adaptation**: Tailor the action to your workflow, including the GitWiz model, language preference, and other parameters.
+-   **Automatic Enhancement**: GitWiz automatically improves all new commit messages when pushing to any branch not listed in `branches-ignore`.
+-   **Branch Management**: Take care with branch exclusions, particularly in collaborative settings, to maintain commit history integrity.
+-   **Workflow Adaptation**: Tailor the action to your workflow, including the GitWiz model, language preference, and other parameters.
 
 ## **💳 Payments: Transparent and Controlled**
 
-- GitWiz operates on your OpenAI API token, billed directly to you.
-- Default model: `gpt-4o`. Manage costs while enjoying enhanced capabilities.
+-   GitWiz operates on your OpenAI API token, billed directly to you.
+-   Default model: `gpt-4o`. Manage costs while enjoying enhanced capabilities.
 
 ## **Credits and Acknowledgements**
 
