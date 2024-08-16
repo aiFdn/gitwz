@@ -44639,7 +44639,7 @@ function G3(t2, e3) {
 // package.json
 var package_default = {
   name: "gitwz",
-  version: "8.1.0",
+  version: "8.2.0",
   description: "Transform your git commits quickly and easily with AI (OpenAI GPT). Using this tool, you can make your git commits more visually appealing. It only takes a few seconds to create eye-catching git commits that stand out.",
   type: "module",
   license: "MIT",
@@ -61281,13 +61281,25 @@ var getConfig = () => {
       config8[configKey] = void 0;
       continue;
     }
-    try {
-      const validator = configValidators[configKey];
-      config8[configKey] = validator(config8[configKey] ?? configFromEnv[configKey], config8);
-    } catch (error) {
-      const suggestedKey = configKey.startsWith("GW_") ? configKey : `GW_${configKey}`;
-      $e(`'${configKey}' name is invalid, it should be '${suggestedKey}' or it doesn't exist.`);
-      $e(`Manually fix the '.env' file or global '~/.gitwz' config file.`);
+    const validConfigKey = configKey.startsWith("GW_") ? configKey : `GW_${configKey}`;
+    if (validConfigKey in configValidators) {
+      try {
+        const validator = configValidators[validConfigKey];
+        config8[validConfigKey] = validator(
+          config8[configKey] ?? configFromEnv[validConfigKey],
+          config8
+        );
+        if (validConfigKey !== configKey) {
+          delete config8[configKey];
+        }
+      } catch (error) {
+        $e(`'${configKey}' is invalid or doesn't exist. Valid keys start with 'GW_'.`);
+        $e(`Please manually fix the global '~/.gitwz' config file.`);
+        process.exit(1);
+      }
+    } else {
+      $e(`'${configKey}' is not a recognized configuration key.`);
+      $e(`Please manually fix the global '~/.gitwz' config file.`);
       process.exit(1);
     }
   }
