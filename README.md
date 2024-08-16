@@ -70,7 +70,7 @@ GW_OPENAI_MAX_TOKENS=<max response tokens from OpenAI API>
 GW_OPENAI_BASE_PATH=<may be used to set proxy path to OpenAI API>
 GW_DESCRIPTION=<postface a message with ~3 sentences description of the changes>
 GW_EMOJI=<boolean, add GitMoji>
-GW_MODEL=<either 'gpt-4o','gpt-4-turbo','gpt-4-turbo-preview','gpt-4-0125-preview','gpt-4-1106-preview','gpt-4','gpt-3.5-turbo-0125','gpt-3.5-turbo','gpt-3.5-turbo-1106'>
+GW_MODEL=<either 'gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-4-turbo-preview','gpt-4-0125-preview','gpt-4-1106-preview','gpt-4','gpt-3.5-turbo-0125','gpt-3.5-turbo','gpt-3.5-turbo-1106'>
 GW_LANGUAGE=<locale, scroll to the bottom to see options>
 GW_MESSAGE_TEMPLATE_PLACEHOLDER=<message template placeholder, default: '$msg'>
 GW_PROMPT_MODULE=<either conventional-commit or @commitlint, default: conventional-commit>
@@ -202,7 +202,7 @@ Remember to keep your API keys and sensitive information secure. When using Azur
 
 ### Switching Models: Flexibility at Your Fingertips
 
--   **Default Model**: GitWiz starts with `gpt-4o`.
+-   **Default Model**: GitWiz starts with `gpt-4o-mini`.
 -   **Upgrade to GPT-4**: For superior performance (note the higher cost):
 
     ```sh
@@ -459,7 +459,7 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
                       GW_OPENAI_BASE_PATH: ''
                       GW_DESCRIPTION: false
                       GW_EMOJI: false
-                      GW_MODEL: gpt-4o
+                      GW_MODEL: gpt-4o-mini
                       GW_LANGUAGE: en
                       GW_PROMPT_MODULE: conventional-commit
     ```
@@ -476,7 +476,7 @@ Automate commit message enhancement with GitWiz, now available as a GitHub Actio
 ## **💳 Payments: Transparent and Controlled**
 
 -   GitWiz operates on your OpenAI API token, billed directly to you.
--   Default model: `gpt-4o`. Manage costs while enjoying enhanced capabilities.
+-   Default model: `gpt-4o-mini`. Manage costs while enjoying enhanced capabilities.
 
 ## **Credits and Acknowledgements**
 
