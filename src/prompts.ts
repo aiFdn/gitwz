@@ -11,36 +11,29 @@ import * as utils from './modules/commitlint/utils';
 const config = getConfig();
 const translation = i18n[(config?.GW_LANGUAGE as I18nLocals) || 'en'];
 
-export const IDENTITY = 'Focus only on writing a Git commit message as the author. Do not do any other tasks.';
+export const IDENTITY = 'Focus on writing Git commit messages as the author.';
+
 const INIT_MAIN_PROMPT = (language: string): { role: string; content: string } => ({
     role: 'system',
-    content: `${IDENTITY} Act as an expert in Git and writing professional Git commit messages, tailored for users aiming to elevate their commit message quality. Analyze the 'git diff --staged' output to write clear and concise commit messages by understanding the changes (WHAT, WHY, HOW). Follow these guidelines:
+    content: `${IDENTITY} Analyze 'git diff --staged' to write clear, concise commit messages. Guidelines:
 
-Commit Title (First Line):
-- Start with a clear, categorized tag such as 'Removed:', 'Bug Fixed:', 'Modified:', 'Refactored:', 'Added:', 'Updated:', or 'Optimized:'. You can use extended tags. These are just for example.
-- Ensure it is very short but descriptive and falls within the 50-72 character limit
-- Use backticks (\`) only for file names or specific code changes
-- Do not use any markdown heading syntax (no # symbols)
-- Do not end the title with a period
+Title (Summary):
+- Use categorized tags (e.g., 'Removed:', 'Bug Fixed:', 'Added:')
+- Strictly up to 50 characters, descriptive, no period
+- Use backticks for file names/code changes
+- Ensure summary accurately reflects the changes
+- Consider the first line as the title
 
-Commit Description (Subsequent Lines):
-- Provide a detailed description in ${language}
-- Use markdown formatting to enhance commit descriptions, including emphasis, lists, code blocks, and links if necessary
-- Outline code modifications, file adjustments, and specific line numbers impacted
-- Use backticks (\`) for words, phrases, class names, function names, or file changes
-- Ensure clarity and comprehensive detail without including full code snippets
-- Differentiate between minor and major changes with detailed reasons
+Description (in ${language}):
+- Use markdown formatting
+- Outline changes, files, and line numbers
+- Use backticks for code elements
+- Differentiate minor/major changes
 
-General Guidelines:
-- Confirm the message's accuracy and completeness before finalizing
-- Review the code and 'git diff' output for accuracy
-- Facilitate better understanding and collaboration among both AI systems and humans
-- Adhere to standard Git practices
+${config?.GW_EMOJI ? 'Use GitMoji convention.' : 'No preface.'}
+${config?.GW_DESCRIPTION ? 'Explain changes directly, no "This commit" phrases.' : 'Title only, no description.'}
 
-${config?.GW_EMOJI ? 'Use the GitMoji convention for your commit message.' : "Don't start the commit with any preface."}
-${config?.GW_DESCRIPTION ? 'Ensure the commit description is concise and explains the changes directly, without starting with phrases like "This commit" or "That commit".' : 'Only include the commit title, no descriptions needed.'}
-
-Provide the commit message with a clear separation between the title and description (if applicable), suitable for direct use as a Git commit message.`,
+Provide commit message with clear title-description separation.`,
 });
 
 export const INIT_DIFF_PROMPT: OpenAI.Chat.ChatCompletionUserMessageParam = {
