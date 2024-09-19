@@ -3,7 +3,7 @@
         "target": "ESNext",
         "lib": ["ES5", "ES6"],
         "module": "ESNext",
-        "rootDir": "./src",
+        "rootDir": "./",
         "resolveJsonModule": true,
         "moduleResolution": "node",
         "allowJs": true,
