@@ -238,6 +238,8 @@ export const setConfig = (keyValues: [key: string, value: string][]) => {
             throw new Error(`Unsupported config key: ${configKey}`);
         }
 
+        // eslint-disable-next-line
+        // @ts-ignore
         if (config[configKey] !== undefined && config[configKey] !== null && config[configKey] !== '') {
             outro(`${chalk.yellow('Warning:')} Skipping ${configKey} as it already has a value.`);
             continue;
