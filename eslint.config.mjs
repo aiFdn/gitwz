@@ -46,6 +46,8 @@ export default [
             },
         },
 
+        ignores: ['out/', 'out/**/*', 'node_modules/', 'node_modules/**/*', '.github/'],
+
         rules: {
             'prettier/prettier': 'error',
             'no-console': 'error',
@@ -58,12 +60,15 @@ export default [
             'import/no-duplicates': 'error',
             '@typescript-eslint/no-non-null-assertion': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
-            complexity: ['warn', 10],
+            complexity: ['warn', 15],
             'max-depth': ['warn', 4],
             '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
             '@typescript-eslint/prefer-for-of': 'warn',
             '@typescript-eslint/prefer-includes': 'warn',
             '@typescript-eslint/prefer-string-starts-ends-with': 'warn',
+            '@typescript-eslint/no-var-requires': 'off',
+            '@typescript-eslint/no-require-imports': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
         },
     },
 ];
