@@ -22,7 +22,7 @@ Title (Summary):
 - Strictly up to 50 characters, descriptive, no period
 - Use backticks for file names/code changes
 - Ensure summary accurately reflects the changes
-- Consider the first line as the title
+- Consider the first line as the title or summary
 
 Description (in ${language}):
 - Use markdown formatting
