@@ -77,6 +77,8 @@ class OpenAi {
 
             let response;
             if (config?.GW_USE_AZURE_OPENAI === 'true') {
+                // eslint-disable-next-line
+                // @ts-ignore
                 response = await (openai as AzureOpenAI).chat.completions.create(params);
             } else {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
